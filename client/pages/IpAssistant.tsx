@@ -131,7 +131,9 @@ const IpAssistant = () => {
               block: "end",
               inline: "nearest",
             });
-          } catch (e) {}
+          } catch (e) {
+            console.warn("[IpAssistant] Scroll to element failed:", e);
+          }
           scrollRafRef.current = null;
         });
       }
