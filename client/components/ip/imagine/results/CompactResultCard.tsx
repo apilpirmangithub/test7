@@ -75,19 +75,15 @@ const CompactResultCard = ({
 
   // Calculate display URL based on registration state and available URLs
   const getDisplayUrl = (): string => {
-    // If has childIpId AND licenseToken, user has registered - show original image
-    if (childIpId && licenseToken && originalUrl) {
+    // If has childIpId (registered derivative) - show original image regardless of license token status
+    if (childIpId && originalUrl) {
       return originalUrl;
-    }
-    // If has childIpId but no licenseToken, show watermarked (before full registration)
-    if (childIpId && watermarkedUrl) {
-      return watermarkedUrl;
     }
     // If registered via registeredIpId (backward compatibility) and has originalUrl
     if (registeredIpId && originalUrl) {
       return originalUrl;
     }
-    // If has watermarkedUrl, use it
+    // If has watermarkedUrl (not registered yet), use it
     if (watermarkedUrl) {
       return watermarkedUrl;
     }
