@@ -60,12 +60,31 @@ const toDbRow = (creation: WalletCreation) => ({
 export const handleGetWalletCreations: RequestHandler = async (req, res) => {
   try {
     const { walletAddress } = req.params;
+    const { requesting_wallet } = req.query;
 
     if (!walletAddress) {
       return res.status(400).json({
         ok: false,
         error: "Missing required parameter: walletAddress",
       });
+    }
+
+    // Validate that the requesting wallet matches the target wallet (privacy protection)
+    if (requesting_wallet) {
+      const requestingWalletStr = requesting_wallet.toString().toLowerCase();
+      const targetWalletStr = walletAddress.toLowerCase();
+
+      if (requestingWalletStr !== targetWalletStr) {
+        console.warn(
+          `[SECURITY] Unauthorized access attempt: requesting_wallet=${requestingWalletStr} != target=${targetWalletStr}`,
+        );
+        // Return 403 Forbidden and empty creations array for security
+        return res.status(403).json({
+          ok: false,
+          error: "Unauthorized: wallet address mismatch",
+          creations: [],
+        });
+      }
     }
 
     const supabase = getSupabaseClient();
