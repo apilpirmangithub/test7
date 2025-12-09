@@ -162,7 +162,9 @@ const IpAssistant = () => {
           });
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn("[IpAssistant] Scroll to bottom failed:", e);
+    }
     lastScrollRef.current = Date.now();
   }, []);
 
