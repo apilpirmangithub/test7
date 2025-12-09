@@ -163,6 +163,11 @@ const IpImagineCreationResult = () => {
       if (context?.clearCreations) {
         context.clearCreations();
       }
+      // Clear all local UI states related to results
+      setUpscaledUrl(null);
+      setUpscalingCreationId(null);
+      setExpandedCreationId(null);
+      setShowUpscaler(false);
     }
   }, [authenticated, primaryWalletAddress, context]);
 
