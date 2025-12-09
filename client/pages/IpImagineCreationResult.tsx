@@ -320,7 +320,53 @@ const IpImagineCreationResult = () => {
       onLogoClick={() => navigate("/")}
     >
       <div className="chat-box px-3 sm:px-4 md:px-12 pt-4 pb-24 flex-1 overflow-y-auto bg-transparent scroll-smooth">
-        {context.creations
+        {fetchError && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md mx-auto mb-6"
+          >
+            <div className="rounded-2xl bg-orange-900/20 border border-orange-800/50 p-6">
+              <div className="flex gap-3 mb-3">
+                <svg
+                  className="h-6 w-6 text-orange-500 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <div>
+                  <h3 className="text-lg font-semibold text-orange-300">
+                    Failed to Load Creations
+                  </h3>
+                  <p className="text-sm text-orange-200/80 mt-1">{fetchError}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-3 py-2 text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+                >
+                  Retry
+                </button>
+                <button
+                  onClick={() => navigate("/ip-imagine")}
+                  className="px-3 py-2 text-sm bg-slate-700 hover:bg-slate-600 text-slate-100 rounded-lg font-medium transition-colors"
+                >
+                  Back to IP Imagine
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {creations
           .filter((c) => {
             if (guestMode) {
               return c.isGuest === true;
