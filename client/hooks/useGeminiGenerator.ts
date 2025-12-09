@@ -107,9 +107,13 @@ const useGeminiGenerator = () => {
       // Upload to Supabase (guest mode or wallet connected)
       let finalUrl = generatedUrl;
       const creationId = `creation_${Date.now()}`;
+
+      // Use demoModeParam (actual guestMode at call time) instead of context guestMode
+      // which may be stale if wallet just connected
+      const isGuestModeAtCallTime = demoModeParam;
       const shouldUpload =
-        (demoModeParam && guestMode) ||
-        (authenticated && primaryWalletAddress && !guestMode);
+        (demoModeParam && isGuestModeAtCallTime) ||
+        (authenticated && primaryWalletAddress && !isGuestModeAtCallTime);
 
       if (shouldUpload && isSupabaseConfigured()) {
         try {
@@ -130,15 +134,15 @@ const useGeminiGenerator = () => {
 
           const blob = dataURLtoBlob(generatedUrl);
 
-          // Upload to appropriate Supabase bucket
+          // Upload to appropriate Supabase bucket based on actual mode at call time
           let uploadedUrl: string | null = null;
-          if (guestMode && demoModeParam) {
+          if (isGuestModeAtCallTime && demoModeParam) {
             uploadedUrl = await uploadGuestImageToSupabase({
               file: blob,
               fileName: `${creationId}.png`,
               creationId,
             });
-          } else if (authenticated && primaryWalletAddress && !guestMode) {
+          } else if (authenticated && primaryWalletAddress && !isGuestModeAtCallTime) {
             uploadedUrl = await uploadWalletImageToSupabase({
               file: blob,
               creationId,
