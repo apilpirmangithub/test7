@@ -258,6 +258,8 @@ const IpImagineCreationResult = () => {
           : handleWalletConnect
       }
       showGuest={true}
+      isWalletConnected={authenticated}
+      connectedAddressLabel={authenticated && primaryWalletAddress ? primaryWalletAddress.substring(0, 6) + "..." + primaryWalletAddress.substring(primaryWalletAddress.length - 4) : undefined}
     />
   );
 
