@@ -323,6 +323,13 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         }).catch((error) => {
           console.warn("Failed to delete guest creation from server:", error);
         });
+      } else if (creation && !creation.isGuest) {
+        // Sync wallet creation deletion to server
+        fetch(`/api/wallet-creations/${id}`, {
+          method: "DELETE",
+        }).catch((error) => {
+          console.warn("Failed to delete wallet creation from server:", error);
+        });
       }
       return prev.filter((c) => c.id !== id);
     });
