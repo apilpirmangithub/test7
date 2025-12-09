@@ -122,9 +122,7 @@ const IpImagine = () => {
     if (!authenticated || !primaryWalletAddress) {
       // Wallet disconnected - clear remix state
       if (currentRemixType || currentParentAsset) {
-        console.log(
-          "[IpImagine] Wallet disconnected - clearing remix state",
-        );
+        console.log("[IpImagine] Wallet disconnected - clearing remix state");
         setCurrentRemixType(null);
         setCurrentParentAsset(null);
         // Clear preview images to prevent orphaned remix data
@@ -294,9 +292,7 @@ const IpImagine = () => {
       // Validation: Warn if wallet not fully connected for paid remix
       if (remixType === "paid" && (!authenticated || !primaryWalletAddress)) {
         setRemixLoading(false);
-        setStatusText(
-          "⚠️ Please connect your wallet to use paid remix.",
-        );
+        setStatusText("⚠️ Please connect your wallet to use paid remix.");
         return;
       }
 

@@ -142,7 +142,11 @@ const useGeminiGenerator = () => {
               fileName: `${creationId}.png`,
               creationId,
             });
-          } else if (authenticated && primaryWalletAddress && !isGuestModeAtCallTime) {
+          } else if (
+            authenticated &&
+            primaryWalletAddress &&
+            !isGuestModeAtCallTime
+          ) {
             uploadedUrl = await uploadWalletImageToSupabase({
               file: blob,
               creationId,
