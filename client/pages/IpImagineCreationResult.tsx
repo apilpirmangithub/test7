@@ -163,6 +163,20 @@ const IpImagineCreationResult = () => {
     }
   }, [authenticated, primaryWalletAddress, context]);
 
+  // Auto-enable guest mode and load guest creations when wallet disconnects
+  useEffect(() => {
+    if (!authenticated && !guestMode) {
+      console.log(
+        "[IpImagineCreationResult] Wallet disconnected - enabling guest mode",
+      );
+      setGuestMode(true);
+      // Load guest creations when wallet disconnects
+      if (context?.refreshGuestCreations) {
+        context.refreshGuestCreations();
+      }
+    }
+  }, [authenticated, guestMode, context]);
+
   const handleDownload = () => {
     if (!displayUrl) return;
     const link = document.createElement("a");
