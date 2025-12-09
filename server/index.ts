@@ -21,12 +21,6 @@ import {
   handleDeleteRemixHash,
 } from "./routes/remix-hash-whitelist.js";
 import {
-  handleGetGuestCreations,
-  handleAddGuestCreation,
-  handleDeleteGuestCreation,
-  handleClearGuestCreations,
-} from "./routes/guest-creations.js";
-import {
   handleGetWalletCreations,
   handleAddWalletCreation,
   handleDeleteWalletCreation,
