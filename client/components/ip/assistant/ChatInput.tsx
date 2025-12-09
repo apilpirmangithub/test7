@@ -1,5 +1,4 @@
 import type {
-  ChangeEvent,
   Dispatch,
   FormEvent,
   KeyboardEvent,
