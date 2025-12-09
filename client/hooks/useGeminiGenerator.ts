@@ -28,6 +28,7 @@ const useGeminiGenerator = () => {
     resultUrl,
     addCreation,
     setOriginalPrompt,
+    updateCreationUploadStatus,
   } = context;
 
   // Get primary wallet address
@@ -59,7 +60,8 @@ const useGeminiGenerator = () => {
       const { remixType } = options;
 
       if (options.image) {
-        if (options.remixType === "paid") {
+        // Apply watermark to both paid and free remix (per user requirement)
+        if (options.remixType === "paid" || options.remixType === "free") {
           const result = await openaiService.editImageWithWatermark(
             options.prompt,
             options.image,
@@ -74,9 +76,9 @@ const useGeminiGenerator = () => {
           originalUrl = generatedUrl;
         }
       } else {
-        if (remixType === "paid") {
-          // For paid remix (both demo and production), use server-side watermark endpoint
-          console.log("🎨 Generating image with server-side watermark");
+        // Apply watermark to both paid and free remix (per user requirement)
+        if (remixType === "paid" || remixType === "free") {
+          console.log("🎨 Generating image with watermark for remix");
           const result = await openaiService.generateImageFromTextWithWatermark(
             options.prompt,
           );
@@ -104,9 +106,24 @@ const useGeminiGenerator = () => {
       let uploadedWatermarkedUrl: string | null = null;
       let uploadedOriginalUrl: string | null = null;
 
+      // First, add creation with uploading status
+      // Then update status after upload completes
+      addCreation(
+        finalUrl,
+        type,
+        options.prompt,
+        primaryWalletAddress || "",
+        remixType,
+        options.parentAsset,
+        undefined, // originalUrl will be set after upload
+        undefined, // watermarkedUrl will be set after upload
+      );
+
       if (shouldUpload && isSupabaseConfigured()) {
         try {
           setLoadingMessage("Uploading to storage...");
+          // Mark as uploading so card shows loading state
+          updateCreationUploadStatus(creationId, true);
 
           // Convert data URL directly to Blob (faster than fetch)
           const dataURLtoBlob = (dataURL: string): Blob => {
@@ -130,15 +147,26 @@ const useGeminiGenerator = () => {
           });
 
           if (uploadedWatermarkedUrl) {
+            // Use permanent storage URL for main display
             finalUrl = uploadedWatermarkedUrl;
             console.log(
-              "Watermarked image uploaded to Supabase:",
+              "✅ Watermarked image uploaded to Supabase:",
               uploadedWatermarkedUrl,
             );
+          } else {
+            console.error("❌ Failed to upload watermarked image to Supabase", {
+              authenticated,
+              hasWallet: !!primaryWalletAddress,
+              supabaseConfigured: isSupabaseConfigured(),
+              reason:
+                "Check Supabase credentials, bucket permissions, and RLS policies",
+            });
+            // Keep blob URL for now for display, but mark as temporary
+            // finalUrl stays as generatedUrl (blob)
           }
 
-          // For paid remix, also upload original version
-          if (remixType === "paid") {
+          // For both paid and free remix, also upload original version
+          if (remixType === "paid" || remixType === "free") {
             const originalBlob = dataURLtoBlob(originalUrl);
             uploadedOriginalUrl = await uploadWalletImageToSupabase({
               file: originalBlob,
@@ -161,12 +189,27 @@ const useGeminiGenerator = () => {
 
       setResultUrl(finalUrl);
 
-      // For paid remix, store watermarked URL (display before registration)
-      // Original URL will be displayed after registration
+      // For both paid and free remix, store watermarked URL (display before registration)
       let watermarkedUrlToStore: string | undefined;
 
-      if (remixType === "paid") {
-        watermarkedUrlToStore = uploadedWatermarkedUrl || generatedUrl;
+      if (remixType === "paid" || remixType === "free") {
+        // Priority 1: Use uploaded Supabase URL (if upload successful)
+        if (uploadedWatermarkedUrl) {
+          watermarkedUrlToStore = uploadedWatermarkedUrl;
+          console.log(
+            "✅ Watermarked URL stored (Supabase):",
+            watermarkedUrlToStore,
+          );
+        }
+        // Priority 2: Use data URL directly (works in demo mode & persistent)
+        // Data URLs (data:image/...) are permanent and work across sessions
+        else if (generatedUrl && generatedUrl.startsWith("data:")) {
+          watermarkedUrlToStore = generatedUrl;
+          console.log(
+            "✅ Watermarked URL stored (data URL):",
+            watermarkedUrlToStore.substring(0, 50) + "...",
+          );
+        }
       }
 
       // Add creation with wallet address

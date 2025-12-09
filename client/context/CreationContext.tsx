@@ -22,6 +22,7 @@ export interface Creation {
   registeredIpId?: string; // Child IP ID from Story Protocol registration
   watermarkedUrl?: string; // Watermarked version for paid remix - stored in Supabase
   childIpId?: string; // Child IP ID - marks as registered
+  isUploadingUrl?: boolean; // Track if watermarked/original URL is still uploading to Supabase
 }
 
 interface CreationContextType {
@@ -54,6 +55,7 @@ interface CreationContextType {
     registeredByWallet?: string,
     registeredIpId?: string,
   ) => void;
+  updateCreationUploadStatus: (id: string, isUploading: boolean) => void;
   getRegisteredIpIdsForWallet: (walletAddress: string) => string[];
   isCreationUnlockedByWallet: (
     creationId: string,
@@ -322,6 +324,23 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     [],
   );
 
+  const updateCreationUploadStatus = useCallback(
+    (id: string, isUploading: boolean) => {
+      setCreations((prev) => {
+        return prev.map((c) => {
+          if (c.id === id) {
+            return {
+              ...c,
+              isUploadingUrl: isUploading,
+            };
+          }
+          return c;
+        });
+      });
+    },
+    [],
+  );
+
   const getRegisteredIpIdsForWallet = useCallback(
     (walletAddr: string): string[] => {
       return creations
@@ -436,6 +455,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       creations,
       addCreation,
       updateCreationWithOriginalUrl,
+      updateCreationUploadStatus,
       getRegisteredIpIdsForWallet,
       isCreationUnlockedByWallet,
       removeCreation,
@@ -455,6 +475,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       creations,
       addCreation,
       updateCreationWithOriginalUrl,
+      updateCreationUploadStatus,
       getRegisteredIpIdsForWallet,
       isCreationUnlockedByWallet,
       removeCreation,
