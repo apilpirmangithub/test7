@@ -256,7 +256,6 @@ export const PopularIPGrid = ({
         const results = searchData.results || [];
 
         setSearchResults(results.slice(0, ITEMS_PER_PAGE));
-        setTotalResults(results.length);
         setCurrentOffset(ITEMS_PER_PAGE);
         setHasMore(results.length > ITEMS_PER_PAGE);
       } else {
