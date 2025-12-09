@@ -1,4 +1,4 @@
-import React, {
+import {
   ChangeEvent,
   Dispatch,
   FormEvent,
@@ -14,7 +14,6 @@ import { useNavigate } from "react-router-dom";
 import FlyingImageAnimation from "@/components/ip/imagine/FlyingImageAnimation";
 import {
   RemixImage,
-  type PreviewImage,
   type PreviewImagesState,
 } from "@/components/ip/remix";
 import type { Creation } from "@/context/CreationContext";
@@ -26,7 +25,6 @@ type IpImagineInputProps = {
   previewImages: PreviewImagesState;
   setPreviewImages: Dispatch<SetStateAction<PreviewImagesState>>;
   uploadRef: MutableRefObject<HTMLInputElement | null>;
-  handleImage: (event: ChangeEvent<HTMLInputElement>) => void;
   onSubmit: () => Promise<void> | void;
   inputRef: RefObject<HTMLTextAreaElement | HTMLInputElement>;
   handleKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
@@ -51,12 +49,9 @@ const IpImagineInput = ({
   previewImages,
   setPreviewImages,
   uploadRef,
-  handleImage,
   onSubmit,
   inputRef,
   handleKeyDown,
-  toolsOpen,
-  setToolsOpen,
   suggestions,
   setSuggestions,
   attachmentLoading = false,
