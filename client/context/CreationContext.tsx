@@ -292,7 +292,8 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
               originalUrl,
               registeredByWallet,
               registeredIpId,
-              ...(c.cleanUrl && { url: c.cleanUrl }),
+              childIpId: registeredIpId,
+              ...(originalUrl && { url: originalUrl }),
             };
           }
           return c;
