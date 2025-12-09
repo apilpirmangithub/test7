@@ -173,11 +173,12 @@ const useGeminiGenerator = () => {
         cleanUrlToStore = originalUrl;
       }
 
+      // Use actual guestMode from call time (demoModeParam), not context state
       addCreation(
         finalUrl,
         type,
         options.prompt,
-        guestMode,
+        isGuestModeAtCallTime,
         remixType,
         options.parentAsset,
         originalUrl,
