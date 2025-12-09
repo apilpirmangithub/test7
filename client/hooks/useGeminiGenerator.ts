@@ -59,7 +59,8 @@ const useGeminiGenerator = () => {
       const { remixType } = options;
 
       if (options.image) {
-        if (options.remixType === "paid") {
+        // Apply watermark to both paid and free remix (per user requirement)
+        if (options.remixType === "paid" || options.remixType === "free") {
           const result = await openaiService.editImageWithWatermark(
             options.prompt,
             options.image,
@@ -74,9 +75,9 @@ const useGeminiGenerator = () => {
           originalUrl = generatedUrl;
         }
       } else {
-        if (remixType === "paid") {
-          // For paid remix (both demo and production), use server-side watermark endpoint
-          console.log("🎨 Generating image with server-side watermark");
+        // Apply watermark to both paid and free remix (per user requirement)
+        if (remixType === "paid" || remixType === "free") {
+          console.log("🎨 Generating image with watermark for remix");
           const result = await openaiService.generateImageFromTextWithWatermark(
             options.prompt,
           );
