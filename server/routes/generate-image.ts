@@ -1,8 +1,6 @@
 import { RequestHandler } from "express";
-import OpenAI from "openai";
 import { FormData, Blob } from "formdata-node";
-
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+import { getOpenAIClient } from "../utils/openai-client.js";
 
 // 🔹 TEXT → IMAGE
 export const generateImage: RequestHandler = async (req, res) => {
