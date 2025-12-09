@@ -87,11 +87,13 @@ const CompactResultCard = ({
   };
 
   const [displayUrl, setDisplayUrl] = useState<string>(getDisplayUrl());
+  const [imageLoadError, setImageLoadError] = useState<boolean>(false);
 
   // Update display URL when registration state or URLs change
   useEffect(() => {
     const newDisplayUrl = getDisplayUrl();
     setDisplayUrl(newDisplayUrl);
+    setImageLoadError(false);
     console.log(
       `[CompactResultCard] Updated displayUrl based on registration state`,
       {
