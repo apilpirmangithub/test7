@@ -73,7 +73,6 @@ STORY_API_KEY=your_story_key
 OPENAI_API_KEY=your_openai_key
 PINATA_JWT=your_pinata_jwt
 PINATA_GATEWAY=https://gateway.pinata.cloud
-VITE_GUEST_PRIVATE_KEY=your_wallet_key
 ```
 
 Then start development:
