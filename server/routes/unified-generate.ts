@@ -126,7 +126,7 @@ export const unifiedGenerateImage: RequestHandler = async (req, res) => {
       console.log("✅ Demo image generated successfully");
     } else {
       // Production mode: use OpenAI
-      const result = await client.images.generate({
+      const result = await getOpenAIClient().images.generate({
         model: "gpt-image-1",
         prompt,
         size: "1024x1024",
@@ -279,7 +279,7 @@ export const unifiedGenerateImageWithWatermark: RequestHandler = async (
       console.log("✅ Demo image generated successfully");
     } else {
       // Production mode: use OpenAI
-      const result = await client.images.generate({
+      const result = await getOpenAIClient().images.generate({
         model: "gpt-image-1",
         prompt,
         size: "1024x1024",
