@@ -459,6 +459,10 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
 
   const clearCreations = useCallback(() => {
     setCreations([]);
+    clearAllCache();
+    setResultUrl(null);
+    setResultType(null);
+    setOriginalPrompt("");
     // Clear guest creations from server
     fetch("/api/guest-creations/clear", {
       method: "POST",
