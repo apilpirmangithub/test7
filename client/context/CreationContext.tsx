@@ -15,6 +15,7 @@ export interface Creation {
   timestamp: number;
   prompt: string;
   isGuest?: boolean;
+  walletAddress?: string; // Wallet address for wallet-mode creations
   remixType?: "paid" | "free" | null;
   parentAsset?: any;
   originalUrl?: string;
@@ -36,6 +37,8 @@ interface CreationContextType {
   setLoadingMessage: (message: string) => void;
   error: string | null;
   setError: (error: string | null) => void;
+  fetchError: string | null;
+  setFetchError: (error: string | null) => void;
   creations: Creation[];
   addCreation: (
     url: string,
@@ -87,6 +90,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [creations, setCreations] = useState<Creation[]>([]);
   const [originalPrompt, setOriginalPrompt] = useState<string>("");
   const [guestMode, setGuestMode] = useState<boolean>(false);
@@ -117,29 +121,59 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const fetchCreations = async () => {
       try {
+        setFetchError(null);
         if (guestMode) {
           // Guest mode: fetch guest creations
           const response = await fetch("/api/guest-creations");
           if (response.ok) {
             const data = await response.json();
             if (data.creations && Array.isArray(data.creations)) {
-              setCreations(data.creations);
+              // Ensure isGuest flag is set
+              const validCreations = data.creations.map((c: any) => ({
+                ...c,
+                isGuest: true,
+              }));
+              setCreations(validCreations);
+              setFetchError(null);
             }
+          } else {
+            const errorMsg = `Failed to fetch guest creations: ${response.status}`;
+            console.error(errorMsg);
+            setFetchError(errorMsg);
+            setCreations([]);
           }
         } else if (walletAddress) {
           // Wallet mode: fetch wallet creations for this wallet
+          const params = new URLSearchParams({
+            requesting_wallet: walletAddress,
+          });
           const response = await fetch(
-            `/api/wallet-creations/${walletAddress}`,
+            `/api/wallet-creations/${walletAddress}?${params.toString()}`,
           );
           if (response.ok) {
             const data = await response.json();
             if (data.creations && Array.isArray(data.creations)) {
-              setCreations(data.creations);
+              // Ensure isGuest flag is set to false for wallet creations
+              const validCreations = data.creations.map((c: any) => ({
+                ...c,
+                isGuest: false,
+                walletAddress: walletAddress,
+              }));
+              setCreations(validCreations);
+              setFetchError(null);
             }
+          } else {
+            const errorMsg = `Failed to fetch wallet creations: ${response.status}`;
+            console.error(errorMsg);
+            setFetchError(errorMsg);
+            setCreations([]);
           }
         }
-      } catch (error) {
-        console.warn("Failed to fetch creations:", error);
+      } catch (error: any) {
+        const errorMsg = error?.message || "Failed to fetch creations";
+        console.error("Error fetching creations:", errorMsg);
+        setFetchError(errorMsg);
+        setCreations([]);
       }
     };
 
@@ -220,6 +254,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         originalUrl,
         cleanUrl,
         watermarkedUrl,
+        ...(walletAddress && !isGuest && { walletAddress }),
       };
       setCreations((prev) => [newCreation, ...prev]);
 
@@ -387,20 +422,33 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
 
   const refreshGuestCreations = useCallback(async () => {
     try {
+      setFetchError(null);
       const response = await fetch("/api/guest-creations");
       if (response.ok) {
         const data = await response.json();
         if (data.creations && Array.isArray(data.creations)) {
-          setCreations(data.creations);
+          const validCreations = data.creations.map((c: any) => ({
+            ...c,
+            isGuest: true,
+          }));
+          setCreations(validCreations);
+          setFetchError(null);
         }
+      } else {
+        const errorMsg = `Failed to refresh guest creations: ${response.status}`;
+        console.error(errorMsg);
+        setFetchError(errorMsg);
       }
-    } catch (error) {
-      console.warn("Failed to refresh guest creations:", error);
+    } catch (error: any) {
+      const errorMsg = error?.message || "Failed to refresh guest creations";
+      console.error(errorMsg);
+      setFetchError(errorMsg);
     }
   }, []);
 
   const refreshWalletCreations = useCallback(async (walletAddr: string) => {
     try {
+      setFetchError(null);
       // Send requesting_wallet as query parameter for server-side validation
       const params = new URLSearchParams({
         requesting_wallet: walletAddr,
@@ -411,17 +459,34 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       if (response.ok) {
         const data = await response.json();
         if (data.creations && Array.isArray(data.creations)) {
-          setCreations(data.creations);
+          const validCreations = data.creations.map((c: any) => ({
+            ...c,
+            isGuest: false,
+            walletAddress: walletAddr,
+          }));
+          setCreations(validCreations);
+          setFetchError(null);
+        } else {
+          setCreations([]);
         }
       } else if (response.status === 403) {
         // Unauthorized access - clear creations for security
         console.warn(
           "[CreationContext] Unauthorized wallet access - clearing creations",
         );
+        setFetchError("Unauthorized: wallet address mismatch");
+        setCreations([]);
+      } else {
+        const errorMsg = `Failed to refresh wallet creations: ${response.status}`;
+        console.error(errorMsg);
+        setFetchError(errorMsg);
         setCreations([]);
       }
-    } catch (error) {
-      console.warn("Failed to refresh wallet creations:", error);
+    } catch (error: any) {
+      const errorMsg = error?.message || "Failed to refresh wallet creations";
+      console.error(errorMsg);
+      setFetchError(errorMsg);
+      setCreations([]);
     }
   }, []);
 
@@ -448,6 +513,8 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       setLoadingMessage,
       error,
       setError,
+      fetchError,
+      setFetchError,
       creations,
       addCreation,
       updateCreationWithOriginalUrl,
@@ -469,6 +536,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       isLoading,
       loadingMessage,
       error,
+      fetchError,
       creations,
       addCreation,
       updateCreationWithOriginalUrl,

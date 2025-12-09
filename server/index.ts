@@ -130,6 +130,7 @@ export async function createServer() {
         "127.0.0.1",
         ".vercel.app",
         ".netlify.app",
+        "builder.io",
       ].concat(process.env.APP_ORIGIN ? [process.env.APP_ORIGIN] : []);
 
       const isAllowed = allowedOrigins.some((allowedOrigin) =>
