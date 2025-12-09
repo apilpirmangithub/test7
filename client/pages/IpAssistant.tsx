@@ -2246,7 +2246,8 @@ const IpAssistant = () => {
                             ctx?.name || `image-${Date.now()}.jpg`,
                             { type: blob.type || "image/jpeg" },
                           );
-                          let ethProvider: any = guestMode
+                          let ethProvider: any = (window as any).ethereum;
+
                           try {
                             if (
                               wallets &&
