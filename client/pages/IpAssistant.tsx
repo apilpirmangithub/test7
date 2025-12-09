@@ -3456,7 +3456,7 @@ const IpAssistant = () => {
       )}
 
       <AnimatePresence>
-        {showRemixMenu && (guestMode || authenticated) && expandedAsset ? (
+        {showRemixMenu && authenticated && expandedAsset ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
