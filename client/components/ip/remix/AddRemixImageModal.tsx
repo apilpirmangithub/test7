@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { SearchResult, PreviewImage } from "./types";
+import type { SearchResult } from "./types";
 
 interface AddRemixImageModalProps {
   isOpen: boolean;
