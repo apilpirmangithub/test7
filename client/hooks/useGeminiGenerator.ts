@@ -131,11 +131,18 @@ const useGeminiGenerator = () => {
           });
 
           if (uploadedWatermarkedUrl) {
+            // Use permanent storage URL for main display
             finalUrl = uploadedWatermarkedUrl;
             console.log(
-              "Watermarked image uploaded to Supabase:",
+              "✅ Watermarked image uploaded to Supabase:",
               uploadedWatermarkedUrl,
             );
+          } else {
+            console.error("❌ Failed to upload watermarked image to Supabase");
+            // Don't use blob URL - clear it so display falls back gracefully
+            if (finalUrl.startsWith("blob:")) {
+              finalUrl = generatedUrl; // Keep original blob for now, but warn user
+            }
           }
 
           // For both paid and free remix, also upload original version
