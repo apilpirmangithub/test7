@@ -20,10 +20,7 @@ import { useIPRegistrationAgent } from "@/hooks/useIPRegistrationAgent";
 import {
   getLicenseSettingsByGroup,
   GROUPS,
-  requiresSelfieVerification,
-  requiresSubmitReview,
 } from "@/lib/groupLicense";
-import { determineLicenseType } from "@/lib/license/license-types";
 import { ANSWER_DETAILS } from "@/lib/ip-assistant/answer-details";
 import {
   getCurrentTimestamp,
