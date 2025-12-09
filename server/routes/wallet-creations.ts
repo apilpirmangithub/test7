@@ -127,7 +127,6 @@ export const handleGetWalletCreations: RequestHandler = async (req, res) => {
       watermarkedUrl: creation.watermarked_url,
       registeredByWallet: creation.registered_by_wallet,
       registeredIpId: creation.registered_ip_id,
-      isGuest: false,
     }));
 
     return res.json({ ok: true, creations: transformedCreations });

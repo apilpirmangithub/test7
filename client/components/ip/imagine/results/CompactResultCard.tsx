@@ -608,7 +608,6 @@ const CompactResultCard = ({
                 ref={licensingFormRef}
                 imageUrl={imageUrl}
                 type={type}
-                guestMode={guestMode}
                 isLoading={isLoading}
                 parentAsset={parentAsset}
                 onRegisterStart={(state) => {

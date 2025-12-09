@@ -641,13 +641,9 @@ const IpImagineCreationResult = () => {
                               : undefined
                           }
                           onCreateAnother={() => {}}
-                          onDelete={
-                            guestMode
-                              ? () => {
-                                  context.removeCreation(creation.id);
-                                }
-                              : undefined
-                          }
+                          onDelete={() => {
+                            context.removeCreation(creation.id);
+                          }}
                           isExpanded={expandedCreationId === creation.id}
                           setIsExpanded={(expanded) => {
                             if (expanded) {
@@ -718,7 +714,6 @@ const IpImagineCreationResult = () => {
           suggestions={suggestions}
           setSuggestions={setSuggestions}
           attachmentLoading={attachmentLoading}
-          guestMode={guestMode}
           creations={context.creations}
         />
       )}

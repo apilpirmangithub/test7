@@ -525,13 +525,6 @@ const IpImagine = () => {
               setWaiting(false);
               return;
             }
-            if (guestMode) {
-              setStatusText(
-                "Paid remix is not available in guest mode. Please switch to wallet mode.",
-              );
-              setWaiting(false);
-              return;
-            }
           }
 
           setWaiting(true);
@@ -567,16 +560,12 @@ const IpImagine = () => {
               };
             }
 
-            await generate(
-              creationMode,
-              {
-                prompt: input,
-                image: imageData,
-                remixType: currentRemixType,
-                parentAsset: currentParentAsset,
-              },
-              guestMode,
-            );
+            await generate(creationMode, {
+              prompt: input,
+              image: imageData,
+              remixType: currentRemixType,
+              parentAsset: currentParentAsset,
+            });
 
             setInput("");
             setPreviewImages({ remixImage: null, additionalImage: null });

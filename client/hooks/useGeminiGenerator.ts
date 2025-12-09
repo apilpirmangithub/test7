@@ -38,11 +38,8 @@ const useGeminiGenerator = () => {
       : user?.wallet?.address) ||
     null;
 
-  const generate = async (
-    mode: ToggleMode,
-    options: GenerationOptions,
-    demoModeParam: boolean = false,
-  ) => {
+  const generate = async (mode: ToggleMode, options: GenerationOptions) => {
+    const demoModeParam = false; // Wallet-only mode always uses real API
     if (mode === "video") {
       setError("Video generation is coming soon!");
       return;

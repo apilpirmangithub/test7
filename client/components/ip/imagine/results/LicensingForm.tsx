@@ -40,6 +40,7 @@ interface LicensingFormProps {
     error: any;
   }) => void;
   onRegisterComplete?: (result: { ipId?: Address; txHash?: Address }) => void;
+  onRegisterError?: (errorMessage: string) => void;
 }
 
 // --- KOMPONEN UTAMA ---
@@ -54,6 +55,7 @@ const LicensingFormComponent = (
     parentAsset,
     onRegisterStart,
     onRegisterComplete,
+    onRegisterError,
   }: LicensingFormProps,
   ref: any,
 ) => {
@@ -143,12 +145,15 @@ const LicensingFormComponent = (
 
     try {
       // --- 2. SETUP WALLET & CLIENT ---
-      let ethProvider: any = undefined;
+      let ethProvider: any = (window as any).ethereum;
       if (wallets && wallets[0]?.getEthereumProvider) {
         try {
           ethProvider = await wallets[0].getEthereumProvider();
         } catch (err) {
-          console.warn("Failed to get ethereum provider:", err);
+          console.warn(
+            "Failed to get ethereum provider from wallet, using window.ethereum:",
+            err,
+          );
         }
       }
 
@@ -159,6 +164,56 @@ const LicensingFormComponent = (
       }
 
       try {
+        // Ensure wallet is connected to the Story chain (chainId: 0x5ea = 1514 in decimal)
+        try {
+          const chainIdHex: string = await ethProvider.request({
+            method: "eth_chainId",
+          });
+          console.log("Current chain ID:", chainIdHex);
+
+          if (chainIdHex?.toLowerCase() !== "0x5ea") {
+            console.log("Switching to Story chain...");
+            try {
+              await ethProvider.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: "0x5ea" }],
+              });
+            } catch (switchError: any) {
+              // If chain doesn't exist, add it
+              console.log("Adding Story chain...");
+              try {
+                await ethProvider.request({
+                  method: "wallet_addEthereumChain",
+                  params: [
+                    {
+                      chainId: "0x5ea",
+                      chainName: "Story",
+                      nativeCurrency: {
+                        name: "IP",
+                        symbol: "IP",
+                        decimals: 18,
+                      },
+                      rpcUrls: ["https://mainnet.storyrpc.io"],
+                    },
+                  ],
+                });
+              } catch {}
+              // Try switching again after adding
+              try {
+                await ethProvider.request({
+                  method: "wallet_switchEthereumChain",
+                  params: [{ chainId: "0x5ea" }],
+                });
+              } catch {}
+            }
+          }
+        } catch (chainError: any) {
+          console.warn(
+            "Chain switching warning (may continue):",
+            chainError?.message,
+          );
+        }
+
         // Ensure wallet is connected and has accounts
         try {
           const accounts = await ethProvider.request({
@@ -402,6 +457,10 @@ const LicensingFormComponent = (
         error,
         stack: error?.stack,
       });
+      // Notify parent component about the error
+      if (onRegisterError) {
+        onRegisterError(userFriendlyMsg);
+      }
       // Set step kembali ke idle setelah error agar user bisa mencoba lagi
       setCurrentStep("idle");
     } finally {
