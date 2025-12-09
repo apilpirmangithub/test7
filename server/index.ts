@@ -99,15 +99,11 @@ export async function createServer() {
   const { handleCaptureAssetVision } = await import(
     "./routes/capture-asset-vision.js"
   );
-  const { generateImage, editImage } = await import(
-    "./routes/generate-image.js"
-  );
-  const { generateImageWithWatermark } = await import(
-    "./routes/generate-image-watermark.js"
-  );
-  const { demoGenerateImage, demoEditImage } = await import(
-    "./routes/demo-generate.js"
-  );
+  const {
+    unifiedGenerateImage,
+    unifiedEditImage,
+    unifiedGenerateImageWithWatermark,
+  } = await import("./routes/unified-generate.js");
 
   // Setup multer for image upload handling in watermark verification
   const upload = multer({
@@ -263,15 +259,15 @@ export async function createServer() {
   // Analyze image with Vision API endpoint
   app.post("/api/analyze-image-vision", handleAnalyzeImageVision);
 
-  // OpenAI DALL-E image generation endpoints
-  app.post("/api/generate-image", generateImage);
-  app.post("/api/generate", generateImage);
-  app.post("/api/edit", upload.single("image"), editImage);
-  app.post("/api/generate-with-watermark", generateImageWithWatermark);
+  // OpenAI DALL-E image generation endpoints (unified handlers supporting both demo and production modes)
+  app.post("/api/generate-image", unifiedGenerateImage);
+  app.post("/api/generate", unifiedGenerateImage);
+  app.post("/api/edit", upload.single("image"), unifiedEditImage);
+  app.post("/api/generate-with-watermark", unifiedGenerateImageWithWatermark);
 
-  // Demo mode endpoints (realistic dummy images)
-  app.post("/api/demo-generate", demoGenerateImage);
-  app.post("/api/demo-edit", upload.single("image"), demoEditImage);
+  // Demo mode endpoints (now handled by unified endpoints with mode parameter)
+  app.post("/api/demo-generate", unifiedGenerateImage);
+  app.post("/api/demo-edit", upload.single("image"), unifiedEditImage);
 
   // Debug endpoint to fetch parent IP details for a given IP ID
   app.get("/api/_debug/parent-details/:ipId", async (req, res) => {
