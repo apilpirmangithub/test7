@@ -136,18 +136,15 @@ const IpAssistant = () => {
   const mountedRef = useRef(true);
 
   // Helper function to set timeout safely (cleans up on unmount)
-  const safeSetTimeout = useCallback(
-    (callback: () => void, delay: number) => {
-      const timeout = setTimeout(() => {
-        if (mountedRef.current) {
-          callback();
-        }
-      }, delay);
-      pendingTimeoutsRef.current.add(timeout);
-      return timeout;
-    },
-    [],
-  );
+  const safeSetTimeout = useCallback((callback: () => void, delay: number) => {
+    const timeout = setTimeout(() => {
+      if (mountedRef.current) {
+        callback();
+      }
+    }, delay);
+    pendingTimeoutsRef.current.add(timeout);
+    return timeout;
+  }, []);
 
   // Helper function to clear a tracked timeout
   const safeClearTimeout = useCallback((timeout: NodeJS.Timeout) => {

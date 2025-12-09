@@ -68,7 +68,10 @@ export const ExpandedAssetModal = ({
                 if (!isFullscreen) {
                   if (container.requestFullscreen) {
                     container.requestFullscreen().catch((err) => {
-                      console.warn("[ExpandedAssetModal] Fullscreen request failed:", err);
+                      console.warn(
+                        "[ExpandedAssetModal] Fullscreen request failed:",
+                        err,
+                      );
                     });
                   } else if ((container as any).webkitRequestFullscreen) {
                     (container as any).webkitRequestFullscreen();
@@ -82,7 +85,10 @@ export const ExpandedAssetModal = ({
                   if (document.fullscreenElement) {
                     if (document.exitFullscreen) {
                       document.exitFullscreen().catch((err) => {
-                        console.warn("[ExpandedAssetModal] Fullscreen exit failed:", err);
+                        console.warn(
+                          "[ExpandedAssetModal] Fullscreen exit failed:",
+                          err,
+                        );
                       });
                     } else if ((document as any).webkitExitFullscreen) {
                       (document as any).webkitExitFullscreen();
