@@ -154,7 +154,7 @@ export const handleCheckIpAssets: RequestHandler<
       });
     }
 
-    let allAssets: any[] = [];
+    let allAssets: StoryApiAsset[] = [];
     let offset = 0;
     let hasMore = true;
     const limit = 100;
