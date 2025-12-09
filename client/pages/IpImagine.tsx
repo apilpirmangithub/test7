@@ -30,7 +30,6 @@ import { CreationContext } from "@/context/CreationContext";
 const IpImagine = () => {
   const context = useContext(CreationContext);
   const creations = context?.creations || [];
-  const guestMode = context?.guestMode || false;
   const { ready, authenticated, login, logout, user } = usePrivy();
   const { wallets } = useWallets();
   const {
@@ -42,14 +41,8 @@ const IpImagine = () => {
     completeTour,
   } = useIpImagineTour();
 
-  const {
-    generate,
-    isLoading,
-    resultUrl,
-    setResultUrl,
-    setResultType,
-    setGuestMode,
-  } = useGeminiGenerator();
+  const { generate, isLoading, resultUrl, setResultUrl, setResultType } =
+    useGeminiGenerator();
 
   const [input, setInput] = useState("");
   const [waiting, setWaiting] = useState(false);
@@ -103,14 +96,9 @@ const IpImagine = () => {
     }
   }, [ready, authenticated, login, logout]);
 
-  // Auto-disable guest mode and load wallet creations when wallet connects
+  // Load wallet creations when wallet connects
   useEffect(() => {
     if (authenticated && primaryWalletAddress) {
-      console.log("[IpImagine] Wallet connected - auto-disabling guest mode");
-      if (guestMode) {
-        setGuestMode(false);
-      }
-      // Load wallet creations when wallet connects
       if (context?.refreshWalletCreations) {
         context.refreshWalletCreations(primaryWalletAddress);
       }
@@ -202,7 +190,7 @@ const IpImagine = () => {
     };
   }, [remixAnalysisOpen, remixAnalysisData]);
 
-  // Update user identifier in creation context when wallet or guest mode changes
+  // Update wallet identifier in creation context when authentication changes
   useEffect(() => {
     if (!context?.setUserIdentifier) return;
 
@@ -212,8 +200,8 @@ const IpImagine = () => {
       walletAddress = walletWithAddress?.address || null;
     }
 
-    context.setUserIdentifier(walletAddress, guestMode);
-  }, [authenticated, wallets, guestMode, context]);
+    context.setUserIdentifier(walletAddress);
+  }, [authenticated, wallets, context]);
 
   const handleImage = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -280,15 +268,6 @@ const IpImagine = () => {
     console.log("🎯 handleRemixSelected called with remixType:", remixType);
     setRemixLoading(true);
     try {
-      // Validation: Prevent paid remix in guest mode
-      if (remixType === "paid" && guestMode) {
-        setRemixLoading(false);
-        setStatusText(
-          "⚠️ Paid remix requires wallet connection. Please connect your wallet first.",
-        );
-        return;
-      }
-
       // Validation: Warn if wallet not fully connected for paid remix
       if (remixType === "paid" && (!authenticated || !primaryWalletAddress)) {
         setRemixLoading(false);
@@ -457,23 +436,12 @@ const IpImagine = () => {
   // Note: Watermark is now applied in useGeminiGenerator hook during generation
   // This ensures watermark is applied before image is stored in creation history
 
-  const handleToggleGuest = async () => {
-    setGuestMode(!guestMode);
-    // Refresh guest creations when toggling
-    if (!guestMode && context?.refreshGuestCreations) {
-      await context.refreshGuestCreations();
-    }
-  };
-
   const headerActions = (
     <ChatHeaderActions
-      guestMode={guestMode}
-      onToggleGuest={handleToggleGuest}
       walletButtonText={walletButtonText}
       walletButtonDisabled={walletButtonDisabled}
       onWalletClick={handleWalletButtonClick}
       connectedAddressLabel={connectedAddressLabel}
-      showGuest={true}
       isWalletConnected={authenticated}
     />
   );
@@ -527,7 +495,6 @@ const IpImagine = () => {
         handleImage={handleImage}
         resultUrl={resultUrl}
         resultUrls={resultUrls}
-        guestMode={guestMode}
         creations={creations}
         onSubmit={async () => {
           if (

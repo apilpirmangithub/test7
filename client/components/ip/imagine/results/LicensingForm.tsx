@@ -31,7 +31,6 @@ interface LicensingFormProps {
   imageUrl: string;
   imageName?: string;
   type: "image" | "video";
-  guestMode?: boolean;
   isLoading?: boolean;
   onClose?: () => void;
   parentAsset?: ParentAsset;
@@ -50,7 +49,6 @@ const LicensingFormComponent = (
     imageUrl,
     imageName = "generated-image.png",
     type,
-    guestMode = false,
     isLoading = false,
     onClose,
     parentAsset,
@@ -133,8 +131,8 @@ const LicensingFormComponent = (
       return setRegisterError("Parent asset data required for licensing");
     if (!parentLicense)
       return setRegisterError("No commercial license found on parent IP");
-    if (!guestMode && !authenticated)
-      return setRegisterError("Please connect wallet or enable guest mode");
+    if (!authenticated)
+      return setRegisterError("Please connect your wallet to register");
 
     setIsRegistering(true);
     setRegisterError(null);
@@ -146,7 +144,7 @@ const LicensingFormComponent = (
     try {
       // --- 2. SETUP WALLET & CLIENT ---
       let ethProvider: any = undefined;
-      if (!guestMode && wallets && wallets[0]?.getEthereumProvider) {
+      if (wallets && wallets[0]?.getEthereumProvider) {
         try {
           ethProvider = await wallets[0].getEthereumProvider();
         } catch (err) {
@@ -154,48 +152,37 @@ const LicensingFormComponent = (
         }
       }
 
-      if (ethProvider) {
-        try {
-          // Ensure wallet is connected and has accounts
-          try {
-            const accounts = await ethProvider.request({
-              method: "eth_accounts",
-            });
-
-            if (!accounts || accounts.length === 0) {
-              // Request account access if not connected
-              await ethProvider.request({
-                method: "eth_requestAccounts",
-              });
-            }
-          } catch (accountError: any) {
-            console.error(`Failed to connect wallet: ${accountError.message}`);
-            throw accountError;
-          }
-
-          const walletClient = createWalletClient({
-            transport: custom(ethProvider),
-          });
-          const [a] = await walletClient.getAddresses();
-          if (a) addr = a;
-        } catch (walletError: any) {
-          console.warn("Failed to get wallet address:", walletError);
-        }
+      if (!ethProvider) {
+        throw new Error(
+          "Ethereum provider not available. Please ensure wallet is connected.",
+        );
       }
 
-      if (!addr) {
+      try {
+        // Ensure wallet is connected and has accounts
         try {
-          const guestPk = (import.meta as any).env?.VITE_GUEST_PRIVATE_KEY;
-          if (guestPk) {
-            const normalized = String(guestPk).startsWith("0x")
-              ? String(guestPk)
-              : `0x${String(guestPk)}`;
-            const guestAccount = privateKeyToAccount(
-              normalized as `0x${string}`,
-            );
-            addr = guestAccount.address;
+          const accounts = await ethProvider.request({
+            method: "eth_accounts",
+          });
+
+          if (!accounts || accounts.length === 0) {
+            // Request account access if not connected
+            await ethProvider.request({
+              method: "eth_requestAccounts",
+            });
           }
-        } catch {}
+        } catch (accountError: any) {
+          console.error(`Failed to connect wallet: ${accountError.message}`);
+          throw accountError;
+        }
+
+        const walletClient = createWalletClient({
+          transport: custom(ethProvider),
+        });
+        const [a] = await walletClient.getAddresses();
+        if (a) addr = a;
+      } catch (walletError: any) {
+        console.warn("Failed to get wallet address:", walletError);
       }
 
       if (!addr) throw new Error("Could not determine wallet address");
@@ -203,26 +190,11 @@ const LicensingFormComponent = (
       const rpcUrl = (import.meta as any).env?.VITE_PUBLIC_STORY_RPC;
       if (!rpcUrl) throw new Error("RPC URL not set");
 
-      let storyClient: StoryClient;
-      if (ethProvider) {
-        storyClient = StoryClient.newClient({
-          account: addr,
-          transport: custom(ethProvider),
-          chainId: 1514,
-        });
-      } else {
-        const guestPk = (import.meta as any).env?.VITE_GUEST_PRIVATE_KEY;
-        if (!guestPk) throw new Error("Guest key not configured");
-        const normalized = String(guestPk).startsWith("0x")
-          ? String(guestPk)
-          : `0x${String(guestPk)}`;
-        const guestAccount = privateKeyToAccount(normalized as `0x${string}`);
-        storyClient = StoryClient.newClient({
-          account: guestAccount,
-          transport: http(rpcUrl),
-          chainId: 1514,
-        });
-      }
+      const storyClient = StoryClient.newClient({
+        account: addr,
+        transport: custom(ethProvider),
+        chainId: 1514,
+      });
 
       const file = await handleConvertImageToFile();
 
@@ -237,14 +209,10 @@ const LicensingFormComponent = (
       if (!uploadRes.ok) throw new Error("Failed to upload image to IPFS");
       const { url: imageUri } = await uploadRes.json();
 
-      // Use different SPG contracts based on auth method
-      const spg = ethProvider
-        ? (import.meta as any).env?.VITE_PUBLIC_SPG_COLLECTION_USERS // For wallet users
-        : (import.meta as any).env?.VITE_PUBLIC_SPG_COLLECTION; // For guest
+      // Use wallet users SPG contract
+      const spg = (import.meta as any).env?.VITE_PUBLIC_SPG_COLLECTION_USERS;
       if (!spg)
-        throw new Error(
-          `SPG collection not configured. Expected: ${ethProvider ? "VITE_PUBLIC_SPG_COLLECTION_USERS" : "VITE_PUBLIC_SPG_COLLECTION"}`,
-        );
+        throw new Error(`SPG collection not configured for wallet users`);
 
       const ipMetadataObj = {
         title: title || "AI Generated Image",
@@ -398,9 +366,7 @@ const LicensingFormComponent = (
       setRegisteredIpId(childIpId || "pending");
       setRegisterSuccess(true);
       setSuccessMessage(
-        guestMode
-          ? `✅ Derivative registered! Child IP: ${childIpId}`
-          : `✅ Derivative registered with ${parentRevSharePercentage.toFixed(2)}% revenue share. Child IP: ${childIpId}`,
+        `✅ Derivative registered with ${parentRevSharePercentage.toFixed(2)}% revenue share. Child IP: ${childIpId}`,
       );
 
       if (onRegisterComplete) {
@@ -644,15 +610,9 @@ const LicensingFormComponent = (
         )}
 
         {/* Auth Status */}
-        {!guestMode && !authenticated && (
+        {!authenticated && (
           <div className="rounded-lg px-3 py-2.5 bg-amber-500/10 border border-amber-500/30 text-sm text-amber-400">
             ⚠️ Connect wallet to register
-          </div>
-        )}
-
-        {guestMode && (
-          <div className="rounded-lg px-3 py-2.5 bg-slate-600/20 border border-slate-600/40 text-sm text-slate-400">
-            🎭 Guest mode enabled
           </div>
         )}
       </div>
@@ -700,7 +660,7 @@ const LicensingFormComponent = (
             disabled={
               isRegistering ||
               currentStep !== "idle" ||
-              (!guestMode && !authenticated) ||
+              !authenticated ||
               isLoading ||
               !imageUrl ||
               !isPaidRemix

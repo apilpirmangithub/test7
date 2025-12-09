@@ -22,7 +22,6 @@ interface CompactResultCardProps {
   onCreateAnother: () => void;
   isExpanded?: boolean;
   setIsExpanded?: Dispatch<SetStateAction<boolean>>;
-  guestMode?: boolean;
   parentAsset?: any;
   originalUrl?: string;
   cleanUrl?: string;
@@ -42,7 +41,6 @@ const CompactResultCard = ({
   onCreateAnother,
   isExpanded: externalIsExpanded = false,
   setIsExpanded: externalSetIsExpanded,
-  guestMode = false,
   parentAsset,
   originalUrl,
   cleanUrl,
@@ -130,24 +128,6 @@ const CompactResultCard = ({
         // Try to get wallet address from Privy if authenticated
         if (authenticated && wallets && wallets[0]) {
           walletAddress = wallets[0].address;
-        }
-
-        // Fallback to guest wallet address (for guest mode)
-        if (!walletAddress) {
-          try {
-            const guestPk = (import.meta as any).env?.VITE_GUEST_PRIVATE_KEY;
-            if (guestPk) {
-              const normalized = String(guestPk).startsWith("0x")
-                ? String(guestPk)
-                : `0x${String(guestPk)}`;
-              const guestAccount = privateKeyToAccount(
-                normalized as `0x${string}`,
-              );
-              walletAddress = guestAccount.address;
-            }
-          } catch (error) {
-            console.error("Failed to derive guest wallet address:", error);
-          }
         }
 
         // Check if this wallet has already unlocked this creation
@@ -564,7 +544,7 @@ const CompactResultCard = ({
             </button>
           )}
 
-          {onDelete && guestMode && (
+          {onDelete && (
             <button
               onClick={() => {
                 onDelete();

@@ -22,6 +22,7 @@ export interface Creation {
   registeredIpId?: string;
   cleanUrl?: string; // Clean version (no watermark) for paid remix - stored in Supabase
   watermarkedUrl?: string; // Watermarked version for paid remix - stored in Supabase
+  isGuest?: boolean; // Deprecated: always false in wallet-only mode
 }
 
 interface CreationContextType {
@@ -257,17 +258,18 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       };
       setCreations((prev) => [newCreation, ...prev]);
 
-      // Sync wallet creation to server
-      const params = new URLSearchParams({
-        requesting_wallet: walletAddr,
-      });
-      fetch(`/api/wallet-creations?${params.toString()}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newCreation),
-      }).catch((error) => {
-        console.warn("Failed to sync wallet creation to server:", error);
-      });
+      if (walletAddr) {
+        const params = new URLSearchParams({
+          requesting_wallet: walletAddr,
+        });
+        fetch(`/api/wallet-creations?${params.toString()}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newCreation),
+        }).catch((error) => {
+          console.warn("Failed to sync wallet creation to server:", error);
+        });
+      }
     },
     [],
   );
@@ -416,9 +418,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const setUserIdentifier = useCallback((walletAddr: string | null) => {
-    console.log(
-      `[CreationContext] User identifier changed: wallet=${walletAddr}`,
-    );
+    console.log(`[CreationContext] Wallet identifier changed: ${walletAddr}`);
     setWalletAddressState(walletAddr);
   }, []);
 
