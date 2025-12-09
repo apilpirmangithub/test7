@@ -229,9 +229,17 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newCreation),
-        }).catch((error) => {
-          console.warn("Failed to sync guest creation to server:", error);
-        });
+        })
+          .then((response) => {
+            if (!response.ok) {
+              console.warn(
+                `Failed to sync guest creation: ${response.status} ${response.statusText}`,
+              );
+            }
+          })
+          .catch((error) => {
+            console.warn("Failed to sync guest creation to server:", error);
+          });
       } else if (walletAddress) {
         // Sync wallet creations to server with wallet validation
         const walletCreation = {
@@ -245,9 +253,17 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(walletCreation),
-        }).catch((error) => {
-          console.warn("Failed to sync wallet creation to server:", error);
-        });
+        })
+          .then((response) => {
+            if (!response.ok) {
+              console.warn(
+                `Failed to sync wallet creation: ${response.status} ${response.statusText}`,
+              );
+            }
+          })
+          .catch((error) => {
+            console.warn("Failed to sync wallet creation to server:", error);
+          });
       }
     },
     [walletAddress],
@@ -291,12 +307,20 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(updatedCreation),
-            }).catch((error) => {
-              console.warn(
-                "Failed to sync updated guest creation to server:",
-                error,
-              );
-            });
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  console.warn(
+                    `Failed to sync updated guest creation: ${response.status} ${response.statusText}`,
+                  );
+                }
+              })
+              .catch((error) => {
+                console.warn(
+                  "Failed to sync updated guest creation to server:",
+                  error,
+                );
+              });
           } else if (walletAddress) {
             const walletCreation = {
               ...updatedCreation,
@@ -309,12 +333,20 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(walletCreation),
-            }).catch((error) => {
-              console.warn(
-                "Failed to sync updated wallet creation to server:",
-                error,
-              );
-            });
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  console.warn(
+                    `Failed to sync updated wallet creation: ${response.status} ${response.statusText}`,
+                  );
+                }
+              })
+              .catch((error) => {
+                console.warn(
+                  "Failed to sync updated wallet creation to server:",
+                  error,
+                );
+              });
           }
         }
 
@@ -357,9 +389,18 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         // Sync deletion to server
         fetch(`/api/guest-creations/${id}`, {
           method: "DELETE",
-        }).catch((error) => {
-          console.warn("Failed to delete guest creation from server:", error);
-        });
+          headers: { "Content-Type": "application/json" },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              console.warn(
+                `Failed to delete guest creation: ${response.status} ${response.statusText}`,
+              );
+            }
+          })
+          .catch((error) => {
+            console.warn("Failed to delete guest creation from server:", error);
+          });
       } else if (creation && !creation.isGuest && creation.walletAddress) {
         // Sync wallet creation deletion to server with wallet validation
         const params = new URLSearchParams({
@@ -367,9 +408,18 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         });
         fetch(`/api/wallet-creations/${id}?${params.toString()}`, {
           method: "DELETE",
-        }).catch((error) => {
-          console.warn("Failed to delete wallet creation from server:", error);
-        });
+          headers: { "Content-Type": "application/json" },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              console.warn(
+                `Failed to delete wallet creation: ${response.status} ${response.statusText}`,
+              );
+            }
+          })
+          .catch((error) => {
+            console.warn("Failed to delete wallet creation from server:", error);
+          });
       }
       return prev.filter((c) => c.id !== id);
     });
