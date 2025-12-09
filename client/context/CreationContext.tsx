@@ -22,6 +22,7 @@ export interface Creation {
   registeredIpId?: string; // Child IP ID from Story Protocol registration
   watermarkedUrl?: string; // Watermarked version for paid remix - stored in Supabase
   childIpId?: string; // Child IP ID - marks as registered
+  isUploadingUrl?: boolean; // Track if watermarked/original URL is still uploading to Supabase
 }
 
 interface CreationContextType {
