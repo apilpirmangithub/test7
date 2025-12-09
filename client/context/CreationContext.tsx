@@ -19,9 +19,10 @@ export interface Creation {
   parentAsset?: any;
   originalUrl?: string;
   registeredByWallet?: string;
-  registeredIpId?: string;
-  cleanUrl?: string; // Clean version (no watermark) for paid remix - stored in Supabase
+  registeredIpId?: string; // Child IP ID from Story Protocol registration
   watermarkedUrl?: string; // Watermarked version for paid remix - stored in Supabase
+  licenseToken?: string; // License token from Story Protocol registration
+  childIpId?: string; // Child IP ID - same as registeredIpId but stored in DB
 }
 
 interface CreationContextType {
