@@ -26,6 +26,12 @@ import {
   handleDeleteGuestCreation,
   handleClearGuestCreations,
 } from "./routes/guest-creations.js";
+import {
+  handleGetWalletCreations,
+  handleAddWalletCreation,
+  handleDeleteWalletCreation,
+  handleUpdateWalletCreation,
+} from "./routes/wallet-creations.js";
 // Sharp-dependent routes are lazy-loaded to avoid loading sharp during build
 
 async function fetchParentIpDetails(
