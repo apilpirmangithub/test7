@@ -1,6 +1,6 @@
 import "./global.css";
 
-import { StrictMode, Suspense, lazy } from "react";
+import { StrictMode, Suspense, lazy, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -26,6 +26,20 @@ declare global {
     __privyAnalyticsFetchPatched?: boolean;
   }
 }
+
+// Clear localStorage on app startup
+const clearLocalStorage = () => {
+  if (typeof window !== "undefined") {
+    const keysToPreserve = ["__session__", "__auth__"];
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i);
+      if (key && !keysToPreserve.includes(key)) {
+        localStorage.removeItem(key);
+      }
+    }
+    console.log("[App] LocalStorage cleared on startup");
+  }
+};
 
 const ensurePrivyAnalyticsFetchPatched = () => {
   if (typeof window === "undefined") return;
