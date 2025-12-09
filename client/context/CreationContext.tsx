@@ -350,33 +350,30 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     [creations],
   );
 
-  const removeCreation = useCallback(
-    (id: string) => {
-      setCreations((prev) => {
-        const creation = prev.find((c) => c.id === id);
-        if (creation && creation.isGuest) {
-          // Sync deletion to server
-          fetch(`/api/guest-creations/${id}`, {
-            method: "DELETE",
-          }).catch((error) => {
-            console.warn("Failed to delete guest creation from server:", error);
-          });
-        } else if (creation && !creation.isGuest && creation.walletAddress) {
-          // Sync wallet creation deletion to server with wallet validation
-          const params = new URLSearchParams({
-            requesting_wallet: creation.walletAddress,
-          });
-          fetch(`/api/wallet-creations/${id}?${params.toString()}`, {
-            method: "DELETE",
-          }).catch((error) => {
-            console.warn("Failed to delete wallet creation from server:", error);
-          });
-        }
-        return prev.filter((c) => c.id !== id);
-      });
-    },
-    [],
-  );
+  const removeCreation = useCallback((id: string) => {
+    setCreations((prev) => {
+      const creation = prev.find((c) => c.id === id);
+      if (creation && creation.isGuest) {
+        // Sync deletion to server
+        fetch(`/api/guest-creations/${id}`, {
+          method: "DELETE",
+        }).catch((error) => {
+          console.warn("Failed to delete guest creation from server:", error);
+        });
+      } else if (creation && !creation.isGuest && creation.walletAddress) {
+        // Sync wallet creation deletion to server with wallet validation
+        const params = new URLSearchParams({
+          requesting_wallet: creation.walletAddress,
+        });
+        fetch(`/api/wallet-creations/${id}?${params.toString()}`, {
+          method: "DELETE",
+        }).catch((error) => {
+          console.warn("Failed to delete wallet creation from server:", error);
+        });
+      }
+      return prev.filter((c) => c.id !== id);
+    });
+  }, []);
 
   const clearCreations = useCallback(() => {
     setCreations([]);

@@ -164,7 +164,6 @@ const IpImagineCreationResult = () => {
     }
   }, [authenticated, primaryWalletAddress, context]);
 
-
   const handleDownload = () => {
     if (!displayUrl) return;
     const link = document.createElement("a");
