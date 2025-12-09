@@ -103,8 +103,12 @@ export const uploadWalletImageToSupabase = async (
   }
 
   try {
-    const { file, creationId, walletAddress, bucket = "wallet_creations" } =
-      options;
+    const {
+      file,
+      creationId,
+      walletAddress,
+      bucket = "wallet_creations",
+    } = options;
 
     // Create a unique file path using wallet address, creationId and timestamp
     const timestamp = Date.now();

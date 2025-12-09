@@ -30,7 +30,9 @@ const getSupabaseClient = (): SupabaseClient | null => {
   const supabaseServiceKey = process.env.VITE_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    console.error("Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY env vars");
+    console.error(
+      "Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY env vars",
+    );
     return null;
   }
 
@@ -48,8 +50,7 @@ const toDbRow = (creation: WalletCreation) => ({
   parent_asset: creation.parentAsset || creation.parent_asset || null,
   original_url: creation.originalUrl || creation.original_url || null,
   clean_url: creation.cleanUrl || creation.clean_url || null,
-  watermarked_url:
-    creation.watermarkedUrl || creation.watermarked_url || null,
+  watermarked_url: creation.watermarkedUrl || creation.watermarked_url || null,
   registered_by_wallet:
     creation.registeredByWallet || creation.registered_by_wallet || null,
   registered_ip_id:
@@ -187,7 +188,7 @@ export const handleAddWalletCreation: RequestHandler = async (req, res) => {
             if (updateError) {
               console.warn(
                 "Uploaded to storage but failed to update DB url:",
-                updateError
+                updateError,
               );
             } else {
               creation.url = publicUrl;
@@ -196,7 +197,7 @@ export const handleAddWalletCreation: RequestHandler = async (req, res) => {
         } else {
           console.warn(
             "Failed to upload image to Supabase storage:",
-            uploadError
+            uploadError,
           );
         }
       } catch (uploadErr) {

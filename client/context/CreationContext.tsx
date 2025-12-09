@@ -397,22 +397,19 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, []);
 
-  const refreshWalletCreations = useCallback(
-    async (walletAddr: string) => {
-      try {
-        const response = await fetch(`/api/wallet-creations/${walletAddr}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.creations && Array.isArray(data.creations)) {
-            setCreations(data.creations);
-          }
+  const refreshWalletCreations = useCallback(async (walletAddr: string) => {
+    try {
+      const response = await fetch(`/api/wallet-creations/${walletAddr}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.creations && Array.isArray(data.creations)) {
+          setCreations(data.creations);
         }
-      } catch (error) {
-        console.warn("Failed to refresh wallet creations:", error);
       }
-    },
-    [],
-  );
+    } catch (error) {
+      console.warn("Failed to refresh wallet creations:", error);
+    }
+  }, []);
 
   const setUserIdentifier = useCallback(
     (walletAddr: string | null, guestMode: boolean) => {

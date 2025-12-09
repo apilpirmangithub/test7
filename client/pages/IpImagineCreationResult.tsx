@@ -130,7 +130,12 @@ const IpImagineCreationResult = () => {
   useEffect(() => {
     if (guestMode && context?.refreshGuestCreations) {
       context.refreshGuestCreations();
-    } else if (!guestMode && authenticated && primaryWalletAddress && context?.refreshWalletCreations) {
+    } else if (
+      !guestMode &&
+      authenticated &&
+      primaryWalletAddress &&
+      context?.refreshWalletCreations
+    ) {
       context.refreshWalletCreations(primaryWalletAddress);
     }
   }, [guestMode, authenticated, primaryWalletAddress, context]);

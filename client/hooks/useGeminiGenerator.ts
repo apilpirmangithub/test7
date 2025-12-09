@@ -33,10 +33,12 @@ const useGeminiGenerator = () => {
   } = context;
 
   // Get primary wallet address
-  const primaryWalletAddress = context.creations[0]?.registeredByWallet ||
+  const primaryWalletAddress =
+    context.creations[0]?.registeredByWallet ||
     (wallets && wallets.length > 0
       ? wallets.find((w) => w.address)?.address
-      : user?.wallet?.address) || null;
+      : user?.wallet?.address) ||
+    null;
 
   const generate = async (
     mode: ToggleMode,
@@ -105,7 +107,9 @@ const useGeminiGenerator = () => {
       // Upload to Supabase (guest mode or wallet connected)
       let finalUrl = generatedUrl;
       const creationId = `creation_${Date.now()}`;
-      const shouldUpload = (demoModeParam && guestMode) || (authenticated && primaryWalletAddress && !guestMode);
+      const shouldUpload =
+        (demoModeParam && guestMode) ||
+        (authenticated && primaryWalletAddress && !guestMode);
 
       if (shouldUpload && isSupabaseConfigured()) {
         try {
