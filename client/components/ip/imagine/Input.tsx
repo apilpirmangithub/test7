@@ -421,7 +421,7 @@ const IpImagineInput = ({
       <FlyingImageAnimation
         isActive={showFlyingAnimation}
         targetRef={galleryButtonRef}
-        onComplete={() => setShowFlyingAnimation(false)}
+        onComplete={handleAnimationComplete}
       />
     </form>
   );
