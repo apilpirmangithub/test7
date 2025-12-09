@@ -1,4 +1,4 @@
-import React, {
+import {
   useEffect,
   useRef,
   useState,
@@ -9,7 +9,6 @@ import type {
   SearchResult,
   OwnerDomainInfo,
   RemixTypeInfo,
-  License,
 } from "./types";
 
 /**
