@@ -588,8 +588,10 @@ const IpImagineCreationResult = () => {
                           isLoading={false}
                           parentAsset={creation.parentAsset}
                           originalUrl={creation.originalUrl}
-                          cleanUrl={creation.cleanUrl}
+                          watermarkedUrl={creation.watermarkedUrl}
                           registeredIpId={creation.registeredIpId}
+                          licenseToken={creation.licenseToken}
+                          childIpId={creation.childIpId}
                           creationId={creation.id}
                           onUnlockWatermark={(originalUrl) => {
                             updateCreationWithOriginalUrl(
@@ -599,12 +601,12 @@ const IpImagineCreationResult = () => {
                           }}
                           onDownload={() => {
                             const link = document.createElement("a");
-                            // Use clean URL if available and registered, otherwise use creation.url
+                            // Use original URL if registered with license, otherwise use watermarked/main URL
                             const downloadUrl =
                               upscalingCreationId === creation.id && upscaledUrl
                                 ? upscaledUrl
-                                : creation.cleanUrl && creation.registeredIpId
-                                  ? creation.cleanUrl
+                                : creation.childIpId && creation.licenseToken && creation.originalUrl
+                                  ? creation.originalUrl
                                   : creation.url;
                             link.href = downloadUrl;
                             link.download = `ip-imagine-${creation.id}${creation.type === "video" ? ".mp4" : ".png"}`;
