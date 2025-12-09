@@ -48,8 +48,15 @@ const IpImagineCreationResult = () => {
 
   // Handle wallet disconnection
   const handleWalletDisconnect = useCallback(async () => {
+    // Switch to guest mode and refresh guest creations
+    if (context?.setGuestMode) {
+      context.setGuestMode(true);
+      if (context?.refreshGuestCreations) {
+        await context.refreshGuestCreations();
+      }
+    }
     await logout();
-  }, [logout]);
+  }, [logout, context]);
 
   if (!context) {
     return (
