@@ -305,7 +305,9 @@ export const unifiedGenerateImageWithWatermark: RequestHandler = async (
           .json({ error: "No URL or base64 found in response" });
       }
 
-      console.log("✅ Image generated successfully (watermark processing disabled)");
+      console.log(
+        "✅ Image generated successfully (watermark processing disabled)",
+      );
     }
 
     res.json({ url: imageUrl });

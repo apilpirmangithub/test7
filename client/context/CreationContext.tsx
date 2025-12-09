@@ -128,7 +128,9 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           }
         } else if (walletAddress) {
           // Wallet mode: fetch wallet creations for this wallet
-          const response = await fetch(`/api/wallet-creations/${walletAddress}`);
+          const response = await fetch(
+            `/api/wallet-creations/${walletAddress}`,
+          );
           if (response.ok) {
             const data = await response.json();
             if (data.creations && Array.isArray(data.creations)) {
