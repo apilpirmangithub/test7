@@ -100,22 +100,26 @@ const useGeminiGenerator = () => {
 
       const shouldUpload = authenticated && primaryWalletAddress;
 
-      // Convert data URL directly to Blob (faster than fetch)
-      const dataURLtoBlob = (dataURL: string): Blob => {
-        const arr = dataURL.split(",");
-        const mime = arr[0].match(/:(.*?);/)?.[1] || "image/png";
-        const bstr = atob(arr[1]);
-        const n = bstr.length;
-        const u8arr = new Uint8Array(n);
-        for (let i = 0; i < n; i++) {
-          u8arr[i] = bstr.charCodeAt(i);
-        }
-        return new Blob([u8arr], { type: mime });
-      };
+      // For paid remix, don't upload to Supabase - keep both as data URLs for consistency
+      // For free remix or non-paid modes, upload to Supabase
+      const shouldUploadToSupabase = shouldUpload && isSupabaseConfigured() && remixType !== "paid";
 
-      if (shouldUpload && isSupabaseConfigured()) {
+      if (shouldUploadToSupabase) {
         try {
           setLoadingMessage("Uploading to storage...");
+
+          // Convert data URL directly to Blob (faster than fetch)
+          const dataURLtoBlob = (dataURL: string): Blob => {
+            const arr = dataURL.split(",");
+            const mime = arr[0].match(/:(.*?);/)?.[1] || "image/png";
+            const bstr = atob(arr[1]);
+            const n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            for (let i = 0; i < n; i++) {
+              u8arr[i] = bstr.charCodeAt(i);
+            }
+            return new Blob([u8arr], { type: mime });
+          };
 
           const blob = dataURLtoBlob(generatedUrl);
 
@@ -141,36 +145,13 @@ const useGeminiGenerator = () => {
 
       setResultUrl(finalUrl);
 
-      // For paid remix, track both watermarked and clean URLs
+      // For paid remix, keep both watermarked and clean as data URLs (no blob upload)
       let cleanUrlToStore: string | undefined;
       let watermarkedUrlToStore: string | undefined;
 
       if (remixType === "paid") {
         watermarkedUrlToStore = finalUrl;
-
-        // Also upload clean version to Supabase if authenticated
-        if (shouldUpload && isSupabaseConfigured()) {
-          try {
-            const cleanBlob = dataURLtoBlob(originalUrl);
-            const cleanUploadedUrl = await uploadWalletImageToSupabase({
-              file: cleanBlob,
-              creationId: `${creationId}_clean`,
-              walletAddress: primaryWalletAddress,
-            });
-
-            if (cleanUploadedUrl) {
-              cleanUrlToStore = cleanUploadedUrl;
-              console.log("Clean image uploaded to Supabase:", cleanUploadedUrl);
-            } else {
-              cleanUrlToStore = originalUrl;
-            }
-          } catch (uploadError) {
-            console.warn("Error uploading clean image to Supabase:", uploadError);
-            cleanUrlToStore = originalUrl;
-          }
-        } else {
-          cleanUrlToStore = originalUrl;
-        }
+        cleanUrlToStore = originalUrl;
       }
 
       // Add creation with wallet address
