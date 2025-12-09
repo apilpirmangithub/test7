@@ -19,9 +19,9 @@ export interface Creation {
   parentAsset?: any;
   originalUrl?: string;
   registeredByWallet?: string;
-  registeredIpId?: string;
-  cleanUrl?: string; // Clean version (no watermark) for paid remix - stored in Supabase
+  registeredIpId?: string; // Child IP ID from Story Protocol registration
   watermarkedUrl?: string; // Watermarked version for paid remix - stored in Supabase
+  childIpId?: string; // Child IP ID - marks as registered
 }
 
 interface CreationContextType {
@@ -46,7 +46,6 @@ interface CreationContextType {
     remixType?: "paid" | "free" | null,
     parentAsset?: any,
     originalUrl?: string,
-    cleanUrl?: string,
     watermarkedUrl?: string,
   ) => void;
   updateCreationWithOriginalUrl: (
@@ -238,7 +237,6 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       remixType?: "paid" | "free" | null,
       parentAsset?: any,
       originalUrl?: string,
-      cleanUrl?: string,
       watermarkedUrl?: string,
     ) => {
       const now = Date.now();
@@ -252,7 +250,6 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         remixType,
         parentAsset,
         originalUrl,
-        cleanUrl,
         watermarkedUrl,
       };
       setCreations((prev) => [newCreation, ...prev]);
@@ -294,7 +291,8 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
               originalUrl,
               registeredByWallet,
               registeredIpId,
-              ...(c.cleanUrl && { url: c.cleanUrl }),
+              childIpId: registeredIpId,
+              ...(originalUrl && { url: originalUrl }),
             };
           }
           return c;
