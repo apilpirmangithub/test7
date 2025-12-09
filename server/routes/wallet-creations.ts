@@ -258,6 +258,7 @@ export const handleAddWalletCreation: RequestHandler = async (req, res) => {
 export const handleDeleteWalletCreation: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
+    const { requesting_wallet } = req.query;
 
     if (!id) {
       return res.status(400).json({
@@ -271,6 +272,36 @@ export const handleDeleteWalletCreation: RequestHandler = async (req, res) => {
       return res.status(500).json({
         ok: false,
         error: "Supabase not configured",
+      });
+    }
+
+    // Fetch the creation to verify ownership before deleting
+    const { data: creation, error: fetchError } = await supabase
+      .from("wallet_creations")
+      .select("wallet_address")
+      .eq("id", id)
+      .single();
+
+    if (fetchError || !creation) {
+      console.warn(`Creation with id ${id} not found`);
+      return res.status(404).json({
+        ok: false,
+        error: "Creation not found",
+      });
+    }
+
+    // Validate that the requesting wallet matches the creation owner
+    if (
+      requesting_wallet &&
+      requesting_wallet.toString().toLowerCase() !==
+        creation.wallet_address?.toLowerCase()
+    ) {
+      console.warn(
+        `[SECURITY] Unauthorized deletion attempt: requesting_wallet=${requesting_wallet} != creation.wallet_address=${creation.wallet_address}`,
+      );
+      return res.status(403).json({
+        ok: false,
+        error: "Unauthorized: wallet address mismatch",
       });
     }
 
