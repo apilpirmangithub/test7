@@ -41,7 +41,11 @@ const getSupabaseClient = (): SupabaseClient | null => {
 
 const toDbRow = (creation: WalletCreation) => ({
   id: creation.id,
-  wallet_address: creation.walletAddress || creation.wallet_address,
+  wallet_address: (
+    creation.walletAddress ||
+    creation.wallet_address ||
+    ""
+  ).toLowerCase(),
   url: creation.url,
   type: creation.type || "image",
   timestamp: creation.timestamp || Date.now(),
@@ -60,12 +64,31 @@ const toDbRow = (creation: WalletCreation) => ({
 export const handleGetWalletCreations: RequestHandler = async (req, res) => {
   try {
     const { walletAddress } = req.params;
+    const { requesting_wallet } = req.query;
 
     if (!walletAddress) {
       return res.status(400).json({
         ok: false,
         error: "Missing required parameter: walletAddress",
       });
+    }
+
+    // Validate that the requesting wallet matches the target wallet (privacy protection)
+    if (requesting_wallet) {
+      const requestingWalletStr = requesting_wallet.toString().toLowerCase();
+      const targetWalletStr = walletAddress.toLowerCase();
+
+      if (requestingWalletStr !== targetWalletStr) {
+        console.warn(
+          `[SECURITY] Unauthorized access attempt: requesting_wallet=${requestingWalletStr} != target=${targetWalletStr}`,
+        );
+        // Return 403 Forbidden and empty creations array for security
+        return res.status(403).json({
+          ok: false,
+          error: "Unauthorized: wallet address mismatch",
+          creations: [],
+        });
+      }
     }
 
     const supabase = getSupabaseClient();
@@ -104,6 +127,7 @@ export const handleGetWalletCreations: RequestHandler = async (req, res) => {
       watermarkedUrl: creation.watermarked_url,
       registeredByWallet: creation.registered_by_wallet,
       registeredIpId: creation.registered_ip_id,
+      isGuest: false,
     }));
 
     return res.json({ ok: true, creations: transformedCreations });
@@ -119,11 +143,27 @@ export const handleGetWalletCreations: RequestHandler = async (req, res) => {
 export const handleAddWalletCreation: RequestHandler = async (req, res) => {
   try {
     const creation: WalletCreation = req.body;
+    const { requesting_wallet } = req.query;
 
     if (!creation?.id || !creation?.url || !creation?.walletAddress) {
       return res.status(400).json({
         ok: false,
         error: "Missing required fields: id, url, walletAddress",
+      });
+    }
+
+    // Validate that the requesting wallet matches the wallet in the payload
+    if (
+      requesting_wallet &&
+      requesting_wallet.toString().toLowerCase() !==
+        creation.walletAddress.toLowerCase()
+    ) {
+      console.warn(
+        `[SECURITY] Unauthorized creation attempt: requesting_wallet=${requesting_wallet} != walletAddress=${creation.walletAddress}`,
+      );
+      return res.status(403).json({
+        ok: false,
+        error: "Unauthorized: wallet address mismatch",
       });
     }
 
@@ -222,6 +262,7 @@ export const handleAddWalletCreation: RequestHandler = async (req, res) => {
 export const handleDeleteWalletCreation: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
+    const { requesting_wallet } = req.query;
 
     if (!id) {
       return res.status(400).json({
@@ -235,6 +276,36 @@ export const handleDeleteWalletCreation: RequestHandler = async (req, res) => {
       return res.status(500).json({
         ok: false,
         error: "Supabase not configured",
+      });
+    }
+
+    // Fetch the creation to verify ownership before deleting
+    const { data: creation, error: fetchError } = await supabase
+      .from("wallet_creations")
+      .select("wallet_address")
+      .eq("id", id)
+      .single();
+
+    if (fetchError || !creation) {
+      console.warn(`Creation with id ${id} not found`);
+      return res.status(404).json({
+        ok: false,
+        error: "Creation not found",
+      });
+    }
+
+    // Validate that the requesting wallet matches the creation owner
+    if (
+      requesting_wallet &&
+      requesting_wallet.toString().toLowerCase() !==
+        creation.wallet_address?.toLowerCase()
+    ) {
+      console.warn(
+        `[SECURITY] Unauthorized deletion attempt: requesting_wallet=${requesting_wallet} != creation.wallet_address=${creation.wallet_address}`,
+      );
+      return res.status(403).json({
+        ok: false,
+        error: "Unauthorized: wallet address mismatch",
       });
     }
 
@@ -267,12 +338,29 @@ export const handleDeleteWalletCreation: RequestHandler = async (req, res) => {
 export const handleUpdateWalletCreation: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
+    const { requesting_wallet } = req.query;
     const creation: WalletCreation = req.body;
 
     if (!id) {
       return res.status(400).json({
         ok: false,
         error: "Missing required parameter: id",
+      });
+    }
+
+    // Validate that the requesting wallet matches the wallet in the payload
+    if (
+      requesting_wallet &&
+      creation?.walletAddress &&
+      requesting_wallet.toString().toLowerCase() !==
+        creation.walletAddress.toLowerCase()
+    ) {
+      console.warn(
+        `[SECURITY] Unauthorized update attempt: requesting_wallet=${requesting_wallet} != walletAddress=${creation.walletAddress}`,
+      );
+      return res.status(403).json({
+        ok: false,
+        error: "Unauthorized: wallet address mismatch",
       });
     }
 

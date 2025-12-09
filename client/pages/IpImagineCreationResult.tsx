@@ -153,6 +153,14 @@ const IpImagineCreationResult = () => {
       if (context?.refreshWalletCreations) {
         context.refreshWalletCreations(primaryWalletAddress);
       }
+    } else if (!authenticated) {
+      // Clear creations when wallet disconnects (privacy protection)
+      console.log(
+        "[IpImagineCreationResult] Wallet disconnected - clearing creations",
+      );
+      if (context?.clearCreations) {
+        context.clearCreations();
+      }
     }
   }, [authenticated, primaryWalletAddress, context]);
 
@@ -310,8 +318,20 @@ const IpImagineCreationResult = () => {
       onLogoClick={() => navigate("/")}
     >
       <div className="chat-box px-3 sm:px-4 md:px-12 pt-4 pb-24 flex-1 overflow-y-auto bg-transparent scroll-smooth">
-        {context.creations.filter((c) => c.isGuest === guestMode).length >
-          0 && (
+        {context.creations
+          .filter((c) => {
+            if (guestMode) {
+              return c.isGuest === true;
+            } else {
+              // Only show creations from currently connected wallet
+              return (
+                c.isGuest === false &&
+                c.walletAddress?.toLowerCase() ===
+                  primaryWalletAddress?.toLowerCase()
+              );
+            }
+          })
+          .filter((c) => true).length > 0 && (
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-white">Results</h2>
             <button
@@ -432,8 +452,19 @@ const IpImagineCreationResult = () => {
                 );
               })()}
             </motion.div>
-          ) : context.creations.filter((c) => c.isGuest === guestMode)
-              .length === 0 && !isLoading ? (
+          ) : context.creations
+              .filter((c) => {
+                if (guestMode) {
+                  return c.isGuest === true;
+                } else {
+                  return (
+                    c.isGuest === false &&
+                    c.walletAddress?.toLowerCase() ===
+                      primaryWalletAddress?.toLowerCase()
+                  );
+                }
+              })
+              .filter((c) => true).length === 0 && !isLoading ? (
             <motion.div
               key="no-data"
               initial={{ opacity: 0 }}
@@ -496,10 +527,31 @@ const IpImagineCreationResult = () => {
                     </p>
                   </motion.div>
                 )}
-                {context.creations.filter((c) => c.isGuest === guestMode)
-                  .length > 0 ? (
+                {context.creations
+                  .filter((c) => {
+                    if (guestMode) {
+                      return c.isGuest === true;
+                    } else {
+                      return (
+                        c.isGuest === false &&
+                        c.walletAddress?.toLowerCase() ===
+                          primaryWalletAddress?.toLowerCase()
+                      );
+                    }
+                  })
+                  .filter((c) => true).length > 0 ? (
                   context.creations
-                    .filter((c) => c.isGuest === guestMode)
+                    .filter((c) => {
+                      if (guestMode) {
+                        return c.isGuest === true;
+                      } else {
+                        return (
+                          c.isGuest === false &&
+                          c.walletAddress?.toLowerCase() ===
+                            primaryWalletAddress?.toLowerCase()
+                        );
+                      }
+                    })
                     .map((creation) => (
                       <motion.div
                         key={creation.id}

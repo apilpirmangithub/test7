@@ -233,12 +233,15 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           console.warn("Failed to sync guest creation to server:", error);
         });
       } else if (walletAddress) {
-        // Sync wallet creations to server
+        // Sync wallet creations to server with wallet validation
         const walletCreation = {
           ...newCreation,
           walletAddress,
         };
-        fetch("/api/wallet-creations", {
+        const params = new URLSearchParams({
+          requesting_wallet: walletAddress,
+        });
+        fetch(`/api/wallet-creations?${params.toString()}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(walletCreation),
@@ -299,7 +302,10 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
               ...updatedCreation,
               walletAddress,
             };
-            fetch(`/api/wallet-creations/${id}`, {
+            const params = new URLSearchParams({
+              requesting_wallet: walletAddress,
+            });
+            fetch(`/api/wallet-creations/${id}?${params.toString()}`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(walletCreation),
@@ -354,9 +360,12 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         }).catch((error) => {
           console.warn("Failed to delete guest creation from server:", error);
         });
-      } else if (creation && !creation.isGuest) {
-        // Sync wallet creation deletion to server
-        fetch(`/api/wallet-creations/${id}`, {
+      } else if (creation && !creation.isGuest && creation.walletAddress) {
+        // Sync wallet creation deletion to server with wallet validation
+        const params = new URLSearchParams({
+          requesting_wallet: creation.walletAddress,
+        });
+        fetch(`/api/wallet-creations/${id}?${params.toString()}`, {
           method: "DELETE",
         }).catch((error) => {
           console.warn("Failed to delete wallet creation from server:", error);
@@ -392,12 +401,24 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
 
   const refreshWalletCreations = useCallback(async (walletAddr: string) => {
     try {
-      const response = await fetch(`/api/wallet-creations/${walletAddr}`);
+      // Send requesting_wallet as query parameter for server-side validation
+      const params = new URLSearchParams({
+        requesting_wallet: walletAddr,
+      });
+      const response = await fetch(
+        `/api/wallet-creations/${walletAddr}?${params.toString()}`,
+      );
       if (response.ok) {
         const data = await response.json();
         if (data.creations && Array.isArray(data.creations)) {
           setCreations(data.creations);
         }
+      } else if (response.status === 403) {
+        // Unauthorized access - clear creations for security
+        console.warn(
+          "[CreationContext] Unauthorized wallet access - clearing creations",
+        );
+        setCreations([]);
       }
     } catch (error) {
       console.warn("Failed to refresh wallet creations:", error);
