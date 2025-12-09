@@ -135,6 +135,34 @@ const IpAssistant = () => {
   const pendingTimeoutsRef = useRef<Set<NodeJS.Timeout>>(new Set());
   const mountedRef = useRef(true);
 
+  // Helper function to set timeout safely (cleans up on unmount)
+  const safeSetTimeout = useCallback(
+    (callback: () => void, delay: number) => {
+      const timeout = setTimeout(() => {
+        if (mountedRef.current) {
+          callback();
+        }
+      }, delay);
+      pendingTimeoutsRef.current.add(timeout);
+      return timeout;
+    },
+    [],
+  );
+
+  // Helper function to clear a tracked timeout
+  const safeClearTimeout = useCallback((timeout: NodeJS.Timeout) => {
+    clearTimeout(timeout);
+    pendingTimeoutsRef.current.delete(timeout);
+  }, []);
+
+  // Helper function to initialize AbortController for fetch operations
+  const getAbortSignal = useCallback(() => {
+    if (!abortControllerRef.current) {
+      abortControllerRef.current = new AbortController();
+    }
+    return abortControllerRef.current.signal;
+  }, []);
+
   // throttled scroll helpers to avoid excessive layout work on mobile
   const lastScrollRef = useRef<number>(0);
   const scrollRafRef = useRef<number | null>(null);
