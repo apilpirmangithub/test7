@@ -55,6 +55,7 @@ interface CreationContextType {
     registeredByWallet?: string,
     registeredIpId?: string,
   ) => void;
+  updateCreationUploadStatus: (id: string, isUploading: boolean) => void;
   getRegisteredIpIdsForWallet: (walletAddress: string) => string[];
   isCreationUnlockedByWallet: (
     creationId: string,
