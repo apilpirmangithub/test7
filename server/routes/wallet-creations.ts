@@ -303,12 +303,29 @@ export const handleDeleteWalletCreation: RequestHandler = async (req, res) => {
 export const handleUpdateWalletCreation: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
+    const { requesting_wallet } = req.query;
     const creation: WalletCreation = req.body;
 
     if (!id) {
       return res.status(400).json({
         ok: false,
         error: "Missing required parameter: id",
+      });
+    }
+
+    // Validate that the requesting wallet matches the wallet in the payload
+    if (
+      requesting_wallet &&
+      creation?.walletAddress &&
+      requesting_wallet.toString().toLowerCase() !==
+        creation.walletAddress.toLowerCase()
+    ) {
+      console.warn(
+        `[SECURITY] Unauthorized update attempt: requesting_wallet=${requesting_wallet} != walletAddress=${creation.walletAddress}`,
+      );
+      return res.status(403).json({
+        ok: false,
+        error: "Unauthorized: wallet address mismatch",
       });
     }
 
