@@ -23,9 +23,11 @@ interface CompactResultCardProps {
   setIsExpanded?: Dispatch<SetStateAction<boolean>>;
   parentAsset?: any;
   originalUrl?: string;
-  cleanUrl?: string;
+  watermarkedUrl?: string;
   registeredIpId?: string;
   creationId?: string;
+  licenseToken?: string;
+  childIpId?: string;
   onUnlockWatermark?: (originalUrl: string) => void;
   onDelete?: () => void;
 }
