@@ -137,19 +137,22 @@ const IpImagineCreationResult = () => {
     }
   }, [authenticated, primaryWalletAddress, context]);
 
-  // Clear local UI states when wallet disconnects (keep creations visible for unlock)
+  // Clear creations AND UI states when wallet disconnects
   useEffect(() => {
     if (!authenticated) {
       console.log(
-        "[IpImagineCreationResult] Wallet disconnected - keeping creations visible",
+        "[IpImagineCreationResult] Wallet disconnected - clearing all data",
       );
-      // Clear UI states only, keep creations in context so user can unlock later when reconnected
+      // Clear everything for privacy - creations will be re-fetched when wallet reconnects
+      if (context?.clearCreations) {
+        context.clearCreations();
+      }
       setUpscaledUrl(null);
       setUpscalingCreationId(null);
       setExpandedCreationId(null);
       setShowUpscaler(false);
     }
-  }, [authenticated]);
+  }, [authenticated, context]);
 
   const handleDownload = () => {
     if (!displayUrl) return;
