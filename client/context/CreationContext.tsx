@@ -14,14 +14,12 @@ export interface Creation {
   type: ResultType;
   timestamp: number;
   prompt: string;
-  isGuest?: boolean;
-  walletAddress?: string; // Wallet address for wallet-mode creations
+  walletAddress: string; // Wallet address (required for wallet-only mode)
   remixType?: "paid" | "free" | null;
   parentAsset?: any;
   originalUrl?: string;
   registeredByWallet?: string;
   registeredIpId?: string;
-  guestSessionId?: string; // Unique session ID for guest-only access
   cleanUrl?: string; // Clean version (no watermark) for paid remix - stored in Supabase
   watermarkedUrl?: string; // Watermarked version for paid remix - stored in Supabase
 }
@@ -44,7 +42,7 @@ interface CreationContextType {
     url: string,
     type: ResultType,
     prompt: string,
-    isGuest?: boolean,
+    walletAddress: string,
     remixType?: "paid" | "free" | null,
     parentAsset?: any,
     originalUrl?: string,
@@ -64,13 +62,10 @@ interface CreationContextType {
   ) => boolean;
   removeCreation: (id: string) => void;
   clearCreations: () => void;
-  refreshGuestCreations: () => Promise<void>;
   refreshWalletCreations: (walletAddress: string) => Promise<void>;
   originalPrompt: string;
   setOriginalPrompt: (prompt: string) => void;
-  guestMode: boolean;
-  setGuestMode: (guest: boolean) => void;
-  setUserIdentifier: (walletAddress: string | null, isGuest: boolean) => void;
+  setUserIdentifier: (walletAddress: string | null) => void;
 }
 
 export const CreationContext = createContext<CreationContextType | undefined>(
@@ -80,7 +75,6 @@ export const CreationContext = createContext<CreationContextType | undefined>(
 const RESULT_URL_KEY = "current_result_url";
 const RESULT_TYPE_KEY = "current_result_type";
 const ORIGINAL_PROMPT_KEY = "original_prompt";
-const GUEST_MODE_KEY = "guest_mode";
 
 /**
  * Clear all cache keys from localStorage
@@ -90,7 +84,6 @@ const clearAllCache = () => {
   localStorage.removeItem(RESULT_URL_KEY);
   localStorage.removeItem(RESULT_TYPE_KEY);
   localStorage.removeItem(ORIGINAL_PROMPT_KEY);
-  localStorage.removeItem(GUEST_MODE_KEY);
   console.log("[CreationContext] All cache cleared from localStorage");
 };
 
@@ -105,37 +98,30 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [creations, setCreations] = useState<Creation[]>([]);
   const [originalPrompt, setOriginalPrompt] = useState<string>("");
-  const [guestMode, setGuestMode] = useState<boolean>(false);
   const [walletAddress, setWalletAddressState] = useState<string | null>(null);
-  const [isGuest, setIsGuestState] = useState<boolean>(false);
   const [previousWalletAddress, setPreviousWalletAddress] = useState<
     string | null
   >(null);
 
-  // Load creations from localStorage ONLY if wallet was connected on previous session
+  // Load creations from localStorage if wallet was connected on previous session
   useEffect(() => {
     const storedResultUrl = localStorage.getItem(RESULT_URL_KEY);
     const storedResultType = localStorage.getItem(RESULT_TYPE_KEY);
     const storedPrompt = localStorage.getItem(ORIGINAL_PROMPT_KEY);
-    const storedGuestMode = localStorage.getItem(GUEST_MODE_KEY);
 
-    // Only restore from cache if we have wallet address and not in guest mode
-    // (Cache only exists when wallet was connected)
-    if (storedResultUrl && walletAddress && !guestMode) {
+    if (storedResultUrl && walletAddress) {
       setResultUrl(storedResultUrl);
     }
-    if (storedResultType && walletAddress && !guestMode) {
+    if (storedResultType && walletAddress) {
       setResultType(storedResultType as ResultType);
     }
-    if (storedPrompt && walletAddress && !guestMode) {
+    if (storedPrompt && walletAddress) {
       setOriginalPrompt(storedPrompt);
     }
-    // Note: guestMode is not persisted - always starts as false
   }, []);
 
   // Detect wallet disconnect or switch - clear all cache
   useEffect(() => {
-    // If wallet was connected before and now disconnected (or switched)
     if (previousWalletAddress && previousWalletAddress !== walletAddress) {
       console.log(
         `[CreationContext] Wallet changed from ${previousWalletAddress} to ${walletAddress}. Clearing cache.`,
@@ -148,61 +134,40 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       setFetchError(null);
     }
 
-    // Update previous wallet for next comparison
     setPreviousWalletAddress(walletAddress);
   }, [walletAddress, previousWalletAddress]);
 
-  // Fetch creations based on current mode (guest or wallet)
+  // Fetch wallet creations
   useEffect(() => {
+    if (!walletAddress) {
+      setCreations([]);
+      return;
+    }
+
     const fetchCreations = async () => {
       try {
         setFetchError(null);
-        if (guestMode) {
-          // Guest mode: fetch guest creations (fully stateless - no cache)
-          const response = await fetch("/api/guest-creations");
-          if (response.ok) {
-            const data = await response.json();
-            if (data.creations && Array.isArray(data.creations)) {
-              // Ensure isGuest flag is set
-              const validCreations = data.creations.map((c: any) => ({
-                ...c,
-                isGuest: true,
-              }));
-              setCreations(validCreations);
-              setFetchError(null);
-            }
-          } else {
-            const errorMsg = `Failed to fetch guest creations: ${response.status}`;
-            console.error(errorMsg);
-            setFetchError(errorMsg);
-            setCreations([]);
+        const params = new URLSearchParams({
+          requesting_wallet: walletAddress,
+        });
+        const response = await fetch(
+          `/api/wallet-creations/${walletAddress}?${params.toString()}`,
+        );
+        if (response.ok) {
+          const data = await response.json();
+          if (data.creations && Array.isArray(data.creations)) {
+            const validCreations = data.creations.map((c: any) => ({
+              ...c,
+              walletAddress: walletAddress,
+            }));
+            setCreations(validCreations);
+            setFetchError(null);
           }
-        } else if (walletAddress) {
-          // Wallet mode: fetch wallet creations for this wallet
-          const params = new URLSearchParams({
-            requesting_wallet: walletAddress,
-          });
-          const response = await fetch(
-            `/api/wallet-creations/${walletAddress}?${params.toString()}`,
-          );
-          if (response.ok) {
-            const data = await response.json();
-            if (data.creations && Array.isArray(data.creations)) {
-              // Ensure isGuest flag is set to false for wallet creations
-              const validCreations = data.creations.map((c: any) => ({
-                ...c,
-                isGuest: false,
-                walletAddress: walletAddress,
-              }));
-              setCreations(validCreations);
-              setFetchError(null);
-            }
-          } else {
-            const errorMsg = `Failed to fetch wallet creations: ${response.status}`;
-            console.error(errorMsg);
-            setFetchError(errorMsg);
-            setCreations([]);
-          }
+        } else {
+          const errorMsg = `Failed to fetch wallet creations: ${response.status}`;
+          console.error(errorMsg);
+          setFetchError(errorMsg);
+          setCreations([]);
         }
       } catch (error: any) {
         const errorMsg = error?.message || "Failed to fetch creations";
@@ -213,19 +178,15 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     };
 
     fetchCreations();
-  }, [guestMode, walletAddress]);
+  }, [walletAddress]);
 
-  // Save current result URL to localStorage ONLY when wallet is connected
+  // Save current result URL to localStorage
   useEffect(() => {
-    // Only cache if wallet is connected (not guest mode)
-    const shouldCache = walletAddress && !guestMode;
-
-    if (shouldCache) {
+    if (walletAddress) {
       const lastResult = creations[0];
       if (lastResult?.url) {
         localStorage.setItem(RESULT_URL_KEY, lastResult.url);
       } else if (!resultUrl?.includes("data:")) {
-        // Only persist non-data URLs to localStorage
         if (resultUrl) {
           localStorage.setItem(RESULT_URL_KEY, resultUrl);
         } else {
@@ -233,15 +194,11 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         }
       }
     }
-    // In guest mode or without wallet: don't cache
-  }, [resultUrl, creations, walletAddress, guestMode]);
+  }, [resultUrl, creations, walletAddress]);
 
-  // Save current result type to localStorage ONLY when wallet is connected
+  // Save current result type to localStorage
   useEffect(() => {
-    // Only cache if wallet is connected (not guest mode)
-    const shouldCache = walletAddress && !guestMode;
-
-    if (shouldCache) {
+    if (walletAddress) {
       const lastResult = creations[0];
       if (lastResult?.type) {
         localStorage.setItem(RESULT_TYPE_KEY, lastResult.type);
@@ -251,24 +208,18 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         localStorage.removeItem(RESULT_TYPE_KEY);
       }
     }
-  }, [resultType, creations, walletAddress, guestMode]);
+  }, [resultType, creations, walletAddress]);
 
-  // Save original prompt to localStorage ONLY when wallet is connected
+  // Save original prompt to localStorage
   useEffect(() => {
-    // Only cache if wallet is connected (not guest mode)
-    const shouldCache = walletAddress && !guestMode;
-
-    if (shouldCache) {
+    if (walletAddress) {
       if (originalPrompt) {
         localStorage.setItem(ORIGINAL_PROMPT_KEY, originalPrompt);
       } else {
         localStorage.removeItem(ORIGINAL_PROMPT_KEY);
       }
     }
-  }, [originalPrompt, walletAddress, guestMode]);
-
-  // Guest mode is NEVER cached - always stateless
-  // No localStorage persistence for guest mode
+  }, [originalPrompt, walletAddress]);
 
   useEffect(() => {
     return () => {
@@ -283,7 +234,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       url: string,
       type: ResultType,
       prompt: string,
-      isGuest: boolean = false,
+      walletAddr: string,
       remixType?: "paid" | "free" | null,
       parentAsset?: any,
       originalUrl?: string,
@@ -297,44 +248,28 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         type,
         timestamp: now,
         prompt,
-        isGuest,
+        walletAddress: walletAddr,
         remixType,
         parentAsset,
         originalUrl,
         cleanUrl,
         watermarkedUrl,
-        ...(walletAddress && !isGuest && { walletAddress }),
       };
       setCreations((prev) => [newCreation, ...prev]);
 
-      // Sync guest creations to server
-      if (isGuest) {
-        fetch("/api/guest-creations", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newCreation),
-        }).catch((error) => {
-          console.warn("Failed to sync guest creation to server:", error);
-        });
-      } else if (walletAddress) {
-        // Sync wallet creations to server with wallet validation
-        const walletCreation = {
-          ...newCreation,
-          walletAddress,
-        };
-        const params = new URLSearchParams({
-          requesting_wallet: walletAddress,
-        });
-        fetch(`/api/wallet-creations?${params.toString()}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(walletCreation),
-        }).catch((error) => {
-          console.warn("Failed to sync wallet creation to server:", error);
-        });
-      }
+      // Sync wallet creation to server
+      const params = new URLSearchParams({
+        requesting_wallet: walletAddr,
+      });
+      fetch(`/api/wallet-creations?${params.toString()}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCreation),
+      }).catch((error) => {
+        console.warn("Failed to sync wallet creation to server:", error);
+      });
     },
-    [walletAddress],
+    [],
   );
 
   const updateCreationWithOriginalUrl = useCallback(
@@ -353,14 +288,11 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       setCreations((prev) => {
         const updated = prev.map((c) => {
           if (c.id === id) {
-            // For paid remix with cleanUrl, use that as the display URL after registration
-            const displayUrl = c.cleanUrl || originalUrl;
             return {
               ...c,
               originalUrl,
               registeredByWallet,
               registeredIpId,
-              // Update url to cleanUrl for display if available (paid remix)
               ...(c.cleanUrl && { url: c.cleanUrl }),
             };
           }
@@ -370,36 +302,19 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         // Sync updated creation to server
         const updatedCreation = updated.find((c) => c.id === id);
         if (updatedCreation) {
-          if (updatedCreation.isGuest) {
-            fetch("/api/guest-creations", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(updatedCreation),
-            }).catch((error) => {
-              console.warn(
-                "Failed to sync updated guest creation to server:",
-                error,
-              );
-            });
-          } else if (walletAddress) {
-            const walletCreation = {
-              ...updatedCreation,
-              walletAddress,
-            };
-            const params = new URLSearchParams({
-              requesting_wallet: walletAddress,
-            });
-            fetch(`/api/wallet-creations/${id}?${params.toString()}`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(walletCreation),
-            }).catch((error) => {
-              console.warn(
-                "Failed to sync updated wallet creation to server:",
-                error,
-              );
-            });
-          }
+          const params = new URLSearchParams({
+            requesting_wallet: updatedCreation.walletAddress,
+          });
+          fetch(`/api/wallet-creations/${id}?${params.toString()}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedCreation),
+          }).catch((error) => {
+            console.warn(
+              "Failed to sync updated wallet creation to server:",
+              error,
+            );
+          });
         }
 
         return updated;
@@ -409,12 +324,12 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   );
 
   const getRegisteredIpIdsForWallet = useCallback(
-    (walletAddress: string): string[] => {
+    (walletAddr: string): string[] => {
       return creations
         .filter(
           (c) =>
-            c.registeredByWallet?.toLowerCase() ===
-              walletAddress?.toLowerCase() && c.registeredIpId,
+            c.registeredByWallet?.toLowerCase() === walletAddr?.toLowerCase() &&
+            c.registeredIpId,
         )
         .map((c) => c.registeredIpId!)
         .filter(Boolean);
@@ -423,12 +338,12 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   );
 
   const isCreationUnlockedByWallet = useCallback(
-    (creationId: string, walletAddress: string): boolean => {
+    (creationId: string, walletAddr: string): boolean => {
       const creation = creations.find((c) => c.id === creationId);
       if (!creation || !creation.registeredByWallet) return false;
       return (
-        creation.registeredByWallet.toLowerCase() ===
-          walletAddress?.toLowerCase() && !!creation.originalUrl
+        creation.registeredByWallet.toLowerCase() === walletAddr?.toLowerCase() &&
+        !!creation.originalUrl
       );
     },
     [creations],
@@ -437,15 +352,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   const removeCreation = useCallback((id: string) => {
     setCreations((prev) => {
       const creation = prev.find((c) => c.id === id);
-      if (creation && creation.isGuest) {
-        // Sync deletion to server
-        fetch(`/api/guest-creations/${id}`, {
-          method: "DELETE",
-        }).catch((error) => {
-          console.warn("Failed to delete guest creation from server:", error);
-        });
-      } else if (creation && !creation.isGuest && creation.walletAddress) {
-        // Sync wallet creation deletion to server with wallet validation
+      if (creation && creation.walletAddress) {
         const params = new URLSearchParams({
           requesting_wallet: creation.walletAddress,
         });
@@ -465,44 +372,11 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     setResultUrl(null);
     setResultType(null);
     setOriginalPrompt("");
-    // Clear guest creations from server
-    fetch("/api/guest-creations/clear", {
-      method: "POST",
-    }).catch((error) => {
-      console.warn("Failed to clear guest creations from server:", error);
-    });
-  }, []);
-
-  const refreshGuestCreations = useCallback(async () => {
-    try {
-      setFetchError(null);
-      const response = await fetch("/api/guest-creations");
-      if (response.ok) {
-        const data = await response.json();
-        if (data.creations && Array.isArray(data.creations)) {
-          const validCreations = data.creations.map((c: any) => ({
-            ...c,
-            isGuest: true,
-          }));
-          setCreations(validCreations);
-          setFetchError(null);
-        }
-      } else {
-        const errorMsg = `Failed to refresh guest creations: ${response.status}`;
-        console.error(errorMsg);
-        setFetchError(errorMsg);
-      }
-    } catch (error: any) {
-      const errorMsg = error?.message || "Failed to refresh guest creations";
-      console.error(errorMsg);
-      setFetchError(errorMsg);
-    }
   }, []);
 
   const refreshWalletCreations = useCallback(async (walletAddr: string) => {
     try {
       setFetchError(null);
-      // Send requesting_wallet as query parameter for server-side validation
       const params = new URLSearchParams({
         requesting_wallet: walletAddr,
       });
@@ -514,7 +388,6 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         if (data.creations && Array.isArray(data.creations)) {
           const validCreations = data.creations.map((c: any) => ({
             ...c,
-            isGuest: false,
             walletAddress: walletAddr,
           }));
           setCreations(validCreations);
@@ -523,7 +396,6 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           setCreations([]);
         }
       } else if (response.status === 403) {
-        // Unauthorized access - clear creations for security
         console.warn(
           "[CreationContext] Unauthorized wallet access - clearing creations",
         );
@@ -543,16 +415,10 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, []);
 
-  const setUserIdentifier = useCallback(
-    (walletAddr: string | null, guestMode: boolean) => {
-      console.log(
-        `[CreationContext] User identifier changed: wallet=${walletAddr}, guest=${guestMode}`,
-      );
-      setWalletAddressState(walletAddr);
-      setIsGuestState(guestMode);
-    },
-    [],
-  );
+  const setUserIdentifier = useCallback((walletAddr: string | null) => {
+    console.log(`[CreationContext] User identifier changed: wallet=${walletAddr}`);
+    setWalletAddressState(walletAddr);
+  }, []);
 
   const contextValue = useMemo(
     () => ({
@@ -575,12 +441,9 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       isCreationUnlockedByWallet,
       removeCreation,
       clearCreations,
-      refreshGuestCreations,
       refreshWalletCreations,
       originalPrompt,
       setOriginalPrompt,
-      guestMode,
-      setGuestMode,
       setUserIdentifier,
     }),
     [
@@ -597,11 +460,8 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       isCreationUnlockedByWallet,
       removeCreation,
       clearCreations,
-      refreshGuestCreations,
       refreshWalletCreations,
       originalPrompt,
-      guestMode,
-      setGuestMode,
       setUserIdentifier,
     ],
   ) as CreationContextType;
