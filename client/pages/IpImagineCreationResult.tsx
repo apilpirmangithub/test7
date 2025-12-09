@@ -345,7 +345,9 @@ const IpImagineCreationResult = () => {
                   <h3 className="text-lg font-semibold text-orange-300">
                     Failed to Load Creations
                   </h3>
-                  <p className="text-sm text-orange-200/80 mt-1">{fetchError}</p>
+                  <p className="text-sm text-orange-200/80 mt-1">
+                    {fetchError}
+                  </p>
                 </div>
               </div>
               <div className="flex gap-2 mt-4">
@@ -522,7 +524,8 @@ const IpImagineCreationResult = () => {
               {authenticated && !guestMode && primaryWalletAddress ? (
                 <>
                   <p className="text-slate-400 mb-4">
-                    No creations found for wallet {primaryWalletAddress.substring(0, 6)}...
+                    No creations found for wallet{" "}
+                    {primaryWalletAddress.substring(0, 6)}...
                     {primaryWalletAddress.substring(
                       primaryWalletAddress.length - 4,
                     )}
