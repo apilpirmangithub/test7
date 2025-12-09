@@ -96,6 +96,25 @@ const IpAssistant = () => {
     };
   }, [remixAnalysisOpen, remixAnalysisData]);
 
+  // Cleanup pending async operations on unmount
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+      // Cancel all pending fetch requests
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      if (ownerSearchControllerRef.current) {
+        ownerSearchControllerRef.current.abort();
+      }
+      // Clear all pending timeouts
+      pendingTimeoutsRef.current.forEach((timeout) => {
+        clearTimeout(timeout);
+      });
+      pendingTimeoutsRef.current.clear();
+    };
+  }, []);
+
   const uploadRef = useRef<HTMLInputElement | null>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
