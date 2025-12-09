@@ -75,15 +75,23 @@ const CompactResultCard = ({
 
   // Calculate display URL based on registration state and available URLs
   const getDisplayUrl = (): string => {
-    // If registered and cleanUrl is available, use clean version
-    if (registeredIpId && cleanUrl) {
-      return cleanUrl;
+    // If has childIpId AND licenseToken, user has registered - show original image
+    if (childIpId && licenseToken && originalUrl) {
+      return originalUrl;
     }
-    // If registered but no cleanUrl, try to use originalUrl
+    // If has childIpId but no licenseToken, show watermarked (before full registration)
+    if (childIpId && watermarkedUrl) {
+      return watermarkedUrl;
+    }
+    // If registered via registeredIpId (backward compatibility) and has originalUrl
     if (registeredIpId && originalUrl) {
       return originalUrl;
     }
-    // Default to imageUrl (watermarked for paid remix)
+    // If has watermarkedUrl, use it
+    if (watermarkedUrl) {
+      return watermarkedUrl;
+    }
+    // Default to imageUrl
     return imageUrl;
   };
 
@@ -98,13 +106,14 @@ const CompactResultCard = ({
     console.log(
       `[CompactResultCard] Updated displayUrl based on registration state`,
       {
-        registeredIpId,
-        hasCleanUrl: !!cleanUrl,
+        childIpId,
+        licenseToken,
+        hasWatermarkedUrl: !!watermarkedUrl,
         hasOriginalUrl: !!originalUrl,
         displayUrl: newDisplayUrl,
       },
     );
-  }, [registeredIpId, cleanUrl, originalUrl, imageUrl]);
+  }, [childIpId, licenseToken, watermarkedUrl, originalUrl, imageUrl]);
 
   // Check if current wallet has already unlocked this creation
   useEffect(() => {
