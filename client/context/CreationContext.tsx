@@ -254,6 +254,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         originalUrl,
         cleanUrl,
         watermarkedUrl,
+        ...(walletAddress && !isGuest && { walletAddress }),
       };
       setCreations((prev) => [newCreation, ...prev]);
 
