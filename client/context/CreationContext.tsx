@@ -302,7 +302,10 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
               ...updatedCreation,
               walletAddress,
             };
-            fetch(`/api/wallet-creations/${id}`, {
+            const params = new URLSearchParams({
+              requesting_wallet: walletAddress,
+            });
+            fetch(`/api/wallet-creations/${id}?${params.toString()}`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(walletCreation),
