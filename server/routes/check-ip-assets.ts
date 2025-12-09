@@ -310,12 +310,12 @@ export const handleCheckIpAssets: RequestHandler<
         });
       }
 
-      const originalCount = allAssets.filter((asset: any) => {
+      const originalCount = allAssets.filter((asset) => {
         const parentsCount = asset?.parentsCount || 0;
         return parentsCount === 0;
       }).length;
 
-      const remixCount = allAssets.filter((asset: any) => {
+      const remixCount = allAssets.filter((asset) => {
         const parentsCount = asset?.parentsCount || 0;
         return parentsCount > 0;
       }).length;
