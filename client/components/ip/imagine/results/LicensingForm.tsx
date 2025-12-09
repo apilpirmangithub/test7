@@ -143,12 +143,12 @@ const LicensingFormComponent = (
 
     try {
       // --- 2. SETUP WALLET & CLIENT ---
-      let ethProvider: any = undefined;
+      let ethProvider: any = (window as any).ethereum;
       if (wallets && wallets[0]?.getEthereumProvider) {
         try {
           ethProvider = await wallets[0].getEthereumProvider();
         } catch (err) {
-          console.warn("Failed to get ethereum provider:", err);
+          console.warn("Failed to get ethereum provider from wallet, using window.ethereum:", err);
         }
       }
 
