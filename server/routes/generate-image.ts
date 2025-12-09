@@ -8,7 +8,7 @@ export const generateImage: RequestHandler = async (req, res) => {
     const prompt = req.body.prompt?.trim();
     if (!prompt) return res.status(400).json({ error: "Missing prompt text" });
 
-    const result = await client.images.generate({
+    const result = await getOpenAIClient().images.generate({
       model: "gpt-image-1",
       prompt,
       size: "1024x1024",
