@@ -47,7 +47,6 @@ interface CreationContextType {
     remixType?: "paid" | "free" | null,
     parentAsset?: any,
     originalUrl?: string,
-    cleanUrl?: string,
     watermarkedUrl?: string,
   ) => void;
   updateCreationWithOriginalUrl: (
