@@ -1,6 +1,5 @@
 export const generateImageFromText = async (
   prompt: string,
-  guestMode: boolean = false,
 ): Promise<string> => {
   if (!prompt) throw new Error("Prompt is required.");
 
@@ -42,7 +41,6 @@ export const generateImageFromText = async (
 
 export const generateImageFromTextWithWatermark = async (
   prompt: string,
-  guestMode: boolean = false,
 ): Promise<{ url: string; originalUrl: string }> => {
   if (!prompt) throw new Error("Prompt is required.");
 
@@ -89,7 +87,6 @@ export const generateImageFromTextWithWatermark = async (
 export const editImage = async (
   prompt: string,
   image: { imageBytes: string; mimeType: string },
-  guestMode: boolean = false,
 ): Promise<string> => {
   if (!prompt) throw new Error("Prompt is required.");
   if (!image || !image.imageBytes)
@@ -140,9 +137,8 @@ export const editImage = async (
 export const editImageWithWatermark = async (
   prompt: string,
   image: { imageBytes: string; mimeType: string },
-  guestMode: boolean = false,
 ): Promise<{ url: string; originalUrl: string }> => {
-  const editedUrl = await editImage(prompt, image, guestMode);
+  const editedUrl = await editImage(prompt, image);
 
   try {
     const { addCanvasWatermark } = await import("@/lib/utils/add-watermark");
@@ -159,13 +155,12 @@ export const upscaleImage = async (
     imageBytes: string;
     mimeType: string;
   },
-  guestMode: boolean = false,
 ): Promise<string> => {
   const prompt =
     "Create a high-resolution upscaled version of this image with enhanced details and improved clarity without changing the composition.";
 
   try {
-    return await editImage(prompt, image, guestMode);
+    return await editImage(prompt, image);
   } catch (error) {
     throw error;
   }
