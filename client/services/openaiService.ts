@@ -12,7 +12,7 @@ export const generateImageFromText = async (
       },
       body: JSON.stringify({
         prompt: prompt,
-        mode: guestMode ? "demo" : "production",
+        mode: "demo",
       }),
     });
 
