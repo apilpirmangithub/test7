@@ -131,13 +131,32 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     // Note: guestMode is not persisted - always starts as false
   }, []);
 
+  // Detect wallet disconnect or switch - clear all cache
+  useEffect(() => {
+    // If wallet was connected before and now disconnected (or switched)
+    if (previousWalletAddress && previousWalletAddress !== walletAddress) {
+      console.log(
+        `[CreationContext] Wallet changed from ${previousWalletAddress} to ${walletAddress}. Clearing cache.`,
+      );
+      clearAllCache();
+      setResultUrl(null);
+      setResultType(null);
+      setOriginalPrompt("");
+      setCreations([]);
+      setFetchError(null);
+    }
+
+    // Update previous wallet for next comparison
+    setPreviousWalletAddress(walletAddress);
+  }, [walletAddress, previousWalletAddress]);
+
   // Fetch creations based on current mode (guest or wallet)
   useEffect(() => {
     const fetchCreations = async () => {
       try {
         setFetchError(null);
         if (guestMode) {
-          // Guest mode: fetch guest creations
+          // Guest mode: fetch guest creations (fully stateless - no cache)
           const response = await fetch("/api/guest-creations");
           if (response.ok) {
             const data = await response.json();
