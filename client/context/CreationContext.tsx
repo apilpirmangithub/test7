@@ -213,46 +213,60 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     fetchCreations();
   }, [guestMode, walletAddress]);
 
-  // Save current result URL to localStorage
+  // Save current result URL to localStorage ONLY when wallet is connected
   useEffect(() => {
-    const lastResult = creations[0];
-    if (lastResult?.url) {
-      localStorage.setItem(RESULT_URL_KEY, lastResult.url);
-    } else if (!resultUrl?.includes("data:")) {
-      // Only persist non-data URLs to localStorage
-      if (resultUrl) {
-        localStorage.setItem(RESULT_URL_KEY, resultUrl);
-      } else {
-        localStorage.removeItem(RESULT_URL_KEY);
+    // Only cache if wallet is connected (not guest mode)
+    const shouldCache = walletAddress && !guestMode;
+
+    if (shouldCache) {
+      const lastResult = creations[0];
+      if (lastResult?.url) {
+        localStorage.setItem(RESULT_URL_KEY, lastResult.url);
+      } else if (!resultUrl?.includes("data:")) {
+        // Only persist non-data URLs to localStorage
+        if (resultUrl) {
+          localStorage.setItem(RESULT_URL_KEY, resultUrl);
+        } else {
+          localStorage.removeItem(RESULT_URL_KEY);
+        }
       }
     }
-  }, [resultUrl, creations]);
+    // In guest mode or without wallet: don't cache
+  }, [resultUrl, creations, walletAddress, guestMode]);
 
-  // Save current result type to localStorage
+  // Save current result type to localStorage ONLY when wallet is connected
   useEffect(() => {
-    const lastResult = creations[0];
-    if (lastResult?.type) {
-      localStorage.setItem(RESULT_TYPE_KEY, lastResult.type);
-    } else if (resultType) {
-      localStorage.setItem(RESULT_TYPE_KEY, resultType);
-    } else {
-      localStorage.removeItem(RESULT_TYPE_KEY);
+    // Only cache if wallet is connected (not guest mode)
+    const shouldCache = walletAddress && !guestMode;
+
+    if (shouldCache) {
+      const lastResult = creations[0];
+      if (lastResult?.type) {
+        localStorage.setItem(RESULT_TYPE_KEY, lastResult.type);
+      } else if (resultType) {
+        localStorage.setItem(RESULT_TYPE_KEY, resultType);
+      } else {
+        localStorage.removeItem(RESULT_TYPE_KEY);
+      }
     }
-  }, [resultType, creations]);
+  }, [resultType, creations, walletAddress, guestMode]);
 
-  // Save original prompt to localStorage
+  // Save original prompt to localStorage ONLY when wallet is connected
   useEffect(() => {
-    if (originalPrompt) {
-      localStorage.setItem(ORIGINAL_PROMPT_KEY, originalPrompt);
-    } else {
-      localStorage.removeItem(ORIGINAL_PROMPT_KEY);
+    // Only cache if wallet is connected (not guest mode)
+    const shouldCache = walletAddress && !guestMode;
+
+    if (shouldCache) {
+      if (originalPrompt) {
+        localStorage.setItem(ORIGINAL_PROMPT_KEY, originalPrompt);
+      } else {
+        localStorage.removeItem(ORIGINAL_PROMPT_KEY);
+      }
     }
-  }, [originalPrompt]);
+  }, [originalPrompt, walletAddress, guestMode]);
 
-  // Save guest mode to localStorage
-  useEffect(() => {
-    localStorage.setItem(GUEST_MODE_KEY, JSON.stringify(guestMode));
-  }, [guestMode]);
+  // Guest mode is NEVER cached - always stateless
+  // No localStorage persistence for guest mode
 
   useEffect(() => {
     return () => {
