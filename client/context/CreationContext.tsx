@@ -392,12 +392,24 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
 
   const refreshWalletCreations = useCallback(async (walletAddr: string) => {
     try {
-      const response = await fetch(`/api/wallet-creations/${walletAddr}`);
+      // Send requesting_wallet as query parameter for server-side validation
+      const params = new URLSearchParams({
+        requesting_wallet: walletAddr,
+      });
+      const response = await fetch(
+        `/api/wallet-creations/${walletAddr}?${params.toString()}`,
+      );
       if (response.ok) {
         const data = await response.json();
         if (data.creations && Array.isArray(data.creations)) {
           setCreations(data.creations);
         }
+      } else if (response.status === 403) {
+        // Unauthorized access - clear creations for security
+        console.warn(
+          "[CreationContext] Unauthorized wallet access - clearing creations",
+        );
+        setCreations([]);
       }
     } catch (error) {
       console.warn("Failed to refresh wallet creations:", error);
