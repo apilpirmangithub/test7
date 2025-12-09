@@ -1,16 +1,5 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-  useCallback,
-} from "react";
-import type {
-  SearchResult,
-  OwnerDomainInfo,
-  RemixTypeInfo,
-  License,
-} from "./types";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import type { SearchResult, OwnerDomainInfo, RemixTypeInfo } from "./types";
 
 /**
  * Hook untuk fetch domain dari owner address
