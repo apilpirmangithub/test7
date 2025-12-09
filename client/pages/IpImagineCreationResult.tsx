@@ -135,7 +135,9 @@ const IpImagineCreationResult = () => {
   // Auto-disable guest mode when wallet connects
   useEffect(() => {
     if (authenticated && guestMode) {
-      console.log("[IpImagineCreationResult] Wallet connected - auto-disabling guest mode");
+      console.log(
+        "[IpImagineCreationResult] Wallet connected - auto-disabling guest mode",
+      );
       setGuestMode(false);
     }
   }, [authenticated]);
@@ -238,7 +240,9 @@ const IpImagineCreationResult = () => {
   const handleToggleGuest = () => {
     // Prevent toggling when wallet is connected (strict isolation)
     if (authenticated) {
-      console.log("[IpImagineCreationResult] Guest toggle disabled - wallet is connected");
+      console.log(
+        "[IpImagineCreationResult] Guest toggle disabled - wallet is connected",
+      );
       return;
     }
     setGuestMode(!guestMode);
@@ -259,7 +263,13 @@ const IpImagineCreationResult = () => {
       }
       showGuest={true}
       isWalletConnected={authenticated}
-      connectedAddressLabel={authenticated && primaryWalletAddress ? primaryWalletAddress.substring(0, 6) + "..." + primaryWalletAddress.substring(primaryWalletAddress.length - 4) : undefined}
+      connectedAddressLabel={
+        authenticated && primaryWalletAddress
+          ? primaryWalletAddress.substring(0, 6) +
+            "..." +
+            primaryWalletAddress.substring(primaryWalletAddress.length - 4)
+          : undefined
+      }
     />
   );
 
