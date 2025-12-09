@@ -237,6 +237,12 @@ export async function createServer() {
   app.delete("/api/guest-creations/:id", handleDeleteGuestCreation);
   app.post("/api/guest-creations/clear", handleClearGuestCreations);
 
+  // Wallet creations endpoints
+  app.get("/api/wallet-creations/:walletAddress", handleGetWalletCreations);
+  app.post("/api/wallet-creations", handleAddWalletCreation);
+  app.delete("/api/wallet-creations/:id", handleDeleteWalletCreation);
+  app.post("/api/wallet-creations/:id", handleUpdateWalletCreation);
+
   // Capture asset vision endpoint (silently on asset click)
   app.post("/api/capture-asset-vision", handleCaptureAssetVision);
 
