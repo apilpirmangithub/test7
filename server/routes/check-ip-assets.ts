@@ -1,10 +1,72 @@
 // server/routes/check-ip-assets.ts
 
-import { RequestHandler } from "express";
+import { RequestHandler, Request, Response } from "express";
 
 interface CheckIpAssetsRequestBody {
   address?: string;
   network?: "testnet" | "mainnet";
+}
+
+interface ImageMetadata {
+  pngUrl?: string;
+  originalUrl?: string;
+  thumbnailUrl?: string;
+}
+
+interface NFTMetadata {
+  image?: ImageMetadata;
+  raw?: {
+    image?: string;
+  };
+}
+
+interface StoryApiAsset {
+  ipId: string;
+  title?: string;
+  name?: string;
+  mediaType?: string;
+  mediaUrl?: string;
+  image?: ImageMetadata;
+  nftMetadata?: NFTMetadata;
+  ownerAddress: string;
+  creator?: string;
+  registrationDate?: string;
+  parentsCount?: number;
+}
+
+interface ProcessedAsset extends StoryApiAsset {
+  thumbnailUrl: string;
+}
+
+interface PaginationInfo {
+  hasMore?: boolean;
+  limit?: number;
+  offset?: number;
+}
+
+interface StoryApiResponse {
+  data?: StoryApiAsset[];
+  pagination?: PaginationInfo;
+}
+
+interface CheckIpAssetsResponseBody {
+  ok: boolean;
+  address?: string;
+  network?: string;
+  totalCount?: number;
+  originalCount?: number;
+  remixCount?: number;
+  assets?: ProcessedAsset[];
+  error?: string;
+  message?: string;
+  details?: string;
+  status?: number;
+}
+
+interface CachedResponse {
+  status: number;
+  body: Omit<CheckIpAssetsResponseBody, "ok">;
+  ts: number;
 }
 
 function convertIpfsUriToHttp(uri: string): string {
