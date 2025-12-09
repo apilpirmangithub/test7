@@ -1082,7 +1082,7 @@ const IpAssistant = () => {
               const derivativesAllowed = hashCheck.derivativesAllowed !== false;
               const warningText = derivativesAllowed
                 ? `⚠️ This is copyrighted content. Remixing is allowed.`
-                : `⚠��� This is copyrighted content.`;
+                : `⚠️ This is copyrighted content.`;
 
               const metadata = hashCheck.metadata || {};
               const warningMessage: Message = {
