@@ -46,7 +46,6 @@ const CompactResultCard = ({
   watermarkedUrl,
   registeredIpId: propsRegisteredIpId,
   creationId,
-  licenseToken,
   childIpId,
   onUnlockWatermark,
   onDelete,
