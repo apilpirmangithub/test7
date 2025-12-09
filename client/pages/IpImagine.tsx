@@ -438,6 +438,7 @@ const IpImagine = () => {
       onWalletClick={handleWalletButtonClick}
       connectedAddressLabel={connectedAddressLabel}
       showGuest={true}
+      isWalletConnected={authenticated}
     />
   );
 
