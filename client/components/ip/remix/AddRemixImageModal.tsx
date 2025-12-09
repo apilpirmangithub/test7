@@ -18,7 +18,6 @@ export const AddRemixImageModal = ({
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [ownerDomains, setOwnerDomains] = useState<
     Record<string, { domain: string | null; loading: boolean }>
   >({});
