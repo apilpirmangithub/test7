@@ -124,6 +124,7 @@ export async function createServer() {
         "127.0.0.1",
         ".vercel.app",
         ".netlify.app",
+        ".fly.dev",
         "builder.io",
       ].concat(process.env.APP_ORIGIN ? [process.env.APP_ORIGIN] : []);
 
