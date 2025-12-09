@@ -138,8 +138,8 @@ const useGeminiGenerator = () => {
             );
           }
 
-          // For paid remix, also upload original version
-          if (remixType === "paid") {
+          // For both paid and free remix, also upload original version
+          if (remixType === "paid" || remixType === "free") {
             const originalBlob = dataURLtoBlob(originalUrl);
             uploadedOriginalUrl = await uploadWalletImageToSupabase({
               file: originalBlob,
@@ -162,11 +162,11 @@ const useGeminiGenerator = () => {
 
       setResultUrl(finalUrl);
 
-      // For paid remix, store watermarked URL (display before registration)
+      // For both paid and free remix, store watermarked URL (display before registration)
       // Original URL will be displayed after registration
       let watermarkedUrlToStore: string | undefined;
 
-      if (remixType === "paid") {
+      if (remixType === "paid" || remixType === "free") {
         watermarkedUrlToStore = uploadedWatermarkedUrl || generatedUrl;
       }
 
