@@ -154,18 +154,15 @@ const IpImagineCreationResult = () => {
         context.refreshWalletCreations(primaryWalletAddress);
       }
     } else if (!authenticated) {
-      // Immediately clear and switch to guest when any wallet disconnects
+      // Clear creations when wallet disconnects (privacy protection)
       console.log(
-        "[IpImagineCreationResult] Wallet state changed - enforcing security",
+        "[IpImagineCreationResult] Wallet disconnected - clearing creations",
       );
       if (context?.clearCreations) {
         context.clearCreations();
       }
-      if (!guestMode) {
-        setGuestMode(true);
-      }
     }
-  }, [authenticated, primaryWalletAddress, guestMode, context]);
+  }, [authenticated, primaryWalletAddress, context]);
 
 
   const handleDownload = () => {
