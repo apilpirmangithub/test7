@@ -21,8 +21,7 @@ export interface Creation {
   registeredByWallet?: string;
   registeredIpId?: string; // Child IP ID from Story Protocol registration
   watermarkedUrl?: string; // Watermarked version for paid remix - stored in Supabase
-  licenseToken?: string; // License token from Story Protocol registration
-  childIpId?: string; // Child IP ID - same as registeredIpId but stored in DB
+  childIpId?: string; // Child IP ID - marks as registered
 }
 
 interface CreationContextType {
