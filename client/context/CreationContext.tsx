@@ -266,19 +266,36 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           return c;
         });
 
-        // Sync updated guest creation to server
+        // Sync updated creation to server
         const updatedCreation = updated.find((c) => c.id === id);
-        if (updatedCreation && updatedCreation.isGuest) {
-          fetch("/api/guest-creations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedCreation),
-          }).catch((error) => {
-            console.warn(
-              "Failed to sync updated guest creation to server:",
-              error,
-            );
-          });
+        if (updatedCreation) {
+          if (updatedCreation.isGuest) {
+            fetch("/api/guest-creations", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(updatedCreation),
+            }).catch((error) => {
+              console.warn(
+                "Failed to sync updated guest creation to server:",
+                error,
+              );
+            });
+          } else if (walletAddress) {
+            const walletCreation = {
+              ...updatedCreation,
+              walletAddress,
+            };
+            fetch(`/api/wallet-creations/${id}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(walletCreation),
+            }).catch((error) => {
+              console.warn(
+                "Failed to sync updated wallet creation to server:",
+                error,
+              );
+            });
+          }
         }
 
         return updated;
