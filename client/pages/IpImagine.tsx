@@ -103,6 +103,14 @@ const IpImagine = () => {
     }
   }, [ready, authenticated, login, logout]);
 
+  // Auto-disable guest mode when wallet connects
+  useEffect(() => {
+    if (authenticated && guestMode) {
+      console.log("[IpImagine] Wallet connected - auto-disabling guest mode");
+      setGuestMode(false);
+    }
+  }, [authenticated]);
+
   const walletButtonText = authenticated
     ? "Disconnect"
     : ready
