@@ -22,7 +22,6 @@ export interface Creation {
   registeredIpId?: string;
   cleanUrl?: string; // Clean version (no watermark) for paid remix - stored in Supabase
   watermarkedUrl?: string; // Watermarked version for paid remix - stored in Supabase
-  isGuest?: boolean; // Deprecated: always false in wallet-only mode
 }
 
 interface CreationContextType {
