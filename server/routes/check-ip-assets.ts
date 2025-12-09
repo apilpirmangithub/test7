@@ -96,13 +96,17 @@ function convertIpfsUriToHttp(uri: string): string {
   return uri;
 }
 
-const IDP_CHECK = new Map<string, { status: number; body: any; ts: number }>();
+const IDP_CHECK = new Map<string, CachedResponse>();
 
-// Menggunakan tipe any untuk req dan res agar kompiler tidak gagal
-export const handleCheckIpAssets: RequestHandler = async (
-  req: any, // Kunci perbaikan: Menggunakan any
-  res: any, // Kunci perbaikan: Menggunakan any
-) => {
+// Properly typed request handler
+export const handleCheckIpAssets: RequestHandler<
+  object,
+  CheckIpAssetsResponseBody,
+  CheckIpAssetsRequestBody
+> = async (
+  req: Request<object, CheckIpAssetsResponseBody, CheckIpAssetsRequestBody>,
+  res: Response<CheckIpAssetsResponseBody>,
+): Promise<void> => {
   try {
     // Properti 'get' sekarang akan dikenali oleh kompiler TS karena tipe argumen adalah 'any'
     const idempotencyKey = (req.get("Idempotency-Key") ||
