@@ -99,15 +99,11 @@ export async function createServer() {
   const { handleCaptureAssetVision } = await import(
     "./routes/capture-asset-vision.js"
   );
-  const { generateImage, editImage } = await import(
-    "./routes/generate-image.js"
-  );
-  const { generateImageWithWatermark } = await import(
-    "./routes/generate-image-watermark.js"
-  );
-  const { demoGenerateImage, demoEditImage } = await import(
-    "./routes/demo-generate.js"
-  );
+  const {
+    unifiedGenerateImage,
+    unifiedEditImage,
+    unifiedGenerateImageWithWatermark,
+  } = await import("./routes/unified-generate.js");
 
   // Setup multer for image upload handling in watermark verification
   const upload = multer({
