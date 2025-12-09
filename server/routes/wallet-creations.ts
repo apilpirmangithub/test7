@@ -21,8 +21,6 @@ interface WalletCreation {
   registeredByWallet?: string;
   registered_ip_id?: string;
   registeredIpId?: string;
-  license_token?: string;
-  licenseToken?: string;
   child_ip_id?: string;
   childIpId?: string;
 }
