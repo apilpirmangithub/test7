@@ -58,7 +58,6 @@ const toDbRow = (creation: WalletCreation) => ({
     creation.registeredByWallet || creation.registered_by_wallet || null,
   registered_ip_id:
     creation.registeredIpId || creation.registered_ip_id || null,
-  license_token: creation.licenseToken || creation.license_token || null,
   child_ip_id: creation.childIpId || creation.child_ip_id || null,
 });
 
