@@ -158,7 +158,8 @@ const useGeminiGenerator = () => {
               authenticated,
               hasWallet: !!primaryWalletAddress,
               supabaseConfigured: isSupabaseConfigured(),
-              reason: "Check Supabase credentials, bucket permissions, and RLS policies",
+              reason:
+                "Check Supabase credentials, bucket permissions, and RLS policies",
             });
             // Keep blob URL for now for display, but mark as temporary
             // finalUrl stays as generatedUrl (blob)
@@ -195,7 +196,10 @@ const useGeminiGenerator = () => {
         // Priority 1: Use uploaded Supabase URL (if upload successful)
         if (uploadedWatermarkedUrl) {
           watermarkedUrlToStore = uploadedWatermarkedUrl;
-          console.log("✅ Watermarked URL stored (Supabase):", watermarkedUrlToStore);
+          console.log(
+            "✅ Watermarked URL stored (Supabase):",
+            watermarkedUrlToStore,
+          );
         }
         // Priority 2: Use data URL directly (works in demo mode & persistent)
         // Data URLs (data:image/...) are permanent and work across sessions
