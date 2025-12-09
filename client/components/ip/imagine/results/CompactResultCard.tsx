@@ -26,7 +26,6 @@ interface CompactResultCardProps {
   watermarkedUrl?: string;
   registeredIpId?: string;
   creationId?: string;
-  licenseToken?: string;
   childIpId?: string;
   onUnlockWatermark?: (originalUrl: string) => void;
   onDelete?: () => void;
