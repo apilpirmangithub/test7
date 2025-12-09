@@ -97,6 +97,23 @@ const IpImagine = () => {
   const handleWalletButtonClick = useCallback(() => {
     if (!ready) return;
     if (authenticated) {
+      // Clear app-specific localStorage before logging out
+      if (typeof window !== "undefined") {
+        const appStorageKeys = [
+          "current_result_url",
+          "current_result_type",
+          "original_prompt",
+          "guest_mode",
+        ];
+        appStorageKeys.forEach((key) => {
+          try {
+            localStorage.removeItem(key);
+          } catch (error) {
+            console.warn(`Failed to clear localStorage key ${key}:`, error);
+          }
+        });
+        console.log("[IpImagine] App localStorage cleared on logout");
+      }
       logout();
     } else {
       void login({ loginMethods: ["wallet"] });
