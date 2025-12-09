@@ -44,6 +44,7 @@ export const SearchResultsGrid = ({
   hoveredIndex,
   setHoveredIndex,
   getRemixTypes,
+  allowsDerivatives: _allowsDerivatives,
   truncateAddressDisplay,
   isLoadingOwnerAssets = false,
   onAssetClick,
