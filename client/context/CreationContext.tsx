@@ -324,6 +324,23 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     [],
   );
 
+  const updateCreationUploadStatus = useCallback(
+    (id: string, isUploading: boolean) => {
+      setCreations((prev) => {
+        return prev.map((c) => {
+          if (c.id === id) {
+            return {
+              ...c,
+              isUploadingUrl: isUploading,
+            };
+          }
+          return c;
+        });
+      });
+    },
+    [],
+  );
+
   const getRegisteredIpIdsForWallet = useCallback(
     (walletAddr: string): string[] => {
       return creations
