@@ -1,14 +1,18 @@
 import { useContext } from "react";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { CreationContext } from "@/context/CreationContext";
 import * as openaiService from "@/services/openaiService";
 import { GenerationOptions, ToggleMode } from "@/types/generation";
 import {
   uploadGuestImageToSupabase,
+  uploadWalletImageToSupabase,
   isSupabaseConfigured,
 } from "@/lib/utils/supabase";
 
 const useGeminiGenerator = () => {
   const context = useContext(CreationContext);
+  const { authenticated, user } = usePrivy();
+  const { wallets } = useWallets();
 
   if (!context) {
     throw new Error(
@@ -27,6 +31,14 @@ const useGeminiGenerator = () => {
     setOriginalPrompt,
     guestMode,
   } = context;
+
+  // Get primary wallet address
+  const primaryWalletAddress =
+    context.creations[0]?.registeredByWallet ||
+    (wallets && wallets.length > 0
+      ? wallets.find((w) => w.address)?.address
+      : user?.wallet?.address) ||
+    null;
 
   const generate = async (
     mode: ToggleMode,
@@ -92,10 +104,14 @@ const useGeminiGenerator = () => {
       type = "image";
       setResultType("image");
 
-      // Upload to Supabase if in guest mode and Supabase is configured
+      // Upload to Supabase (guest mode or wallet connected)
       let finalUrl = generatedUrl;
       const creationId = `creation_${Date.now()}`;
-      if (demoModeParam && isSupabaseConfigured()) {
+      const shouldUpload =
+        (demoModeParam && guestMode) ||
+        (authenticated && primaryWalletAddress && !guestMode);
+
+      if (shouldUpload && isSupabaseConfigured()) {
         try {
           setLoadingMessage("Uploading to storage...");
 
@@ -114,12 +130,21 @@ const useGeminiGenerator = () => {
 
           const blob = dataURLtoBlob(generatedUrl);
 
-          // Upload to Supabase
-          const uploadedUrl = await uploadGuestImageToSupabase({
-            file: blob,
-            fileName: `${creationId}.png`,
-            creationId,
-          });
+          // Upload to appropriate Supabase bucket
+          let uploadedUrl: string | null = null;
+          if (guestMode && demoModeParam) {
+            uploadedUrl = await uploadGuestImageToSupabase({
+              file: blob,
+              fileName: `${creationId}.png`,
+              creationId,
+            });
+          } else if (authenticated && primaryWalletAddress && !guestMode) {
+            uploadedUrl = await uploadWalletImageToSupabase({
+              file: blob,
+              creationId,
+              walletAddress: primaryWalletAddress,
+            });
+          }
 
           if (uploadedUrl) {
             finalUrl = uploadedUrl;

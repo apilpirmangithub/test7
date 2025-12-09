@@ -26,6 +26,12 @@ import {
   handleDeleteGuestCreation,
   handleClearGuestCreations,
 } from "./routes/guest-creations.js";
+import {
+  handleGetWalletCreations,
+  handleAddWalletCreation,
+  handleDeleteWalletCreation,
+  handleUpdateWalletCreation,
+} from "./routes/wallet-creations.js";
 // Sharp-dependent routes are lazy-loaded to avoid loading sharp during build
 
 async function fetchParentIpDetails(
@@ -230,6 +236,12 @@ export async function createServer() {
   app.post("/api/guest-creations", handleAddGuestCreation);
   app.delete("/api/guest-creations/:id", handleDeleteGuestCreation);
   app.post("/api/guest-creations/clear", handleClearGuestCreations);
+
+  // Wallet creations endpoints
+  app.get("/api/wallet-creations/:walletAddress", handleGetWalletCreations);
+  app.post("/api/wallet-creations", handleAddWalletCreation);
+  app.delete("/api/wallet-creations/:id", handleDeleteWalletCreation);
+  app.post("/api/wallet-creations/:id", handleUpdateWalletCreation);
 
   // Capture asset vision endpoint (silently on asset click)
   app.post("/api/capture-asset-vision", handleCaptureAssetVision);

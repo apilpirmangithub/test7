@@ -126,21 +126,35 @@ const IpImagineCreationResult = () => {
     context.setUserIdentifier(walletAddress, guestMode);
   }, [authenticated, wallets, guestMode, context]);
 
-  // Refresh guest creations when toggling to guest mode
+  // Refresh creations when toggling between guest and wallet modes
   useEffect(() => {
-    if (!guestMode || !context?.refreshGuestCreations) return;
-    context.refreshGuestCreations();
-  }, [guestMode, context]);
+    if (guestMode && context?.refreshGuestCreations) {
+      context.refreshGuestCreations();
+    } else if (
+      !guestMode &&
+      authenticated &&
+      primaryWalletAddress &&
+      context?.refreshWalletCreations
+    ) {
+      context.refreshWalletCreations(primaryWalletAddress);
+    }
+  }, [guestMode, authenticated, primaryWalletAddress, context]);
 
-  // Auto-disable guest mode when wallet connects
+  // Auto-disable guest mode and load wallet creations when wallet connects
   useEffect(() => {
-    if (authenticated && guestMode) {
+    if (authenticated && primaryWalletAddress) {
       console.log(
         "[IpImagineCreationResult] Wallet connected - auto-disabling guest mode",
       );
-      setGuestMode(false);
+      if (guestMode) {
+        setGuestMode(false);
+      }
+      // Load wallet creations when wallet connects
+      if (context?.refreshWalletCreations) {
+        context.refreshWalletCreations(primaryWalletAddress);
+      }
     }
-  }, [authenticated]);
+  }, [authenticated, primaryWalletAddress, context]);
 
   const handleDownload = () => {
     if (!displayUrl) return;

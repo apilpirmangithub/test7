@@ -62,6 +62,7 @@ interface CreationContextType {
   removeCreation: (id: string) => void;
   clearCreations: () => void;
   refreshGuestCreations: () => Promise<void>;
+  refreshWalletCreations: (walletAddress: string) => Promise<void>;
   originalPrompt: string;
   setOriginalPrompt: (prompt: string) => void;
   guestMode: boolean;
@@ -130,6 +131,27 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
 
     fetchGuestCreations();
   }, []);
+
+  // Fetch wallet creations when wallet address changes
+  useEffect(() => {
+    if (!walletAddress) return;
+
+    const fetchWalletCreations = async () => {
+      try {
+        const response = await fetch(`/api/wallet-creations/${walletAddress}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.creations && Array.isArray(data.creations)) {
+            setCreations(data.creations);
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch wallet creations:", error);
+      }
+    };
+
+    fetchWalletCreations();
+  }, [walletAddress]);
 
   // Save current result URL to localStorage
   useEffect(() => {
@@ -217,9 +239,22 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         }).catch((error) => {
           console.warn("Failed to sync guest creation to server:", error);
         });
+      } else if (walletAddress) {
+        // Sync wallet creations to server
+        const walletCreation = {
+          ...newCreation,
+          walletAddress,
+        };
+        fetch("/api/wallet-creations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(walletCreation),
+        }).catch((error) => {
+          console.warn("Failed to sync wallet creation to server:", error);
+        });
       }
     },
-    [],
+    [walletAddress],
   );
 
   const updateCreationWithOriginalUrl = useCallback(
@@ -252,19 +287,36 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           return c;
         });
 
-        // Sync updated guest creation to server
+        // Sync updated creation to server
         const updatedCreation = updated.find((c) => c.id === id);
-        if (updatedCreation && updatedCreation.isGuest) {
-          fetch("/api/guest-creations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedCreation),
-          }).catch((error) => {
-            console.warn(
-              "Failed to sync updated guest creation to server:",
-              error,
-            );
-          });
+        if (updatedCreation) {
+          if (updatedCreation.isGuest) {
+            fetch("/api/guest-creations", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(updatedCreation),
+            }).catch((error) => {
+              console.warn(
+                "Failed to sync updated guest creation to server:",
+                error,
+              );
+            });
+          } else if (walletAddress) {
+            const walletCreation = {
+              ...updatedCreation,
+              walletAddress,
+            };
+            fetch(`/api/wallet-creations/${id}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(walletCreation),
+            }).catch((error) => {
+              console.warn(
+                "Failed to sync updated wallet creation to server:",
+                error,
+              );
+            });
+          }
         }
 
         return updated;
@@ -309,6 +361,13 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         }).catch((error) => {
           console.warn("Failed to delete guest creation from server:", error);
         });
+      } else if (creation && !creation.isGuest) {
+        // Sync wallet creation deletion to server
+        fetch(`/api/wallet-creations/${id}`, {
+          method: "DELETE",
+        }).catch((error) => {
+          console.warn("Failed to delete wallet creation from server:", error);
+        });
       }
       return prev.filter((c) => c.id !== id);
     });
@@ -335,6 +394,20 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       }
     } catch (error) {
       console.warn("Failed to refresh guest creations:", error);
+    }
+  }, []);
+
+  const refreshWalletCreations = useCallback(async (walletAddr: string) => {
+    try {
+      const response = await fetch(`/api/wallet-creations/${walletAddr}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.creations && Array.isArray(data.creations)) {
+          setCreations(data.creations);
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to refresh wallet creations:", error);
     }
   }, []);
 
@@ -369,6 +442,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       removeCreation,
       clearCreations,
       refreshGuestCreations,
+      refreshWalletCreations,
       originalPrompt,
       setOriginalPrompt,
       guestMode,
@@ -389,6 +463,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       removeCreation,
       clearCreations,
       refreshGuestCreations,
+      refreshWalletCreations,
       originalPrompt,
       guestMode,
       setGuestMode,
