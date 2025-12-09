@@ -491,7 +491,9 @@ const IpAssistant = () => {
               setTimeout(() => {
                 if (autoScrollNextRef.current) scrollToBottomImmediate();
               }, 0);
-            } catch (e) {}
+            } catch (e) {
+              console.warn("[IpAssistant] Auto-scroll scheduling failed:", e);
+            }
           });
         }
         return next;
