@@ -342,8 +342,8 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       const creation = creations.find((c) => c.id === creationId);
       if (!creation || !creation.registeredByWallet) return false;
       return (
-        creation.registeredByWallet.toLowerCase() === walletAddr?.toLowerCase() &&
-        !!creation.originalUrl
+        creation.registeredByWallet.toLowerCase() ===
+          walletAddr?.toLowerCase() && !!creation.originalUrl
       );
     },
     [creations],
@@ -416,7 +416,9 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const setUserIdentifier = useCallback((walletAddr: string | null) => {
-    console.log(`[CreationContext] User identifier changed: wallet=${walletAddr}`);
+    console.log(
+      `[CreationContext] User identifier changed: wallet=${walletAddr}`,
+    );
     setWalletAddressState(walletAddr);
   }, []);
 

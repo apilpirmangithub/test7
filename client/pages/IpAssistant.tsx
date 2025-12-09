@@ -2249,10 +2249,7 @@ const IpAssistant = () => {
                           let ethProvider: any = (window as any).ethereum;
 
                           try {
-                            if (
-                              wallets &&
-                              wallets[0]?.getEthereumProvider
-                            ) {
+                            if (wallets && wallets[0]?.getEthereumProvider) {
                               ethProvider =
                                 await wallets[0].getEthereumProvider();
                             }
@@ -2279,9 +2276,7 @@ const IpAssistant = () => {
                           !authenticated
                         }
                         title={
-                          !authenticated
-                            ? "Connect wallet to register"
-                            : ""
+                          !authenticated ? "Connect wallet to register" : ""
                         }
                         className="rounded-md bg-[#FF4DA6]/20 px-4 py-2 text-sm font-semibold text-[#FF4DA6] hover:bg-[#FF4DA6]/30 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
