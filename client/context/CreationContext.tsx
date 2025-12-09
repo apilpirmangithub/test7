@@ -233,12 +233,15 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           console.warn("Failed to sync guest creation to server:", error);
         });
       } else if (walletAddress) {
-        // Sync wallet creations to server
+        // Sync wallet creations to server with wallet validation
         const walletCreation = {
           ...newCreation,
           walletAddress,
         };
-        fetch("/api/wallet-creations", {
+        const params = new URLSearchParams({
+          requesting_wallet: walletAddress,
+        });
+        fetch(`/api/wallet-creations?${params.toString()}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(walletCreation),
