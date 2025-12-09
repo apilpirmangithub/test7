@@ -54,7 +54,7 @@ export const generateImageFromTextWithWatermark = async (
       },
       body: JSON.stringify({
         prompt: prompt,
-        mode: guestMode ? "demo" : "production",
+        mode: "demo",
       }),
     });
 
