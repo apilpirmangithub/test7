@@ -396,9 +396,9 @@ export const handleCheckIpAssets: RequestHandler<
       }
 
       // Transform assets to extract media URLs - IPFS only
-      const assets = enrichedAssets.map((asset: any) => {
-        let mediaUrl = null;
-        let thumbnailUrl = null;
+      const assets: ProcessedAsset[] = enrichedAssets.map((asset) => {
+        let mediaUrl: string | null = null;
+        let thumbnailUrl: string | null = null;
 
         // Only use IPFS-based image URLs, not cached/CDN URLs
         if (asset?.image?.pngUrl) {
@@ -432,6 +432,7 @@ export const handleCheckIpAssets: RequestHandler<
         }
 
         return {
+          ...asset,
           ipId: asset.ipId,
           title: asset.title || asset.name || "Untitled Asset",
           mediaUrl: mediaUrl || "",
@@ -441,7 +442,6 @@ export const handleCheckIpAssets: RequestHandler<
           creator: asset.creator,
           registrationDate: asset.registrationDate,
           parentsCount: asset.parentsCount,
-          ...asset,
         };
       });
 
