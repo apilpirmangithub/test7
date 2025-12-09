@@ -23,6 +23,7 @@ const ChatHeaderActions: FC<ChatHeaderActionsProps> = ({
   onTryDemo,
   demoMode,
   showGuest = true,
+  isWalletConnected = false,
 }) => (
   <>
     {connectedAddressLabel ? (
