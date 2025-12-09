@@ -588,8 +588,6 @@ const IpImagine = () => {
             )?.blur();
           }
         }}
-        toolsOpen={false}
-        setToolsOpen={() => {}}
         suggestions={[]}
         setSuggestions={() => {}}
         attachmentLoading={attachmentLoading}
