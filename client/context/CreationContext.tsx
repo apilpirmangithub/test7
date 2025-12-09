@@ -62,6 +62,7 @@ interface CreationContextType {
   removeCreation: (id: string) => void;
   clearCreations: () => void;
   refreshGuestCreations: () => Promise<void>;
+  refreshWalletCreations: (walletAddress: string) => Promise<void>;
   originalPrompt: string;
   setOriginalPrompt: (prompt: string) => void;
   guestMode: boolean;
