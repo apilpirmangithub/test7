@@ -56,9 +56,13 @@ const ChatHeaderActions: FC<ChatHeaderActionsProps> = ({
           type="button"
           aria-pressed={guestMode}
           onClick={onToggleGuest}
+          disabled={isWalletConnected}
+          title={isWalletConnected ? "Disconnect wallet to enable guest mode" : "Toggle guest mode"}
           className={
             "inline-flex items-center rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/40 " +
-            (guestMode
+            (isWalletConnected
+              ? "text-[#FF4DA6]/50 cursor-not-allowed opacity-50"
+              : guestMode
               ? "bg-[#FF4DA6] text-white hover:bg-[#ff77c2]"
               : "text-[#FF4DA6] hover:bg-[#FF4DA6]/15")
           }
