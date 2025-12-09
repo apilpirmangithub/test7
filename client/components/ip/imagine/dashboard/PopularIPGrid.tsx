@@ -181,6 +181,7 @@ export const PopularIPGrid = ({
     "keyword" | "owner" | null
   >(null);
   const [lastResolvedAddress, setLastResolvedAddress] = useState("");
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [ownerDomains, setOwnerDomains] = useState<
     Record<string, { domain: string | null; loading: boolean }>
   >({});
