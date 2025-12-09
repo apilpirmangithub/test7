@@ -236,9 +236,10 @@ const IpImagineCreationResult = () => {
   };
 
   const handleToggleGuest = () => {
-    if (!guestMode && authenticated) {
-      // If toggling to guest mode from authenticated, disconnect wallet
-      handleWalletDisconnect();
+    // Prevent toggling when wallet is connected (strict isolation)
+    if (authenticated) {
+      console.log("[IpImagineCreationResult] Guest toggle disabled - wallet is connected");
+      return;
     }
     setGuestMode(!guestMode);
   };
