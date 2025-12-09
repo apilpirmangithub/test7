@@ -2287,8 +2287,8 @@ const IpAssistant = () => {
                       >
                         {registerState.status === "minting"
                           ? "Registering���"
-                          : !guestMode && !authenticated
-                            ? "Register IP (requires auth)"
+                          : !authenticated
+                            ? "Register IP (requires wallet)"
                             : "Register IP"}
                       </button>
                       <div className="text-xs text-slate-400">
