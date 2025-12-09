@@ -12,21 +12,21 @@ The platform integrates Story Protocol, OpenAI, and Pinata IPFS to make IP manag
 
 ### Core Tools
 
-* IP Assistant: AI-powered IP management with image and data analysis
-* IP Registration: Register, mint, and link your creative assets
-* Wallet Login: EVM wallet support (Metamask, Privy, etc.)
-* Portfolio View: Track owned IP tokens and metadata
-* Search and Explore: Discover tokenized IP assets
-* Chat History: Review past assistant conversations
-* Ownership Tracker: Real-time IP and transaction history
+- IP Assistant: AI-powered IP management with image and data analysis
+- IP Registration: Register, mint, and link your creative assets
+- Wallet Login: EVM wallet support (Metamask, Privy, etc.)
+- Portfolio View: Track owned IP tokens and metadata
+- Search and Explore: Discover tokenized IP assets
+- Chat History: Review past assistant conversations
+- Ownership Tracker: Real-time IP and transaction history
 
 ### Additional Features
 
-* IP Fi Assistant: Financial insights for your IP value
-* NFT Marketplace: Trade and browse tokenized IP assets
-* Settings: Customize integrations and privacy preferences
-* Responsive UI: Works across desktop and mobile
-* Live Sync: Real-time updates and activity tracking
+- IP Fi Assistant: Financial insights for your IP value
+- NFT Marketplace: Trade and browse tokenized IP assets
+- Settings: Customize integrations and privacy preferences
+- Responsive UI: Works across desktop and mobile
+- Live Sync: Real-time updates and activity tracking
 
 ## Tech Stack
 
@@ -50,10 +50,10 @@ docs/     → README, deployment, and architecture
 
 ### Prerequisites
 
-* Node.js v18 or higher
-* pnpm v10.14 or higher
-* Git and Vercel account
-* Story Protocol account and API access
+- Node.js v18 or higher
+- pnpm v10.14 or higher
+- Git and Vercel account
+- Story Protocol account and API access
 
 ### Installation
 
@@ -94,6 +94,7 @@ This runs both frontend and backend with hot reload on [http://localhost:5173](h
    ```bash
    vercel
    ```
+
 4. Your app will be live after the build completes
 
 For Netlify or Docker, see `DEPLOYMENT_GUIDE.md` for details.
@@ -132,17 +133,17 @@ POST /api/capture-asset-vision
 
 ## Security
 
-* Never commit `.env` files
-* Validate all inputs with Zod and server checks
-* Keep API keys on the backend only
-* Verify wallet addresses before any transaction
-* Use trusted origins for CORS
+- Never commit `.env` files
+- Validate all inputs with Zod and server checks
+- Keep API keys on the backend only
+- Verify wallet addresses before any transaction
+- Use trusted origins for CORS
 
 ## Support
 
-* Story Protocol: [https://discord.gg/storyprotocol](https://discord.gg/storyprotocol)
-* Vercel: [https://vercel.com/docs](https://vercel.com/docs)
-* OpenAI: [https://platform.openai.com/docs](https://platform.openai.com/docs)
+- Story Protocol: [https://discord.gg/storyprotocol](https://discord.gg/storyprotocol)
+- Vercel: [https://vercel.com/docs](https://vercel.com/docs)
+- OpenAI: [https://platform.openai.com/docs](https://platform.openai.com/docs)
 
 Refer to `DEPLOYMENT_GUIDE.md` or logs for debugging production issues.
 

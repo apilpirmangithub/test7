@@ -560,15 +560,12 @@ const IpImagine = () => {
               };
             }
 
-            await generate(
-              creationMode,
-              {
-                prompt: input,
-                image: imageData,
-                remixType: currentRemixType,
-                parentAsset: currentParentAsset,
-              },
-            );
+            await generate(creationMode, {
+              prompt: input,
+              image: imageData,
+              remixType: currentRemixType,
+              parentAsset: currentParentAsset,
+            });
 
             setInput("");
             setPreviewImages({ remixImage: null, additionalImage: null });
