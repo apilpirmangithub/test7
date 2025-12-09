@@ -240,19 +240,7 @@ export function useIPRegistrationAgent() {
               }
             } catch {}
             if (!addr) {
-              try {
-                const guestPk = (import.meta as any).env
-                  ?.VITE_GUEST_PRIVATE_KEY;
-                if (guestPk) {
-                  const normalized = String(guestPk).startsWith("0x")
-                    ? String(guestPk)
-                    : `0x${String(guestPk)}`;
-                  const guestAccount = privateKeyToAccount(
-                    normalized as `0x${string}`,
-                  );
-                  addr = guestAccount.address;
-                }
-              } catch {}
+              throw new Error("No wallet address available. Please connect your wallet.");
             }
             return addr;
           })(),
@@ -396,23 +384,9 @@ export function useIPRegistrationAgent() {
                 chainId: 1514,
               });
             } else {
-              const guestPk = (import.meta as any).env?.VITE_GUEST_PRIVATE_KEY;
-              if (!guestPk)
-                throw new Error(
-                  "No wallet connected and guest key not configured (VITE_GUEST_PRIVATE_KEY).",
-                );
-              const normalized = String(guestPk).startsWith("0x")
-                ? String(guestPk)
-                : `0x${String(guestPk)}`;
-              const guestAccount = privateKeyToAccount(
-                normalized as `0x${string}`,
+              throw new Error(
+                "No wallet connected. Please connect your wallet to register IP.",
               );
-              addr = guestAccount.address;
-              story = StoryClient.newClient({
-                account: guestAccount as any,
-                transport: http(rpcUrl),
-                chainId: 1514,
-              });
             }
             return { addr, story };
           })(),
