@@ -2600,12 +2600,9 @@ const IpAssistant = () => {
         previewImages={previewImages}
         setPreviewImages={setPreviewImages}
         uploadRef={uploadRef}
-        handleImage={handleImage}
         onSubmit={handleSend}
         inputRef={inputRef}
         handleKeyDown={handleKeyDown}
-        toolsOpen={toolsOpen}
-        setToolsOpen={setToolsOpen}
         suggestions={suggestions}
         setSuggestions={setSuggestions}
         attachmentLoading={attachmentLoading}
