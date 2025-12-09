@@ -1529,8 +1529,6 @@ const IpAssistant = () => {
 
   const headerActions = (
     <ChatHeaderActions
-      guestMode={guestMode}
-      onToggleGuest={() => setGuestMode((value) => !value)}
       walletButtonText={walletButtonText}
       walletButtonDisabled={walletButtonDisabled}
       onWalletClick={handleWalletButtonClick}
@@ -1881,7 +1879,7 @@ const IpAssistant = () => {
                                 {" "}
                                 <span className="mx-1 text-slate-400">��</span>
                                 <span className="text-[#FF4DA6]/60 text-xs">
-                                  (Connect wallet or use guest mode to register)
+                                  (Connect wallet to register)
                                 </span>
                               </>
                             );
