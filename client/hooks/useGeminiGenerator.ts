@@ -11,6 +11,8 @@ import {
 
 const useGeminiGenerator = () => {
   const context = useContext(CreationContext);
+  const { authenticated, user } = usePrivy();
+  const { wallets } = useWallets();
 
   if (!context) {
     throw new Error(
@@ -29,6 +31,12 @@ const useGeminiGenerator = () => {
     setOriginalPrompt,
     guestMode,
   } = context;
+
+  // Get primary wallet address
+  const primaryWalletAddress = context.creations[0]?.registeredByWallet ||
+    (wallets && wallets.length > 0
+      ? wallets.find((w) => w.address)?.address
+      : user?.wallet?.address) || null;
 
   const generate = async (
     mode: ToggleMode,
