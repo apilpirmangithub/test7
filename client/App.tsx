@@ -27,17 +27,23 @@ declare global {
   }
 }
 
-// Clear localStorage on app startup
+// Clear app-specific localStorage on startup
 const clearLocalStorage = () => {
   if (typeof window !== "undefined") {
-    const keysToPreserve = ["__session__", "__auth__"];
-    for (let i = localStorage.length - 1; i >= 0; i--) {
-      const key = localStorage.key(i);
-      if (key && !keysToPreserve.includes(key)) {
+    const appStorageKeys = [
+      "current_result_url",
+      "current_result_type",
+      "original_prompt",
+      "guest_mode",
+    ];
+    appStorageKeys.forEach((key) => {
+      try {
         localStorage.removeItem(key);
+      } catch (error) {
+        console.warn(`Failed to clear localStorage key ${key}:`, error);
       }
-    }
-    console.log("[App] LocalStorage cleared on startup");
+    });
+    console.log("[App] App localStorage cleared on startup");
   }
 };
 
