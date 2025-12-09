@@ -138,11 +138,14 @@ const useGeminiGenerator = () => {
               uploadedWatermarkedUrl,
             );
           } else {
-            console.error("❌ Failed to upload watermarked image to Supabase");
-            // Don't use blob URL - clear it so display falls back gracefully
-            if (finalUrl.startsWith("blob:")) {
-              finalUrl = generatedUrl; // Keep original blob for now, but warn user
-            }
+            console.error("❌ Failed to upload watermarked image to Supabase", {
+              authenticated,
+              hasWallet: !!primaryWalletAddress,
+              supabaseConfigured: isSupabaseConfigured(),
+              reason: "Check Supabase credentials, bucket permissions, and RLS policies",
+            });
+            // Keep blob URL for now for display, but mark as temporary
+            // finalUrl stays as generatedUrl (blob)
           }
 
           // For both paid and free remix, also upload original version
