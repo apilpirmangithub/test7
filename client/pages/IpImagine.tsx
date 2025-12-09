@@ -103,13 +103,19 @@ const IpImagine = () => {
     }
   }, [ready, authenticated, login, logout]);
 
-  // Auto-disable guest mode when wallet connects
+  // Auto-disable guest mode and load wallet creations when wallet connects
   useEffect(() => {
-    if (authenticated && guestMode) {
+    if (authenticated && primaryWalletAddress) {
       console.log("[IpImagine] Wallet connected - auto-disabling guest mode");
-      setGuestMode(false);
+      if (guestMode) {
+        setGuestMode(false);
+      }
+      // Load wallet creations when wallet connects
+      if (context?.refreshWalletCreations) {
+        context.refreshWalletCreations(primaryWalletAddress);
+      }
     }
-  }, [authenticated]);
+  }, [authenticated, primaryWalletAddress, context]);
 
   const walletButtonText = authenticated
     ? "Disconnect"
