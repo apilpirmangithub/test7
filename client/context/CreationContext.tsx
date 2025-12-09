@@ -113,45 +113,36 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, []);
 
-  // Fetch guest creations from server on mount
+  // Fetch creations based on current mode (guest or wallet)
   useEffect(() => {
-    const fetchGuestCreations = async () => {
+    const fetchCreations = async () => {
       try {
-        const response = await fetch("/api/guest-creations");
-        if (response.ok) {
-          const data = await response.json();
-          if (data.creations && Array.isArray(data.creations)) {
-            setCreations(data.creations);
+        if (guestMode) {
+          // Guest mode: fetch guest creations
+          const response = await fetch("/api/guest-creations");
+          if (response.ok) {
+            const data = await response.json();
+            if (data.creations && Array.isArray(data.creations)) {
+              setCreations(data.creations);
+            }
+          }
+        } else if (walletAddress) {
+          // Wallet mode: fetch wallet creations for this wallet
+          const response = await fetch(`/api/wallet-creations/${walletAddress}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.creations && Array.isArray(data.creations)) {
+              setCreations(data.creations);
+            }
           }
         }
       } catch (error) {
-        console.warn("Failed to fetch guest creations:", error);
+        console.warn("Failed to fetch creations:", error);
       }
     };
 
-    fetchGuestCreations();
-  }, []);
-
-  // Fetch wallet creations when wallet address changes
-  useEffect(() => {
-    if (!walletAddress) return;
-
-    const fetchWalletCreations = async () => {
-      try {
-        const response = await fetch(`/api/wallet-creations/${walletAddress}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.creations && Array.isArray(data.creations)) {
-            setCreations(data.creations);
-          }
-        }
-      } catch (error) {
-        console.warn("Failed to fetch wallet creations:", error);
-      }
-    };
-
-    fetchWalletCreations();
-  }, [walletAddress]);
+    fetchCreations();
+  }, [guestMode, walletAddress]);
 
   // Save current result URL to localStorage
   useEffect(() => {
