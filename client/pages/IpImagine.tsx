@@ -546,6 +546,31 @@ const IpImagine = () => {
             return;
           }
 
+          // Validation: Prevent paid remix without proper state
+          if (currentRemixType === "paid") {
+            if (!currentParentAsset) {
+              setStatusText(
+                "Paid remix requires parent asset data. Please select a paid remix again.",
+              );
+              setWaiting(false);
+              return;
+            }
+            if (!authenticated || !primaryWalletAddress) {
+              setStatusText(
+                "Paid remix requires wallet connection. Please connect your wallet.",
+              );
+              setWaiting(false);
+              return;
+            }
+            if (guestMode) {
+              setStatusText(
+                "Paid remix is not available in guest mode. Please switch to wallet mode.",
+              );
+              setWaiting(false);
+              return;
+            }
+          }
+
           setWaiting(true);
           setStatusText("��� Starting generation...");
 
