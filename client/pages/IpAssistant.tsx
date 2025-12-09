@@ -112,6 +112,9 @@ const IpAssistant = () => {
   const expandedMediaContainerRef = useRef<HTMLDivElement | null>(null);
   const ownerSearchControllerRef = useRef<AbortController | null>(null);
   const ownerSearchRequestIdRef = useRef<number | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const pendingTimeoutsRef = useRef<Set<NodeJS.Timeout>>(new Set());
+  const mountedRef = useRef(true);
 
   // throttled scroll helpers to avoid excessive layout work on mobile
   const lastScrollRef = useRef<number>(0);
