@@ -55,6 +55,7 @@ const LicensingFormComponent = (
     parentAsset,
     onRegisterStart,
     onRegisterComplete,
+    onRegisterError,
   }: LicensingFormProps,
   ref: any,
 ) => {
