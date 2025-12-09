@@ -15,6 +15,7 @@ export interface Creation {
   timestamp: number;
   prompt: string;
   isGuest?: boolean;
+  walletAddress?: string; // Wallet address for wallet-mode creations
   remixType?: "paid" | "free" | null;
   parentAsset?: any;
   originalUrl?: string;
