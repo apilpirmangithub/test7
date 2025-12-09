@@ -108,7 +108,9 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   const [guestMode, setGuestMode] = useState<boolean>(false);
   const [walletAddress, setWalletAddressState] = useState<string | null>(null);
   const [isGuest, setIsGuestState] = useState<boolean>(false);
-  const [previousWalletAddress, setPreviousWalletAddress] = useState<string | null>(null);
+  const [previousWalletAddress, setPreviousWalletAddress] = useState<
+    string | null
+  >(null);
 
   // Load creations from localStorage ONLY if wallet was connected on previous session
   useEffect(() => {
