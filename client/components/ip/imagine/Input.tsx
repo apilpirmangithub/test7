@@ -65,6 +65,11 @@ const IpImagineInput = ({
   const galleryButtonRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // Memoize callback to prevent animation from restarting on every render
+  const handleAnimationComplete = useCallback(() => {
+    setShowFlyingAnimation(false);
+  }, []);
+
   return (
     <form
       className="chat-input flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-[1.45rem] py-2.5 sm:py-3 md:py-3.5 border-t-0 md:border-t md:border-[#FF4DA6]/10 bg-slate-950/60 md:bg-gradient-to-r md:from-slate-950/60 md:via-[#FF4DA6]/5 md:to-slate-950/60 flex-none sticky bottom-0 z-10 backdrop-blur-xl transition-all duration-300"
