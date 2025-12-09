@@ -102,14 +102,13 @@ const CompactResultCard = ({
     console.log(
       `[CompactResultCard] Updated displayUrl based on registration state`,
       {
-        childIpId,
-        licenseToken,
+        hasChildIpId: !!childIpId,
         hasWatermarkedUrl: !!watermarkedUrl,
         hasOriginalUrl: !!originalUrl,
         displayUrl: newDisplayUrl,
       },
     );
-  }, [childIpId, licenseToken, watermarkedUrl, originalUrl, imageUrl]);
+  }, [childIpId, watermarkedUrl, originalUrl, imageUrl]);
 
   // Check if current wallet has already unlocked this creation
   useEffect(() => {
