@@ -1,5 +1,3 @@
-import { useState, useMemo, useEffect, useRef } from "react";
-
 interface License {
   licenseTermsId?: string;
   terms?: {
@@ -46,7 +44,6 @@ export const SearchResultsGrid = ({
   hoveredIndex,
   setHoveredIndex,
   getRemixTypes,
-  allowsDerivatives,
   truncateAddressDisplay,
   isLoadingOwnerAssets = false,
   onAssetClick,
