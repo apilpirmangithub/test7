@@ -21,12 +21,6 @@ import {
   handleDeleteRemixHash,
 } from "./routes/remix-hash-whitelist.js";
 import {
-  handleGetGuestCreations,
-  handleAddGuestCreation,
-  handleDeleteGuestCreation,
-  handleClearGuestCreations,
-} from "./routes/guest-creations.js";
-import {
   handleGetWalletCreations,
   handleAddWalletCreation,
   handleDeleteWalletCreation,
@@ -228,13 +222,7 @@ export async function createServer() {
   app.post("/api/_admin/clear-remix-hashes", handleClearRemixHashes);
   app.post("/api/_admin/delete-remix-hash", handleDeleteRemixHash);
 
-  // Guest creations endpoints
-  app.get("/api/guest-creations", handleGetGuestCreations);
-  app.post("/api/guest-creations", handleAddGuestCreation);
-  app.delete("/api/guest-creations/:id", handleDeleteGuestCreation);
-  app.post("/api/guest-creations/clear", handleClearGuestCreations);
-
-  // Wallet creations endpoints
+  // Wallet creations endpoints (only wallet mode supported)
   app.get("/api/wallet-creations/:walletAddress", handleGetWalletCreations);
   app.post("/api/wallet-creations", handleAddWalletCreation);
   app.delete("/api/wallet-creations/:id", handleDeleteWalletCreation);
