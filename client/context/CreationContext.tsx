@@ -238,7 +238,6 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       remixType?: "paid" | "free" | null,
       parentAsset?: any,
       originalUrl?: string,
-      cleanUrl?: string,
       watermarkedUrl?: string,
     ) => {
       const now = Date.now();
@@ -252,7 +251,6 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         remixType,
         parentAsset,
         originalUrl,
-        cleanUrl,
         watermarkedUrl,
       };
       setCreations((prev) => [newCreation, ...prev]);
