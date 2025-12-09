@@ -404,6 +404,10 @@ const LicensingFormComponent = (
         error,
         stack: error?.stack,
       });
+      // Notify parent component about the error
+      if (onRegisterError) {
+        onRegisterError(userFriendlyMsg);
+      }
       // Set step kembali ke idle setelah error agar user bisa mencoba lagi
       setCurrentStep("idle");
     } finally {
