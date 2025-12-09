@@ -131,7 +131,10 @@ const useGeminiGenerator = () => {
 
           if (uploadedWatermarkedUrl) {
             finalUrl = uploadedWatermarkedUrl;
-            console.log("Watermarked image uploaded to Supabase:", uploadedWatermarkedUrl);
+            console.log(
+              "Watermarked image uploaded to Supabase:",
+              uploadedWatermarkedUrl,
+            );
           }
 
           // For paid remix, also upload original version
@@ -144,7 +147,10 @@ const useGeminiGenerator = () => {
             });
 
             if (uploadedOriginalUrl) {
-              console.log("Original image uploaded to Supabase:", uploadedOriginalUrl);
+              console.log(
+                "Original image uploaded to Supabase:",
+                uploadedOriginalUrl,
+              );
             }
           }
         } catch (uploadError) {
