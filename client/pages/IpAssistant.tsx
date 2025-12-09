@@ -470,14 +470,6 @@ const IpAssistant = () => {
       ? truncateAddress(primaryWalletAddress)
       : null;
 
-  // Auto-disable guest mode when wallet connects
-  useEffect(() => {
-    if (authenticated && guestMode) {
-      console.log("[IpAssistant] Wallet connected - auto-disabling guest mode");
-      setGuestMode(false);
-    }
-  }, [authenticated]);
-
   const pushMessage = useCallback(
     (msg: Message) => {
       const id =
@@ -1544,6 +1536,7 @@ const IpAssistant = () => {
       walletButtonDisabled={walletButtonDisabled}
       onWalletClick={handleWalletButtonClick}
       connectedAddressLabel={connectedAddressLabel}
+      isWalletConnected={authenticated}
     />
   );
 
