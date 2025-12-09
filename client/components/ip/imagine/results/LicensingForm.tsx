@@ -40,6 +40,7 @@ interface LicensingFormProps {
     error: any;
   }) => void;
   onRegisterComplete?: (result: { ipId?: Address; txHash?: Address }) => void;
+  onRegisterError?: (errorMessage: string) => void;
 }
 
 // --- KOMPONEN UTAMA ---
