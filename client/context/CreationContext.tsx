@@ -132,6 +132,27 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     fetchGuestCreations();
   }, []);
 
+  // Fetch wallet creations when wallet address changes
+  useEffect(() => {
+    if (!walletAddress) return;
+
+    const fetchWalletCreations = async () => {
+      try {
+        const response = await fetch(`/api/wallet-creations/${walletAddress}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.creations && Array.isArray(data.creations)) {
+            setCreations(data.creations);
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch wallet creations:", error);
+      }
+    };
+
+    fetchWalletCreations();
+  }, [walletAddress]);
+
   // Save current result URL to localStorage
   useEffect(() => {
     const lastResult = creations[0];
