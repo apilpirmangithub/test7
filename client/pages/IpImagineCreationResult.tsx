@@ -87,10 +87,12 @@ const IpImagineCreationResult = () => {
     isLoading,
     loadingMessage,
     error,
+    fetchError,
     originalPrompt,
     guestMode,
     setGuestMode,
     updateCreationWithOriginalUrl,
+    creations,
   } = context;
 
   const [showUpscaler, setShowUpscaler] = useState(false);
