@@ -41,7 +41,7 @@ const getSupabaseClient = (): SupabaseClient | null => {
 
 const toDbRow = (creation: WalletCreation) => ({
   id: creation.id,
-  wallet_address: creation.walletAddress || creation.wallet_address,
+  wallet_address: (creation.walletAddress || creation.wallet_address || "").toLowerCase(),
   url: creation.url,
   type: creation.type || "image",
   timestamp: creation.timestamp || Date.now(),
