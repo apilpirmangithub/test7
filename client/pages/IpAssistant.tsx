@@ -233,7 +233,6 @@ const IpAssistant = () => {
   const [loadingRegisterFor, setLoadingRegisterFor] = useState<string | null>(
     null,
   );
-  const [guestMode, setGuestMode] = useState<boolean>(false);
   const [toolsOpen, setToolsOpen] = useState<boolean>(false);
   const [previewImages, setPreviewImages] = useState<PreviewImagesState>({
     remixImage: null,
