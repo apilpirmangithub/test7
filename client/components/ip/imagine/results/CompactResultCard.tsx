@@ -44,9 +44,11 @@ const CompactResultCard = ({
   setIsExpanded: externalSetIsExpanded,
   parentAsset,
   originalUrl,
-  cleanUrl,
+  watermarkedUrl,
   registeredIpId: propsRegisteredIpId,
   creationId,
+  licenseToken,
+  childIpId,
   onUnlockWatermark,
   onDelete,
 }: CompactResultCardProps) => {
