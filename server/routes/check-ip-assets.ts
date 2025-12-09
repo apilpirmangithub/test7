@@ -222,7 +222,7 @@ export const handleCheckIpAssets: RequestHandler<
             });
           }
 
-          const data = await response.json();
+          const data: StoryApiResponse = await response.json();
 
           if (!data) {
             console.error("Empty response from Story API", {
@@ -233,7 +233,9 @@ export const handleCheckIpAssets: RequestHandler<
             break;
           }
 
-          const assets = Array.isArray(data) ? data : data?.data || [];
+          const assets: StoryApiAsset[] = Array.isArray(data)
+            ? data
+            : data?.data || [];
 
           if (!Array.isArray(assets)) {
             console.warn("Unexpected response format from Story API", {
@@ -246,7 +248,7 @@ export const handleCheckIpAssets: RequestHandler<
             break;
           }
 
-          const validAssets = assets.filter((asset: any) => {
+          const validAssets: StoryApiAsset[] = assets.filter((asset) => {
             if (!asset || typeof asset !== "object") {
               console.warn("Invalid asset object", { asset });
               return false;
