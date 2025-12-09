@@ -4,8 +4,6 @@ import { Search, Loader } from "lucide-react";
 import {
   SearchResultsGrid,
   ExpandedAssetModal,
-  useDomainFetch,
-  useUniqueOwners,
 } from "@/components/ip/search";
 import { CategoryBrowser } from "./CategoryBrowser";
 import { FeaturedCatalog } from "./FeaturedCatalog";
@@ -166,7 +164,6 @@ const DUMMY_DATA: Record<"ip" | "image" | "video" | "music", PopularItem[]> = {
 };
 
 export const PopularIPGrid = ({
-  onBack,
   onRemixSelected,
   onAssetExpanded,
 }: PopularIPGridProps) => {
@@ -180,12 +177,10 @@ export const PopularIPGrid = ({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [hasMore, setHasMore] = useState(false);
-  const [totalResults, setTotalResults] = useState(0);
   const [lastQueryType, setLastQueryType] = useState<
     "keyword" | "owner" | null
   >(null);
   const [lastResolvedAddress, setLastResolvedAddress] = useState("");
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [ownerDomains, setOwnerDomains] = useState<
     Record<string, { domain: string | null; loading: boolean }>
   >({});
