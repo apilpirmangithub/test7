@@ -327,7 +327,7 @@ export const handleCheckIpAssets: RequestHandler<
       try {
         const ipIds = allAssets
           .slice(0, 100)
-          .map((a: any) => a.ipId)
+          .map((a) => a.ipId)
           .filter(Boolean);
 
         if (ipIds.length > 0) {
