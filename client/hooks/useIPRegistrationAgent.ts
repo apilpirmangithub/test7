@@ -240,7 +240,9 @@ export function useIPRegistrationAgent() {
               }
             } catch {}
             if (!addr) {
-              throw new Error("No wallet address available. Please connect your wallet.");
+              throw new Error(
+                "No wallet address available. Please connect your wallet.",
+              );
             }
             return addr;
           })(),

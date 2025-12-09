@@ -153,7 +153,9 @@ const LicensingFormComponent = (
       }
 
       if (!ethProvider) {
-        throw new Error("Ethereum provider not available. Please ensure wallet is connected.");
+        throw new Error(
+          "Ethereum provider not available. Please ensure wallet is connected.",
+        );
       }
 
       try {
@@ -210,9 +212,7 @@ const LicensingFormComponent = (
       // Use wallet users SPG contract
       const spg = (import.meta as any).env?.VITE_PUBLIC_SPG_COLLECTION_USERS;
       if (!spg)
-        throw new Error(
-          `SPG collection not configured for wallet users`,
-        );
+        throw new Error(`SPG collection not configured for wallet users`);
 
       const ipMetadataObj = {
         title: title || "AI Generated Image",

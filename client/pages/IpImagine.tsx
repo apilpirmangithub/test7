@@ -41,13 +41,8 @@ const IpImagine = () => {
     completeTour,
   } = useIpImagineTour();
 
-  const {
-    generate,
-    isLoading,
-    resultUrl,
-    setResultUrl,
-    setResultType,
-  } = useGeminiGenerator();
+  const { generate, isLoading, resultUrl, setResultUrl, setResultType } =
+    useGeminiGenerator();
 
   const [input, setInput] = useState("");
   const [waiting, setWaiting] = useState(false);
@@ -440,7 +435,6 @@ const IpImagine = () => {
 
   // Note: Watermark is now applied in useGeminiGenerator hook during generation
   // This ensures watermark is applied before image is stored in creation history
-
 
   const headerActions = (
     <ChatHeaderActions

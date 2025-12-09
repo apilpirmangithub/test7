@@ -243,7 +243,6 @@ const IpImagineCreationResult = () => {
     }
   };
 
-
   const headerActions = (
     <ChatHeaderActions
       walletButtonText={
@@ -496,7 +495,8 @@ const IpImagineCreationResult = () => {
               ) : (
                 <>
                   <p className="text-slate-400 mb-4">
-                    No creation data found. Please connect your wallet and create an image.
+                    No creation data found. Please connect your wallet and
+                    create an image.
                   </p>
                 </>
               )}

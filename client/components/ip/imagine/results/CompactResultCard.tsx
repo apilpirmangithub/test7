@@ -130,7 +130,6 @@ const CompactResultCard = ({
           walletAddress = wallets[0].address;
         }
 
-
         // Check if this wallet has already unlocked this creation
         if (walletAddress) {
           console.log(

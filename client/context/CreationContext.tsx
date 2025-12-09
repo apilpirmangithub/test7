@@ -418,9 +418,7 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const setUserIdentifier = useCallback((walletAddr: string | null) => {
-    console.log(
-      `[CreationContext] Wallet identifier changed: ${walletAddr}`,
-    );
+    console.log(`[CreationContext] Wallet identifier changed: ${walletAddr}`);
     setWalletAddressState(walletAddr);
   }, []);
 

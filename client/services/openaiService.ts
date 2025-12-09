@@ -150,12 +150,10 @@ export const editImageWithWatermark = async (
   }
 };
 
-export const upscaleImage = async (
-  image: {
-    imageBytes: string;
-    mimeType: string;
-  },
-): Promise<string> => {
+export const upscaleImage = async (image: {
+  imageBytes: string;
+  mimeType: string;
+}): Promise<string> => {
   const prompt =
     "Create a high-resolution upscaled version of this image with enhanced details and improved clarity without changing the composition.";
 
