@@ -10,6 +10,7 @@ type ChatHeaderActionsProps = {
   onTryDemo?: () => void;
   demoMode?: boolean;
   showGuest?: boolean;
+  isWalletConnected?: boolean;
 };
 
 const ChatHeaderActions: FC<ChatHeaderActionsProps> = ({
