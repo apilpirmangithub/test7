@@ -82,6 +82,18 @@ const RESULT_TYPE_KEY = "current_result_type";
 const ORIGINAL_PROMPT_KEY = "original_prompt";
 const GUEST_MODE_KEY = "guest_mode";
 
+/**
+ * Clear all cache keys from localStorage
+ * Called when wallet disconnects or switches
+ */
+const clearAllCache = () => {
+  localStorage.removeItem(RESULT_URL_KEY);
+  localStorage.removeItem(RESULT_TYPE_KEY);
+  localStorage.removeItem(ORIGINAL_PROMPT_KEY);
+  localStorage.removeItem(GUEST_MODE_KEY);
+  console.log("[CreationContext] All cache cleared from localStorage");
+};
+
 export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
@@ -96,25 +108,27 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
   const [guestMode, setGuestMode] = useState<boolean>(false);
   const [walletAddress, setWalletAddressState] = useState<string | null>(null);
   const [isGuest, setIsGuestState] = useState<boolean>(false);
+  const [previousWalletAddress, setPreviousWalletAddress] = useState<string | null>(null);
 
-  // Load creations from localStorage
+  // Load creations from localStorage ONLY if wallet was connected on previous session
   useEffect(() => {
     const storedResultUrl = localStorage.getItem(RESULT_URL_KEY);
     const storedResultType = localStorage.getItem(RESULT_TYPE_KEY);
     const storedPrompt = localStorage.getItem(ORIGINAL_PROMPT_KEY);
     const storedGuestMode = localStorage.getItem(GUEST_MODE_KEY);
-    if (storedResultUrl) {
+
+    // Only restore from cache if we have wallet address and not in guest mode
+    // (Cache only exists when wallet was connected)
+    if (storedResultUrl && walletAddress && !guestMode) {
       setResultUrl(storedResultUrl);
     }
-    if (storedResultType) {
+    if (storedResultType && walletAddress && !guestMode) {
       setResultType(storedResultType as ResultType);
     }
-    if (storedPrompt) {
+    if (storedPrompt && walletAddress && !guestMode) {
       setOriginalPrompt(storedPrompt);
     }
-    if (storedGuestMode !== null) {
-      setGuestMode(JSON.parse(storedGuestMode));
-    }
+    // Note: guestMode is not persisted - always starts as false
   }, []);
 
   // Fetch creations based on current mode (guest or wallet)
