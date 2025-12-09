@@ -380,9 +380,18 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     // Clear guest creations from server
     fetch("/api/guest-creations/clear", {
       method: "POST",
-    }).catch((error) => {
-      console.warn("Failed to clear guest creations from server:", error);
-    });
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          console.warn(
+            `Failed to clear guest creations: ${response.status} ${response.statusText}`,
+          );
+        }
+      })
+      .catch((error) => {
+        console.warn("Failed to clear guest creations from server:", error);
+      });
   }, []);
 
   const refreshGuestCreations = useCallback(async () => {
