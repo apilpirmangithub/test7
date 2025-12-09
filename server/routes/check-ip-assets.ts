@@ -361,15 +361,18 @@ export const handleCheckIpAssets: RequestHandler<
           );
 
           if (enrichmentResponse.ok) {
-            const enrichmentData = await enrichmentResponse.json();
-            const metadataMap = new Map();
+            const enrichmentData: StoryApiResponse =
+              await enrichmentResponse.json();
+            const metadataMap = new Map<string, StoryApiAsset>();
 
-            const enrichedData = Array.isArray(enrichmentData.data)
+            const enrichedData: StoryApiAsset[] = Array.isArray(
+              enrichmentData.data,
+            )
               ? enrichmentData.data
-              : enrichmentData;
+              : enrichmentData.data || [];
 
             if (Array.isArray(enrichedData)) {
-              enrichedData.forEach((asset: any) => {
+              enrichedData.forEach((asset) => {
                 if (asset.ipId) {
                   metadataMap.set(asset.ipId, asset);
                 }
@@ -377,7 +380,7 @@ export const handleCheckIpAssets: RequestHandler<
             }
 
             // Merge enriched data with initial results
-            enrichedAssets = allAssets.map((asset: any) => {
+            enrichedAssets = allAssets.map((asset) => {
               const enriched = metadataMap.get(asset.ipId);
               return enriched || asset;
             });
