@@ -493,7 +493,6 @@ const IpImagine = () => {
         previewImages={previewImages}
         setPreviewImages={setPreviewImages}
         uploadRef={uploadRef}
-        handleImage={handleImage}
         resultUrl={resultUrl}
         resultUrls={resultUrls}
         creations={creations}
