@@ -600,11 +600,11 @@ const IpImagineCreationResult = () => {
                           }}
                           onDownload={() => {
                             const link = document.createElement("a");
-                            // Use original URL if registered with license, otherwise use watermarked/main URL
+                            // Use original URL if registered (has childIpId), otherwise use watermarked/main URL
                             const downloadUrl =
                               upscalingCreationId === creation.id && upscaledUrl
                                 ? upscaledUrl
-                                : creation.childIpId && creation.licenseToken && creation.originalUrl
+                                : creation.childIpId && creation.originalUrl
                                   ? creation.originalUrl
                                   : creation.url;
                             link.href = downloadUrl;
