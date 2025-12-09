@@ -163,11 +163,21 @@ const useGeminiGenerator = () => {
       setResultUrl(finalUrl);
 
       // For both paid and free remix, store watermarked URL (display before registration)
-      // Original URL will be displayed after registration
+      // IMPORTANT: Only store permanent Supabase URLs, never blob URLs
+      // Blob URLs are temporary and become invalid on reconnect
       let watermarkedUrlToStore: string | undefined;
 
       if (remixType === "paid" || remixType === "free") {
-        watermarkedUrlToStore = uploadedWatermarkedUrl || generatedUrl;
+        // Only use uploadedWatermarkedUrl if it's a permanent storage URL
+        // Don't fallback to blob URLs (generatedUrl) as they expire on page reload
+        if (uploadedWatermarkedUrl && !uploadedWatermarkedUrl.startsWith("blob:")) {
+          watermarkedUrlToStore = uploadedWatermarkedUrl;
+        } else if (!authenticated || !primaryWalletAddress) {
+          console.warn(
+            "⚠️ Watermarked image requires wallet connection for permanent storage",
+          );
+          // Don't save watermarked URL if we can't upload it permanently
+        }
       }
 
       // Add creation with wallet address
