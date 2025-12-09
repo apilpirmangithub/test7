@@ -167,22 +167,6 @@ const IpImagineCreationResult = () => {
     }
   }, [authenticated, primaryWalletAddress, guestMode, context]);
 
-  // Clear creations when wallet disconnects (privacy protection)
-  useEffect(() => {
-    if (!authenticated && !primaryWalletAddress) {
-      console.log(
-        "[IpImagineCreationResult] Wallet disconnected - clearing creations and forcing guest mode",
-      );
-      // Force clear creations for security
-      if (context?.clearCreations) {
-        context.clearCreations();
-      }
-      // Force enable guest mode when disconnected
-      if (guestMode === false) {
-        setGuestMode(true);
-      }
-    }
-  }, [authenticated, primaryWalletAddress, guestMode, context]);
 
   const handleDownload = () => {
     if (!displayUrl) return;
