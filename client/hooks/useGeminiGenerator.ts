@@ -1,9 +1,11 @@
 import { useContext } from "react";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { CreationContext } from "@/context/CreationContext";
 import * as openaiService from "@/services/openaiService";
 import { GenerationOptions, ToggleMode } from "@/types/generation";
 import {
   uploadGuestImageToSupabase,
+  uploadWalletImageToSupabase,
   isSupabaseConfigured,
 } from "@/lib/utils/supabase";
 
