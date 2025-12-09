@@ -89,8 +89,6 @@ const IpImagineCreationResult = () => {
     error,
     fetchError,
     originalPrompt,
-    guestMode,
-    setGuestMode,
     updateCreationWithOriginalUrl,
     creations,
   } = context;
@@ -115,7 +113,7 @@ const IpImagineCreationResult = () => {
   const uploadRef = useRef<HTMLInputElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | HTMLInputElement | null>(null);
 
-  // Update user identifier in creation context when wallet or guest mode changes
+  // Update wallet identifier in creation context when authentication changes
   useEffect(() => {
     if (!context?.setUserIdentifier) return;
 
@@ -125,38 +123,23 @@ const IpImagineCreationResult = () => {
       walletAddress = walletWithAddress?.address || null;
     }
 
-    context.setUserIdentifier(walletAddress, guestMode);
-  }, [authenticated, wallets, guestMode, context]);
+    context.setUserIdentifier(walletAddress);
+  }, [authenticated, wallets, context]);
 
-  // Refresh creations when toggling between guest and wallet modes
+  // Refresh wallet creations when authentication changes
   useEffect(() => {
-    if (guestMode && context?.refreshGuestCreations) {
-      context.refreshGuestCreations();
-    } else if (
-      !guestMode &&
+    if (
       authenticated &&
       primaryWalletAddress &&
       context?.refreshWalletCreations
     ) {
       context.refreshWalletCreations(primaryWalletAddress);
     }
-  }, [guestMode, authenticated, primaryWalletAddress, context]);
+  }, [authenticated, primaryWalletAddress, context]);
 
-  // Auto-disable guest mode and load wallet creations when wallet connects
+  // Clear creations when wallet disconnects (privacy protection)
   useEffect(() => {
-    if (authenticated && primaryWalletAddress) {
-      console.log(
-        "[IpImagineCreationResult] Wallet connected - auto-disabling guest mode",
-      );
-      if (guestMode) {
-        setGuestMode(false);
-      }
-      // Load wallet creations when wallet connects
-      if (context?.refreshWalletCreations) {
-        context.refreshWalletCreations(primaryWalletAddress);
-      }
-    } else if (!authenticated) {
-      // Clear creations when wallet disconnects (privacy protection)
+    if (!authenticated) {
       console.log(
         "[IpImagineCreationResult] Wallet disconnected - clearing creations",
       );
@@ -169,7 +152,7 @@ const IpImagineCreationResult = () => {
       setExpandedCreationId(null);
       setShowUpscaler(false);
     }
-  }, [authenticated, primaryWalletAddress, context]);
+  }, [authenticated, context]);
 
   const handleDownload = () => {
     if (!displayUrl) return;
@@ -213,19 +196,13 @@ const IpImagineCreationResult = () => {
 
       let upscaledImageUrl: string;
 
-      if (guestMode) {
-        // Guest mode: simulate upscaling delay and generate another dummy image
-        await new Promise((resolve) => setTimeout(resolve, 3500));
-        upscaledImageUrl = generateDemoImage();
-      } else {
-        const [header, base64Data] = resultUrl.split(",");
-        const mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
+      const [header, base64Data] = resultUrl.split(",");
+      const mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
 
-        upscaledImageUrl = await openaiService.upscaleImage({
-          imageBytes: base64Data,
-          mimeType,
-        });
-      }
+      upscaledImageUrl = await openaiService.upscaleImage({
+        imageBytes: base64Data,
+        mimeType,
+      });
 
       setResultUrl(upscaledImageUrl);
       setUpscaledUrl(upscaledImageUrl);
@@ -266,21 +243,9 @@ const IpImagineCreationResult = () => {
     }
   };
 
-  const handleToggleGuest = () => {
-    // Prevent toggling when wallet is connected (strict isolation)
-    if (authenticated) {
-      console.log(
-        "[IpImagineCreationResult] Guest toggle disabled - wallet is connected",
-      );
-      return;
-    }
-    setGuestMode(!guestMode);
-  };
 
   const headerActions = (
     <ChatHeaderActions
-      guestMode={guestMode}
-      onToggleGuest={handleToggleGuest}
       walletButtonText={
         authenticated && primaryWalletAddress ? "Disconnect" : "Connect"
       }
@@ -290,7 +255,6 @@ const IpImagineCreationResult = () => {
           ? handleWalletDisconnect
           : handleWalletConnect
       }
-      showGuest={true}
       isWalletConnected={authenticated}
       connectedAddressLabel={
         authenticated && primaryWalletAddress
@@ -375,16 +339,11 @@ const IpImagineCreationResult = () => {
 
         {creations
           .filter((c) => {
-            if (guestMode) {
-              return c.isGuest === true;
-            } else {
-              // Only show creations from currently connected wallet
-              return (
-                c.isGuest === false &&
-                c.walletAddress?.toLowerCase() ===
-                  primaryWalletAddress?.toLowerCase()
-              );
-            }
+            // Only show creations from currently connected wallet
+            return (
+              c.walletAddress?.toLowerCase() ===
+              primaryWalletAddress?.toLowerCase()
+            );
           })
           .filter((c) => true).length > 0 && (
           <div className="flex items-center justify-between mb-4">
@@ -509,15 +468,10 @@ const IpImagineCreationResult = () => {
             </motion.div>
           ) : creations
               .filter((c) => {
-                if (guestMode) {
-                  return c.isGuest === true;
-                } else {
-                  return (
-                    c.isGuest === false &&
-                    c.walletAddress?.toLowerCase() ===
-                      primaryWalletAddress?.toLowerCase()
-                  );
-                }
+                return (
+                  c.walletAddress?.toLowerCase() ===
+                  primaryWalletAddress?.toLowerCase()
+                );
               })
               .filter((c) => true).length === 0 && !isLoading ? (
             <motion.div
@@ -526,7 +480,7 @@ const IpImagineCreationResult = () => {
               animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center h-[400px]"
             >
-              {authenticated && !guestMode && primaryWalletAddress ? (
+              {authenticated && primaryWalletAddress ? (
                 <>
                   <p className="text-slate-400 mb-4">
                     No creations found for wallet{" "}
@@ -542,9 +496,7 @@ const IpImagineCreationResult = () => {
               ) : (
                 <>
                   <p className="text-slate-400 mb-4">
-                    {guestMode
-                      ? "No shared creations yet. Create one to get started!"
-                      : "No creation data found. Please connect your wallet or create an image."}
+                    No creation data found. Please connect your wallet and create an image.
                   </p>
                 </>
               )}
@@ -604,28 +556,18 @@ const IpImagineCreationResult = () => {
                 )}
                 {context.creations
                   .filter((c) => {
-                    if (guestMode) {
-                      return c.isGuest === true;
-                    } else {
-                      return (
-                        c.isGuest === false &&
-                        c.walletAddress?.toLowerCase() ===
-                          primaryWalletAddress?.toLowerCase()
-                      );
-                    }
+                    return (
+                      c.walletAddress?.toLowerCase() ===
+                      primaryWalletAddress?.toLowerCase()
+                    );
                   })
                   .filter((c) => true).length > 0 ? (
                   context.creations
                     .filter((c) => {
-                      if (guestMode) {
-                        return c.isGuest === true;
-                      } else {
-                        return (
-                          c.isGuest === false &&
-                          c.walletAddress?.toLowerCase() ===
-                            primaryWalletAddress?.toLowerCase()
-                        );
-                      }
+                      return (
+                        c.walletAddress?.toLowerCase() ===
+                        primaryWalletAddress?.toLowerCase()
+                      );
                     })
                     .map((creation) => (
                       <motion.div
@@ -644,7 +586,6 @@ const IpImagineCreationResult = () => {
                           }
                           type={creation.type}
                           isLoading={false}
-                          guestMode={guestMode}
                           parentAsset={creation.parentAsset}
                           originalUrl={creation.originalUrl}
                           cleanUrl={creation.cleanUrl}
