@@ -590,7 +590,6 @@ const IpImagineCreationResult = () => {
                           originalUrl={creation.originalUrl}
                           watermarkedUrl={creation.watermarkedUrl}
                           registeredIpId={creation.registeredIpId}
-                          licenseToken={creation.licenseToken}
                           childIpId={creation.childIpId}
                           creationId={creation.id}
                           onUnlockWatermark={(originalUrl) => {
