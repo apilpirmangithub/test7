@@ -282,6 +282,24 @@ const IpImagine = () => {
     console.log("🎯 handleRemixSelected called with remixType:", remixType);
     setRemixLoading(true);
     try {
+      // Validation: Prevent paid remix in guest mode
+      if (remixType === "paid" && guestMode) {
+        setRemixLoading(false);
+        setStatusText(
+          "⚠️ Paid remix requires wallet connection. Please connect your wallet first.",
+        );
+        return;
+      }
+
+      // Validation: Warn if wallet not fully connected for paid remix
+      if (remixType === "paid" && (!authenticated || !primaryWalletAddress)) {
+        setRemixLoading(false);
+        setStatusText(
+          "⚠️ Please connect your wallet to use paid remix.",
+        );
+        return;
+      }
+
       const imageUrl = asset.mediaUrl || asset.thumbnailUrl;
       if (!imageUrl) {
         throw new Error("No image URL available for this asset");
