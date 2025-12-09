@@ -28,6 +28,7 @@ const useGeminiGenerator = () => {
     resultUrl,
     addCreation,
     setOriginalPrompt,
+    updateCreationUploadStatus,
   } = context;
 
   // Get primary wallet address
