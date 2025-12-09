@@ -218,9 +218,22 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         }).catch((error) => {
           console.warn("Failed to sync guest creation to server:", error);
         });
+      } else if (walletAddress) {
+        // Sync wallet creations to server
+        const walletCreation = {
+          ...newCreation,
+          walletAddress,
+        };
+        fetch("/api/wallet-creations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(walletCreation),
+        }).catch((error) => {
+          console.warn("Failed to sync wallet creation to server:", error);
+        });
       }
     },
-    [],
+    [walletAddress],
   );
 
   const updateCreationWithOriginalUrl = useCallback(
