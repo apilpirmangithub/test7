@@ -15,10 +15,8 @@ interface ExpandedAssetModalProps {
 
 export const ExpandedAssetModal = ({
   asset,
-  isOpen,
   onClose,
   onShowDetails,
-  onRemix,
   onRemixMenu,
   onRemixSelected,
 }: ExpandedAssetModalProps) => {
