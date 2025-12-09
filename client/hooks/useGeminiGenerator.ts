@@ -100,11 +100,11 @@ const useGeminiGenerator = () => {
 
       const shouldUpload = authenticated && primaryWalletAddress;
 
-      // For paid remix, don't upload to Supabase - keep both as data URLs for consistency
-      // For free remix or non-paid modes, upload to Supabase
-      const shouldUploadToSupabase = shouldUpload && isSupabaseConfigured() && remixType !== "paid";
+      // For paid remix, upload both original and watermarked to Supabase
+      let uploadedWatermarkedUrl: string | null = null;
+      let uploadedOriginalUrl: string | null = null;
 
-      if (shouldUploadToSupabase) {
+      if (shouldUpload && isSupabaseConfigured()) {
         try {
           setLoadingMessage("Uploading to storage...");
 
@@ -121,37 +121,46 @@ const useGeminiGenerator = () => {
             return new Blob([u8arr], { type: mime });
           };
 
-          const blob = dataURLtoBlob(generatedUrl);
-
-          // Upload to wallet bucket
-          let uploadedUrl: string | null = null;
-          uploadedUrl = await uploadWalletImageToSupabase({
-            file: blob,
+          // Upload watermarked version
+          const watermarkedBlob = dataURLtoBlob(generatedUrl);
+          uploadedWatermarkedUrl = await uploadWalletImageToSupabase({
+            file: watermarkedBlob,
             creationId,
             walletAddress: primaryWalletAddress,
           });
 
-          if (uploadedUrl) {
-            finalUrl = uploadedUrl;
-            console.log("Image uploaded to Supabase:", uploadedUrl);
-          } else {
-            console.warn("Failed to upload to Supabase, using local URL");
+          if (uploadedWatermarkedUrl) {
+            finalUrl = uploadedWatermarkedUrl;
+            console.log("Watermarked image uploaded to Supabase:", uploadedWatermarkedUrl);
+          }
+
+          // For paid remix, also upload original version
+          if (remixType === "paid") {
+            const originalBlob = dataURLtoBlob(originalUrl);
+            uploadedOriginalUrl = await uploadWalletImageToSupabase({
+              file: originalBlob,
+              creationId: `${creationId}_original`,
+              walletAddress: primaryWalletAddress,
+            });
+
+            if (uploadedOriginalUrl) {
+              console.log("Original image uploaded to Supabase:", uploadedOriginalUrl);
+            }
           }
         } catch (uploadError) {
           console.warn("Error uploading to Supabase:", uploadError);
-          // Continue with local URL if upload fails
+          // Continue with data URLs if upload fails
         }
       }
 
       setResultUrl(finalUrl);
 
-      // For paid remix, keep both watermarked and clean as data URLs (no blob upload)
-      let cleanUrlToStore: string | undefined;
+      // For paid remix, store watermarked URL (display before registration)
+      // Original URL will be displayed after registration
       let watermarkedUrlToStore: string | undefined;
 
       if (remixType === "paid") {
-        watermarkedUrlToStore = finalUrl;
-        cleanUrlToStore = originalUrl;
+        watermarkedUrlToStore = uploadedWatermarkedUrl || generatedUrl;
       }
 
       // Add creation with wallet address
@@ -162,8 +171,7 @@ const useGeminiGenerator = () => {
         primaryWalletAddress || "",
         remixType,
         options.parentAsset,
-        originalUrl,
-        cleanUrlToStore,
+        uploadedOriginalUrl || originalUrl,
         watermarkedUrlToStore,
       );
     } catch (e: any) {
