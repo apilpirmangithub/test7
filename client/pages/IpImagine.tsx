@@ -117,6 +117,22 @@ const IpImagine = () => {
     }
   }, [authenticated, primaryWalletAddress, context]);
 
+  // Clear remix state when wallet disconnects to prevent inconsistent state
+  useEffect(() => {
+    if (!authenticated || !primaryWalletAddress) {
+      // Wallet disconnected - clear remix state
+      if (currentRemixType || currentParentAsset) {
+        console.log(
+          "[IpImagine] Wallet disconnected - clearing remix state",
+        );
+        setCurrentRemixType(null);
+        setCurrentParentAsset(null);
+        // Clear preview images to prevent orphaned remix data
+        setPreviewImages({ remixImage: null, additionalImage: null });
+      }
+    }
+  }, [authenticated, primaryWalletAddress]);
+
   const walletButtonText = authenticated
     ? "Disconnect"
     : ready
