@@ -1,7 +1,5 @@
 import { RequestHandler } from "express";
-import OpenAI from "openai";
-
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+import { getOpenAIClient } from "../utils/openai-client.js";
 
 export const generateImageWithWatermark: RequestHandler = async (req, res) => {
   try {
