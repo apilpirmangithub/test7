@@ -27,7 +27,6 @@ export const IpAssistantSearch = ({
   searchResults,
   onClose,
   onAssetClick,
-  onRemix,
   onOwnerClick,
   onBackClick,
   query = "",
