@@ -47,16 +47,14 @@ export const generateImageFromTextWithWatermark = async (
   if (!prompt) throw new Error("Prompt is required.");
 
   try {
-    const endpoint = guestMode
-      ? "/api/demo-generate"
-      : "/api/generate-with-watermark";
-    const response = await fetch(endpoint, {
+    const response = await fetch("/api/generate-with-watermark", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         prompt: prompt,
+        mode: guestMode ? "demo" : "production",
       }),
     });
 
