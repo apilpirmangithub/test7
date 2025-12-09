@@ -11,10 +11,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import FlyingImageAnimation from "@/components/ip/imagine/FlyingImageAnimation";
-import {
-  RemixImage,
-  type PreviewImagesState,
-} from "@/components/ip/remix";
+import { RemixImage, type PreviewImagesState } from "@/components/ip/remix";
 import type { Creation } from "@/context/CreationContext";
 
 type IpImagineInputProps = {

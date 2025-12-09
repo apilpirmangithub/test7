@@ -12,10 +12,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import {
-  RemixImage,
-  type PreviewImagesState,
-} from "@/components/ip/remix";
+import { RemixImage, type PreviewImagesState } from "@/components/ip/remix";
 
 type ChatInputProps = {
   input: string;

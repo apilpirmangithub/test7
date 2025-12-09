@@ -17,10 +17,7 @@ import {
   type PreviewImagesState,
 } from "@/components/ip/remix";
 import { useIPRegistrationAgent } from "@/hooks/useIPRegistrationAgent";
-import {
-  getLicenseSettingsByGroup,
-  GROUPS,
-} from "@/lib/groupLicense";
+import { getLicenseSettingsByGroup, GROUPS } from "@/lib/groupLicense";
 import { ANSWER_DETAILS } from "@/lib/ip-assistant/answer-details";
 import {
   getCurrentTimestamp,
