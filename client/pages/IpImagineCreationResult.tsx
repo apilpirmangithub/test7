@@ -500,7 +500,7 @@ const IpImagineCreationResult = () => {
                 );
               })()}
             </motion.div>
-          ) : context.creations
+          ) : creations
               .filter((c) => {
                 if (guestMode) {
                   return c.isGuest === true;
@@ -519,12 +519,31 @@ const IpImagineCreationResult = () => {
               animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center h-[400px]"
             >
-              <p className="text-slate-400 mb-4">
-                {guestMode
-                  ? "No shared creations yet. Create one to get started!"
-                  : "No creation data found"}
-              </p>
-              <Button onClick={() => navigate("/ip-imagine")}>
+              {authenticated && !guestMode && primaryWalletAddress ? (
+                <>
+                  <p className="text-slate-400 mb-4">
+                    No creations found for wallet {primaryWalletAddress.substring(0, 6)}...
+                    {primaryWalletAddress.substring(
+                      primaryWalletAddress.length - 4,
+                    )}
+                  </p>
+                  <p className="text-sm text-slate-500 mb-6 text-center max-w-md">
+                    Generate an image on the IP Imagine page to get started
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-slate-400 mb-4">
+                    {guestMode
+                      ? "No shared creations yet. Create one to get started!"
+                      : "No creation data found. Please connect your wallet or create an image."}
+                  </p>
+                </>
+              )}
+              <Button
+                onClick={() => navigate("/ip-imagine")}
+                className="bg-[#FF4DA6] hover:bg-[#FF4DA6]/80 text-white"
+              >
                 Back to IP Imagine
               </Button>
             </motion.div>
