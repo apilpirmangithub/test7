@@ -140,6 +140,11 @@ const AppRoutes = () => (
 const App = () => {
   ensurePrivyAnalyticsFetchPatched();
 
+  // Clear localStorage on app startup
+  useEffect(() => {
+    clearLocalStorage();
+  }, []);
+
   const appContent = (
     <CreationProvider>
       <QueryClientProvider client={queryClient}>
