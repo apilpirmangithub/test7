@@ -150,7 +150,10 @@ const LicensingFormComponent = (
         try {
           ethProvider = await wallets[0].getEthereumProvider();
         } catch (err) {
-          console.warn("Failed to get ethereum provider from wallet, using window.ethereum:", err);
+          console.warn(
+            "Failed to get ethereum provider from wallet, using window.ethereum:",
+            err,
+          );
         }
       }
 
@@ -205,7 +208,10 @@ const LicensingFormComponent = (
             }
           }
         } catch (chainError: any) {
-          console.warn("Chain switching warning (may continue):", chainError?.message);
+          console.warn(
+            "Chain switching warning (may continue):",
+            chainError?.message,
+          );
         }
 
         // Ensure wallet is connected and has accounts
