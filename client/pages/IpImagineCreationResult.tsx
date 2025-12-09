@@ -153,8 +153,19 @@ const IpImagineCreationResult = () => {
       if (context?.refreshWalletCreations) {
         context.refreshWalletCreations(primaryWalletAddress);
       }
+    } else if (!authenticated) {
+      // Immediately clear and switch to guest when any wallet disconnects
+      console.log(
+        "[IpImagineCreationResult] Wallet state changed - enforcing security",
+      );
+      if (context?.clearCreations) {
+        context.clearCreations();
+      }
+      if (!guestMode) {
+        setGuestMode(true);
+      }
     }
-  }, [authenticated, primaryWalletAddress, context]);
+  }, [authenticated, primaryWalletAddress, guestMode, context]);
 
   // Clear creations when wallet disconnects (privacy protection)
   useEffect(() => {
