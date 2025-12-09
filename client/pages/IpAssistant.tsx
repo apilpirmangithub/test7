@@ -1258,15 +1258,19 @@ const IpAssistant = () => {
         inputRef.current?.blur?.();
         try {
           (document.activeElement as HTMLElement | null)?.blur?.();
-        } catch (e) {}
+        } catch (e) {
+          console.warn("[IpAssistant] Blur active element failed:", e);
+        }
         setTimeout(() => {
           inputRef.current?.blur?.();
           try {
             (document.activeElement as HTMLElement | null)?.blur?.();
-          } catch (e) {}
+          } catch (e) {
+            console.warn("[IpAssistant] Blur element in timeout failed:", e);
+          }
         }, 50);
       } catch (e) {
-        // ignore
+        console.warn("[IpAssistant] Blur operation failed:", e);
       }
     }
   }, [
