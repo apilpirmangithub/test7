@@ -176,21 +176,18 @@ const useGeminiGenerator = () => {
       let watermarkedUrlToStore: string | undefined;
 
       if (remixType === "paid" || remixType === "free") {
-        // Prefer permanent Supabase URL for persistence across sessions
+        // Priority 1: Use uploaded Supabase URL (if upload successful)
         if (uploadedWatermarkedUrl) {
           watermarkedUrlToStore = uploadedWatermarkedUrl;
-          console.log("✅ Watermarked URL stored (permanent):", watermarkedUrlToStore);
-        } else if (generatedUrl && generatedUrl.startsWith("data:")) {
-          // Fallback to data URL (blob) if upload failed
-          // This allows watermark to show in current session but warns user
+          console.log("✅ Watermarked URL stored (Supabase):", watermarkedUrlToStore);
+        }
+        // Priority 2: Use data URL directly (works in demo mode & persistent)
+        // Data URLs (data:image/...) are permanent and work across sessions
+        else if (generatedUrl && generatedUrl.startsWith("data:")) {
           watermarkedUrlToStore = generatedUrl;
-          console.warn(
-            "⚠️ Watermarked image using temporary blob URL. Set up Supabase for persistence across sessions.",
-            {
-              authenticated,
-              hasWallet: !!primaryWalletAddress,
-              supabaseConfigured: isSupabaseConfigured(),
-            },
+          console.log(
+            "✅ Watermarked URL stored (data URL):",
+            watermarkedUrlToStore.substring(0, 50) + "...",
           );
         }
       }
