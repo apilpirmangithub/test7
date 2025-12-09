@@ -280,7 +280,6 @@ export const PopularIPGrid = ({
         const results = data.results || [];
 
         setSearchResults(results);
-        setTotalResults(data.totalSearched || results.length);
         setCurrentOffset(ITEMS_PER_PAGE);
         setHasMore(
           data.pagination?.hasMore || results.length >= ITEMS_PER_PAGE,
