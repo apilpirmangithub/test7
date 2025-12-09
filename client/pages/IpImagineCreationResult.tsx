@@ -132,6 +132,14 @@ const IpImagineCreationResult = () => {
     context.refreshGuestCreations();
   }, [guestMode, context]);
 
+  // Auto-disable guest mode when wallet connects
+  useEffect(() => {
+    if (authenticated && guestMode) {
+      console.log("[IpImagineCreationResult] Wallet connected - auto-disabling guest mode");
+      setGuestMode(false);
+    }
+  }, [authenticated]);
+
   const handleDownload = () => {
     if (!displayUrl) return;
     const link = document.createElement("a");
