@@ -106,7 +106,7 @@ export const editImage = async (
     const formData = new FormData();
     formData.append("image", imageBlob, "image.png");
     formData.append("prompt", prompt);
-    formData.append("mode", guestMode ? "demo" : "production");
+    formData.append("mode", "demo");
 
     const response = await fetch("/api/edit", {
       method: "POST",
