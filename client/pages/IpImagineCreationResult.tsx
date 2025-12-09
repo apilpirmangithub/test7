@@ -156,6 +156,18 @@ const IpImagineCreationResult = () => {
     }
   }, [authenticated, primaryWalletAddress, context]);
 
+  // Clear creations when wallet disconnects (privacy protection)
+  useEffect(() => {
+    if (!authenticated && !primaryWalletAddress) {
+      console.log(
+        "[IpImagineCreationResult] Wallet disconnected - clearing creations for privacy",
+      );
+      if (context?.clearCreations) {
+        context.clearCreations();
+      }
+    }
+  }, [authenticated, primaryWalletAddress, context]);
+
   const handleDownload = () => {
     if (!displayUrl) return;
     const link = document.createElement("a");
