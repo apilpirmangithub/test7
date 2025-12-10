@@ -410,8 +410,6 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           }));
           setCreations(validCreations);
           setFetchError(null);
-        } else {
-          setCreations([]);
         }
       } else if (response.status === 403) {
         console.warn(
@@ -423,13 +421,13 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
         const errorMsg = `Failed to refresh wallet creations: ${response.status}`;
         console.error(errorMsg);
         setFetchError(errorMsg);
-        setCreations([]);
+        // Don't clear local creations on error - keep locally added items
       }
     } catch (error: any) {
       const errorMsg = error?.message || "Failed to refresh wallet creations";
       console.error(errorMsg);
       setFetchError(errorMsg);
-      setCreations([]);
+      // Don't clear local creations on error - keep locally added items
     }
   }, []);
 
