@@ -73,9 +73,7 @@ const AIGenerationAnalysis: React.FC<{
       </div>
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-gray-400 text-xs">
-            Confidence Level
-          </span>
+          <span className="text-gray-400 text-xs">Confidence Level</span>
           <span className="font-mono text-cyan-300 font-semibold">
             {(analysis.confidence_score * 100).toFixed(1)}%
           </span>
@@ -144,7 +142,9 @@ const DetailItem: React.FC<{
     );
   } else {
     displayValue = (
-      <span className="text-gray-300 text-xs font-medium text-right">{value}</span>
+      <span className="text-gray-300 text-xs font-medium text-right">
+        {value}
+      </span>
     );
   }
 
@@ -257,7 +257,11 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
               ✨ Analysis Result
             </h3>
             <p className="text-gray-400 text-xs">
-              Group <span className="font-bold text-cyan-400">{classification.group}</span> • <span className="text-cyan-300/80">{classification.type}</span>
+              Group{" "}
+              <span className="font-bold text-cyan-400">
+                {classification.group}
+              </span>{" "}
+              • <span className="text-cyan-300/80">{classification.type}</span>
             </p>
           </div>
 
@@ -266,7 +270,9 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           >
             <div className="flex items-start gap-3 mb-2">
               {statusIcons[license.status]}
-              <h4 className={`text-sm font-bold ${licenseTitleClasses[license.color]}`}>
+              <h4
+                className={`text-sm font-bold ${licenseTitleClasses[license.color]}`}
+              >
                 {license.title}
               </h4>
             </div>
@@ -323,7 +329,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
               <DetailItem
                 label="Dominant Colors"
                 value={flags.composition_analysis.dominant_colors.map((c) =>
-                  c.toUpperCase()
+                  c.toUpperCase(),
                 )}
               />
             </AnalysisSection>

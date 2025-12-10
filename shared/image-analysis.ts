@@ -27,7 +27,11 @@ export interface TextDetection {
 }
 
 export interface ImageAnalysisFlags {
-  primary_category: "Photograph" | "AI-Generated Image" | "Animation/CGI" | "Uncertain";
+  primary_category:
+    | "Photograph"
+    | "AI-Generated Image"
+    | "Animation/CGI"
+    | "Uncertain";
   ai_generation_analysis: AIGenerationAnalysis;
   content_analysis: ContentAnalysis;
   composition_analysis: CompositionAnalysis;

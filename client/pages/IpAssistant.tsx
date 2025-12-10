@@ -1852,7 +1852,11 @@ const IpAssistant = () => {
                           ) : null}
                           <div>{msg.text}</div>
                         </div>
-                        <ResultDisplay result={msg.analysisResult} isLoading={false} error={null} />
+                        <ResultDisplay
+                          result={msg.analysisResult}
+                          isLoading={false}
+                          error={null}
+                        />
                       </div>
                     ) : (
                       <div className="flex items-center gap-3">
