@@ -402,7 +402,15 @@ const IpImagine = () => {
       sidebarExtras={sidebarExtras}
       onLogoClick={() => navigate("/")}
     >
-      <div className="chat-box px-3 sm:px-4 md:px-12 pt-4 pb-24 flex-1 overflow-y-auto bg-transparent scroll-smooth">
+      <div className="relative flex-1 overflow-hidden">
+        <video
+          autoPlay
+          muted
+          loop
+          className="absolute inset-0 w-full h-full object-cover -z-10"
+          src="https://cdn.builder.io/o/assets%2F2d031ad4ed8b46218a271cc55fdf3f5f%2F84477b6c6c134698a664cfde4f6a245a?alt=media&token=25dbdbfa-44dc-4217-bfdb-4bf384885d59&apiKey=2d031ad4ed8b46218a271cc55fdf3f5f"
+        />
+        <div className="chat-box px-3 sm:px-4 md:px-12 pt-4 pb-24 flex-1 overflow-y-auto bg-transparent scroll-smooth relative z-10">
         <AnimatePresence initial={false} mode="popLayout">
           <CatalogBrowser
             key="catalog-browser"
@@ -412,6 +420,7 @@ const IpImagine = () => {
         </AnimatePresence>
 
         <div />
+      </div>
       </div>
 
       <IpImagineInput
