@@ -1826,8 +1826,12 @@ const IpAssistant = () => {
                       <div className="flex flex-col gap-3">
                         {(() => {
                           const ctxKey = (msg as any).ctxKey;
-                          const ctx = ctxKey ? analysisContextsRef.current.get(ctxKey) : null;
-                          const imageUrl = ctx?.blob ? URL.createObjectURL(ctx.blob) : undefined;
+                          const ctx = ctxKey
+                            ? analysisContextsRef.current.get(ctxKey)
+                            : null;
+                          const imageUrl = ctx?.blob
+                            ? URL.createObjectURL(ctx.blob)
+                            : undefined;
                           return (
                             <ResultDisplay
                               result={msg.analysisResult}
