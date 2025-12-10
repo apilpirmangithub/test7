@@ -1,10 +1,15 @@
 import { useState, useImperativeHandle, useRef, forwardRef } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { StoryClient, WIP_TOKEN_ADDRESS } from "@story-protocol/core-sdk";
-import { createWalletClient, custom } from "viem";
+import { createWalletClient, custom, createPublicClient, http, formatEther } from "viem";
 import { keccakOfJson } from "@/lib/utils/crypto";
 import { Address } from "viem";
-import { getInsufficientBalanceWarning } from "@/lib/utils/token-validation";
+import {
+  getInsufficientBalanceWarning,
+  validateTokenBalance,
+  calculateTotalCost,
+} from "@/lib/utils/token-validation";
+import { getNetworkConfig } from "@/lib/network-config";
 
 // --- KONSTANTA ---
 const OFFCHAIN_LICENSE_TERMS_URI =
