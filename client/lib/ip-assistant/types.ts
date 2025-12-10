@@ -35,7 +35,7 @@ export type BotMessage = {
 };
 
 export type Message =
-  | { id?: string; from: "user"; text: string; ts?: string }
+  | { id?: string; from: "user"; text: string; imageUrl?: string; ts?: string }
   | BotMessage
   | { id?: string; from: "user-image"; url: string; ts?: string }
   | {

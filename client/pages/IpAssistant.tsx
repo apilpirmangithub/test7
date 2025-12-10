@@ -11,6 +11,7 @@ import { IpAssistantSearch } from "@/components/ip/search";
 import { WhitelistDetailsModal } from "@/components/ip/assistant/WhitelistDetailsModal";
 import { WhitelistMonitor } from "@/components/ip/assistant/WhitelistMonitor";
 import { WelcomeScreen } from "@/components/ip/assistant/WelcomeScreen";
+import { ResultDisplay } from "@/components/ip/assistant/ResultDisplay";
 import {
   PopularIPGrid,
   AddRemixImageModal,
@@ -656,6 +657,7 @@ const IpAssistant = () => {
         const data = await response.json();
         let display = (data as any)?.display || "(No analysis result)";
         let verification: { label: string; code: string } | string | undefined;
+        let analysisResult: any = null;
 
         if (
           typeof (data as any)?.group === "number" &&
@@ -665,6 +667,17 @@ const IpAssistant = () => {
           const d = (data as any).details as Record<string, any>;
           lastAnalysisFactsRef.current = d;
           verification = { label: `Detail`, code: String(g) as any };
+
+          // Build ClassificationResult for display
+          analysisResult = {
+            flags: d,
+            classification: {
+              group: g,
+              type: (data as any)?.type || "Analysis",
+              classification: (data as any)?.classification || "",
+            },
+            license: (data as any)?.license || null,
+          };
         } else {
           const rawText = data?.raw ? String(data.raw).trim() : "";
           display = rawText || "(No analysis result)";
@@ -702,6 +715,7 @@ const IpAssistant = () => {
           verification,
           ts: getCurrentTimestamp(),
           ctxKey,
+          analysisResult,
         });
         autoScrollNextRef.current = true;
       } catch (error: any) {
@@ -1010,7 +1024,10 @@ const IpAssistant = () => {
     const ts = getCurrentTimestamp();
 
     if (value) {
-      pushMessage({ from: "user", text: value, ts });
+      const imageUrl = lastUploadBlobRef.current
+        ? URL.createObjectURL(lastUploadBlobRef.current)
+        : undefined;
+      pushMessage({ from: "user", text: value, imageUrl, ts });
     }
 
     setInput("");
@@ -1019,11 +1036,6 @@ const IpAssistant = () => {
 
     if (value.toLowerCase() === "register") {
       if (hasPreview && imageToProcess) {
-        pushMessage({
-          from: "user-image",
-          url: imageToProcess.url,
-          ts,
-        });
         await new Promise((resolve) => setTimeout(resolve, 300));
 
         // Hash Detection - Check before OpenAI analysis
@@ -1773,8 +1785,21 @@ const IpAssistant = () => {
                   {...getBubbleMotionProps(index)}
                   className="flex justify-end mb-3 px-1 md:px-2 last:mb-1"
                 >
-                  <div className="bg-[#ff4da6] text-white px-4 py-2 rounded-2xl max-w-[85%] md:max-w-[65%] break-words text-[0.95rem]">
-                    {msg.text}
+                  <div className="flex flex-col items-end gap-2 max-w-[85%] md:max-w-[65%]">
+                    {(msg as any).imageUrl && (
+                      <div className="rounded-2xl overflow-hidden border-2 border-[#ff4da6]/30 max-w-xs shadow-lg">
+                        <img
+                          src={(msg as any).imageUrl}
+                          alt="Uploaded"
+                          className="w-full h-auto max-h-48 object-cover"
+                        />
+                      </div>
+                    )}
+                    {msg.text && (
+                      <div className="bg-[#ff4da6] text-white px-4 py-2 rounded-2xl break-words text-[0.95rem]">
+                        {msg.text}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               );
@@ -1796,35 +1821,73 @@ const IpAssistant = () => {
                   {...getBubbleMotionProps(index)}
                   className="flex items-start mb-3 gap-2 px-1 md:px-2 last:mb-1"
                 >
-                  <div className="bg-slate-900/70 px-4 py-2.5 rounded-2xl max-w-[85%] md:max-w-[65%] break-words text-slate-100 text-[0.95rem]">
-                    <div className="flex items-center gap-3">
-                      {msg.isProcessing ? (
-                        <div className="flex-shrink-0 inline-flex items-center justify-center rounded-full bg-[#FF4DA6]/10 p-1">
-                          <svg
-                            className="h-4 w-4 text-[#FF4DA6] animate-spin"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <circle
-                              cx="12"
-                              cy="12"
-                              r="9"
-                              stroke="currentColor"
-                              strokeOpacity="0.15"
-                              strokeWidth="3"
-                            />
-                            <path
-                              d="M21.5 12a9.5 9.5 0 00-9.5-9.5"
-                              stroke="currentColor"
-                              strokeWidth="3"
-                              strokeLinecap="round"
-                            />
-                          </svg>
+                  <div className="bg-slate-900/70 px-4 py-2.5 rounded-2xl max-w-[85%] md:max-w-[85%] lg:max-w-3xl break-words text-slate-100 text-[0.95rem]">
+                    {msg.analysisResult ? (
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-3">
+                          {msg.isProcessing ? (
+                            <div className="flex-shrink-0 inline-flex items-center justify-center rounded-full bg-[#FF4DA6]/10 p-1">
+                              <svg
+                                className="h-4 w-4 text-[#FF4DA6] animate-spin"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <circle
+                                  cx="12"
+                                  cy="12"
+                                  r="9"
+                                  stroke="currentColor"
+                                  strokeOpacity="0.15"
+                                  strokeWidth="3"
+                                />
+                                <path
+                                  d="M21.5 12a9.5 9.5 0 00-9.5-9.5"
+                                  stroke="currentColor"
+                                  strokeWidth="3"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            </div>
+                          ) : null}
+                          <div>{msg.text}</div>
                         </div>
-                      ) : null}
-                      <div>{msg.text}</div>
-                    </div>
+                        <ResultDisplay
+                          result={msg.analysisResult}
+                          isLoading={false}
+                          error={null}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        {msg.isProcessing ? (
+                          <div className="flex-shrink-0 inline-flex items-center justify-center rounded-full bg-[#FF4DA6]/10 p-1">
+                            <svg
+                              className="h-4 w-4 text-[#FF4DA6] animate-spin"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <circle
+                                cx="12"
+                                cy="12"
+                                r="9"
+                                stroke="currentColor"
+                                strokeOpacity="0.15"
+                                strokeWidth="3"
+                              />
+                              <path
+                                d="M21.5 12a9.5 9.5 0 00-9.5-9.5"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                          </div>
+                        ) : null}
+                        <div>{msg.text}</div>
+                      </div>
+                    )}
                     {msg.action?.type === "remix" ? (
                       <div className="mt-3 flex flex-wrap gap-2">
                         <button
