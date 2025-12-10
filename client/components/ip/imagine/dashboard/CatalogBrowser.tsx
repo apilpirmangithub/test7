@@ -25,7 +25,9 @@ export const CatalogBrowser = ({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [hasMore, setHasMore] = useState(false);
-  const [lastQueryType, setLastQueryType] = useState<"keyword" | "owner" | null>(null);
+  const [lastQueryType, setLastQueryType] = useState<
+    "keyword" | "owner" | null
+  >(null);
   const [lastResolvedAddress, setLastResolvedAddress] = useState("");
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [ownerDomains, setOwnerDomains] = useState<
@@ -56,7 +58,10 @@ export const CatalogBrowser = ({
 
     try {
       if (isIpName(searchInput)) {
-        console.log("[CatalogBrowser] Detected .ip name, resolving:", searchInput);
+        console.log(
+          "[CatalogBrowser] Detected .ip name, resolving:",
+          searchInput,
+        );
 
         const resolveResponse = await fetch("/api/resolve-ip-name", {
           method: "POST",
