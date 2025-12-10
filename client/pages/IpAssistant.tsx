@@ -1838,6 +1838,54 @@ const IpAssistant = () => {
                               isLoading={false}
                               error={null}
                               imageUrl={imageUrl}
+                              ctxKey={ctxKey}
+                              onRegister={async (ctxKeyForMsg: string) => {
+                                if (!ctxKeyForMsg) return;
+                                if (loadingRegisterFor === ctxKeyForMsg) return;
+                                setLoadingRegisterFor(ctxKeyForMsg);
+                                const groupNum = msg.analysisResult?.classification.group || 1;
+                                let title = "";
+                                let desc = "";
+                                try {
+                                  const ctx = analysisContextsRef.current.get(ctxKeyForMsg);
+                                  const blob = ctx?.blob;
+                                  const name = ctx?.name || "image.jpg";
+                                  const facts = ctx?.facts || null;
+                                  if (blob) {
+                                    const form = new FormData();
+                                    form.append("image", blob, name);
+                                    if (facts) {
+                                      form.append("facts", JSON.stringify(facts));
+                                    }
+                                    const res = await fetch("/api/describe", {
+                                      method: "POST",
+                                      body: form,
+                                    });
+                                    if (res.ok) {
+                                      const j = await res.json();
+                                      title = typeof j.title === "string" ? j.title : "";
+                                      desc = typeof j.description === "string" ? j.description : "";
+                                    }
+                                  }
+                                } catch {}
+                                if (!title)
+                                  title = ANSWER_DETAILS[String(groupNum) as keyof typeof ANSWER_DETAILS]?.type || "IP Asset";
+                                if (!desc)
+                                  desc = summaryFromAnswer(String(groupNum));
+                                if (title.length > 60)
+                                  title = title.slice(0, 59) + "…";
+                                if (desc.length > 120)
+                                  desc = desc.slice(0, 119) + "…";
+                                pushMessage({
+                                  from: "register",
+                                  group: groupNum,
+                                  title,
+                                  description: desc,
+                                  ctxKey: ctxKeyForMsg,
+                                  ts: getCurrentTimestamp(),
+                                });
+                                setLoadingRegisterFor(null);
+                              }}
                               onReset={() => {
                                 setPreviewImages({
                                   remixImage: null,
