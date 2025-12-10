@@ -22,13 +22,13 @@ const analysisSchema = {
         properties: {
           likelihood: {
             type: "string",
-            description: "Estimated likelihood: High, Medium, Low, or Unlikely.",
+            description:
+              "Estimated likelihood: High, Medium, Low, or Unlikely.",
           },
           evidence: {
             type: "array",
             items: { type: "string" },
-            description:
-              "List of visual cues supporting the assessment.",
+            description: "List of visual cues supporting the assessment.",
           },
           confidence_score: {
             type: "number",
@@ -57,7 +57,8 @@ const analysisSchema = {
       },
       composition_analysis: {
         type: "object",
-        description: "Analyze the artistic and technical composition of the image.",
+        description:
+          "Analyze the artistic and technical composition of the image.",
         properties: {
           style: { type: "string" },
           perspective: { type: "string" },
@@ -116,7 +117,7 @@ const analysisSchema = {
 
 export async function analyzeImageWithOpenAI(
   base64Image: string,
-  mimeType: string
+  mimeType: string,
 ): Promise<ImageAnalysisFlags> {
   try {
     const prompt = `You are an expert forensic image analyst for IP registration tasks. Follow a zero-trust approach and strictly fill ALL fields of the JSON schema.
@@ -165,7 +166,7 @@ Return ONLY JSON following the schema. Be precise, concise, and deterministic.`;
   } catch (error) {
     console.error("Error calling OpenAI:", error);
     throw new Error(
-      "Failed to analyze image using OpenAI. Check logs for full details."
+      "Failed to analyze image using OpenAI. Check logs for full details.",
     );
   }
 }

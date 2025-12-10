@@ -17,7 +17,7 @@ export const handleUpload: any = [
       // Idempotency support: if client supplies Idempotency-Key header, return cached response
       const idempotencyKey = (req.get("Idempotency-Key") ||
         req.get("idempotency-key")) as string | undefined;
-      
+
       if (idempotencyKey && IDP_STORE.has(idempotencyKey)) {
         const cached = IDP_STORE.get(idempotencyKey)!;
         // If cached item is older than 60s, fallthrough and compute again
@@ -34,18 +34,16 @@ export const handleUpload: any = [
         return res
           .status(400)
           .json({ ok: false, error: "no_file", message: "No file uploaded" });
-      
+
       const base64 = f.buffer.toString("base64");
 
       if (!process.env.OPENAI_API_KEY) {
         console.error("OPENAI_API_KEY is not configured on the server");
-        return res
-          .status(503)
-          .json({
-            ok: false,
-            error: "openai_api_key_missing",
-            message: "OpenAI API key not configured on the server",
-          });
+        return res.status(503).json({
+          ok: false,
+          error: "openai_api_key_missing",
+          message: "OpenAI API key not configured on the server",
+        });
       }
 
       // Analyze image with new OpenAI analysis function
@@ -82,7 +80,7 @@ export const handleUpload: any = [
         error: "analysis_failed",
         message: String(err?.message || "Analysis failed"),
       };
-      if ((req.get("Idempotency-Key") || req.get("idempotency-key"))) {
+      if (req.get("Idempotency-Key") || req.get("idempotency-key")) {
         const key = (req.get("Idempotency-Key") ||
           req.get("idempotency-key")) as string;
         IDP_STORE.set(key, { status: 500, body, ts: Date.now() });
@@ -95,6 +93,6 @@ export const handleUpload: any = [
 function buildDisplayMessage(classification: any, license: any): string {
   const { type, classification: classificationDetail } = classification;
   const { title, description } = license;
-  
+
   return `${type} - ${classificationDetail}. ${title}: ${description}`;
 }
