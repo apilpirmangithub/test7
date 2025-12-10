@@ -349,18 +349,14 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           <div className="mt-4">
             <button
               onClick={() => {
-                if (
-                  onRegister &&
-                  ctxKey &&
-                  license.status !== "CANNOT_REGISTER"
-                ) {
+                if (onRegister && ctxKey && license.status === "CAN_REGISTER") {
                   void onRegister(ctxKey);
                 }
               }}
               className={`w-full py-2.5 px-4 rounded-lg font-semibold text-white text-xs transition-all duration-200 ${
                 buttonClasses[license.color] || "bg-gray-600"
               }`}
-              disabled={license.status === "CANNOT_REGISTER" || !onRegister}
+              disabled={license.status !== "CAN_REGISTER" || !onRegister}
             >
               {license.buttonText}
             </button>
