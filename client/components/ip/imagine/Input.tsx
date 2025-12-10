@@ -89,17 +89,17 @@ const IpImagineInput = ({
       autoComplete="off"
     >
       {/* Gallery Button - Always visible */}
-      <div ref={galleryButtonRef} className="mr-2 flex items-center relative">
+      <div ref={galleryButtonRef} className="flex items-center relative">
         <button
           type="button"
           onClick={() => {
             navigate("/ip-imagine/result");
           }}
           disabled={!resultUrl && !waiting && creations.length === 0}
-          className={`flex-shrink-0 p-2 sm:p-1.5 rounded-lg active:scale-95 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30 ${
+          className={`flex-shrink-0 p-2 rounded-lg active:scale-95 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/40 ${
             waiting || resultUrl || creations.length > 0
-              ? "text-[#FF4DA6] bg-[#FF4DA6]/10"
-              : "text-[#FF4DA6] hover:bg-[#FF4DA6]/10"
+              ? "text-white bg-slate-700"
+              : "text-slate-400 hover:text-slate-300 hover:bg-slate-700/50"
           }`}
           aria-label="View creations and results"
           title="Creation Results"
