@@ -121,11 +121,15 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, []);
 
-  // Detect wallet disconnect or switch - clear all cache
+  // Detect wallet switch (but NOT disconnect) - only clear cache when switching to a different wallet
   useEffect(() => {
-    if (previousWalletAddress && previousWalletAddress !== walletAddress) {
+    if (
+      previousWalletAddress &&
+      walletAddress &&
+      previousWalletAddress !== walletAddress
+    ) {
       console.log(
-        `[CreationContext] Wallet changed from ${previousWalletAddress} to ${walletAddress}. Clearing cache.`,
+        `[CreationContext] Wallet switched from ${previousWalletAddress} to ${walletAddress}. Clearing cache.`,
       );
       clearAllCache();
       setResultUrl(null);
