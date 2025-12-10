@@ -72,13 +72,13 @@ const AIGenerationAnalysis: React.FC<{
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-gray-400 text-xs">Confidence Level</span>
-          <span className="font-mono text-cyan-300 font-semibold">
+          <span className="font-mono text-white font-semibold">
             {(analysis.confidence_score * 100).toFixed(1)}%
           </span>
         </div>
         <div className="w-full bg-gray-700 rounded-full h-2.5 overflow-hidden">
           <div
-            className="h-2.5 rounded-full transition-all duration-500 bg-cyan-400"
+            className="h-2.5 rounded-full transition-all duration-500 bg-pink-400"
             style={{ width: `${analysis.confidence_score * 100}%` }}
           />
         </div>
@@ -257,10 +257,10 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
             </h3>
             <p className="text-gray-400 text-xs">
               Group{" "}
-              <span className="font-bold text-cyan-400">
+              <span className="font-bold text-white">
                 {classification.group}
               </span>{" "}
-              • <span className="text-cyan-300/80">{classification.type}</span>
+              • <span className="text-white/80">{classification.type}</span>
             </p>
           </div>
 
