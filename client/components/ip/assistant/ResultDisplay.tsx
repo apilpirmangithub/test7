@@ -28,7 +28,9 @@ const AnalysisSection: React.FC<{
           <span className="font-semibold text-gray-200 text-sm">{title}</span>
         </div>
         <ChevronDown
-          className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`h-4 w-4 text-gray-400 transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
         />
       </button>
       {isOpen && <div className="px-4 pb-4 bg-gray-900/50">{children}</div>}
@@ -39,7 +41,10 @@ const AnalysisSection: React.FC<{
 const AIGenerationAnalysis: React.FC<{
   analysis: ClassificationResult["flags"]["ai_generation_analysis"];
 }> = ({ analysis }) => {
-  const likelihoodColors = {
+  const likelihoodColors: Record<
+    string,
+    string
+  > = {
     High: "bg-red-500 text-white",
     Medium: "bg-yellow-500 text-gray-900",
     Low: "bg-blue-500 text-white",
@@ -51,7 +56,7 @@ const AIGenerationAnalysis: React.FC<{
       <div className="flex items-center justify-between">
         <span className="text-gray-400">AI Probability</span>
         <span
-          className={`px-3 py-1 text-xs font-bold rounded-full ${likelihoodColors[analysis.likelihood]}`}
+          className={`px-3 py-1 text-xs font-bold rounded-full ${likelihoodColors[analysis.likelihood] || "bg-gray-600"}`}
         >
           {analysis.likelihood}
         </span>
@@ -98,7 +103,9 @@ const DetailItem: React.FC<{
   if (typeof value === "boolean") {
     displayValue = (
       <span
-        className={`font-semibold text-xs ${value ? "text-green-400" : "text-red-400"}`}
+        className={`font-semibold text-xs ${
+          value ? "text-green-400" : "text-red-400"
+        }`}
       >
         {value ? "Yes" : "No"}
       </span>
@@ -140,10 +147,10 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           <div className="w-10 h-10 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
         </div>
         <p className="font-semibold text-gray-300 text-sm">
-          Analyzing image...
+          Performing Deep Analysis...
         </p>
         <p className="text-gray-500 text-xs mt-1">
-          AI detection & content analysis
+          The AI is classifying content, style, and IP risks. Please wait.
         </p>
       </div>
     );
@@ -159,25 +166,25 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
   const { flags, classification, license } = result;
 
-  const statusIcons = {
+  const statusIcons: Record<string, React.ReactNode> = {
     CAN_REGISTER: (
-      <div className="w-6 h-6 rounded-full bg-green-500/20 border border-green-500 flex items-center justify-center text-green-400">
+      <div className="w-6 h-6 rounded-full bg-green-500/20 border border-green-500 flex items-center justify-center text-green-400 text-sm font-bold">
         ✓
       </div>
     ),
     CANNOT_REGISTER: (
-      <div className="w-6 h-6 rounded-full bg-red-500/20 border border-red-500 flex items-center justify-center text-red-400">
+      <div className="w-6 h-6 rounded-full bg-red-500/20 border border-red-500 flex items-center justify-center text-red-400 text-sm font-bold">
         ✕
       </div>
     ),
     REQUIRES_REVIEW: (
-      <div className="w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500 flex items-center justify-center text-yellow-400">
+      <div className="w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500 flex items-center justify-center text-yellow-400 text-sm font-bold">
         !
       </div>
     ),
   };
 
-  const buttonClasses = {
+  const buttonClasses: Record<string, string> = {
     green: "bg-green-600 hover:bg-green-700 disabled:opacity-50",
     red: "bg-red-600 hover:bg-red-700 disabled:opacity-50",
     yellow:
@@ -191,7 +198,8 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           Analysis Complete
         </h3>
         <p className="text-gray-400 mb-3 text-xs">
-          Group {classification.group}: {classification.type}
+          Group {classification.group}: {classification.type} -{" "}
+          {classification.classification}
         </p>
 
         <div
@@ -224,7 +232,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
         <div className="rounded-lg border border-gray-700 bg-gray-800/50 overflow-hidden text-xs">
           <AnalysisSection
-            title="AI Generation"
+            title="AI Generation Analysis"
             icon={<span className="text-yellow-300">🤖</span>}
             defaultOpen={true}
           >
@@ -232,7 +240,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           </AnalysisSection>
 
           <AnalysisSection
-            title="Content & Safety"
+            title="Content & Safety Analysis"
             icon={<span className="text-red-400">🛡️</span>}
           >
             <DetailItem
@@ -260,7 +268,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
             icon={<span className="text-blue-400">🎨</span>}
           >
             <DetailItem
-              label="Style"
+              label="Artistic Style"
               value={flags.composition_analysis.style}
             />
             <DetailItem
@@ -268,32 +276,34 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
               value={flags.composition_analysis.perspective}
             />
             <DetailItem
-              label="Colors"
-              value={flags.composition_analysis.dominant_colors}
+              label="Dominant Colors"
+              value={flags.composition_analysis.dominant_colors.map((c) =>
+                c.toUpperCase()
+              )}
             />
           </AnalysisSection>
 
           <AnalysisSection
-            title="Objects & Text"
+            title="Object & Text Detection"
             icon={<span className="text-green-400">📋</span>}
           >
             <DetailItem
-              label="Objects"
+              label="Main Objects"
               value={
                 flags.object_detection.main_objects.join(", ") ||
                 "None detected"
               }
             />
             <DetailItem
-              label="Text"
-              value={flags.text_detection.detected_text || "None detected"}
+              label="Detected Text"
+              value={flags.text_detection.detected_text || "None"}
             />
           </AnalysisSection>
         </div>
 
         <div className="mt-4 flex gap-2">
           <button
-            className={`flex-1 py-2 px-3 rounded font-semibold text-white text-xs transition-colors ${buttonClasses[license.color]}`}
+            className={`flex-1 py-2 px-3 rounded font-semibold text-white text-xs transition-colors ${buttonClasses[license.color] || "bg-gray-600"}`}
             disabled={license.status === "CANNOT_REGISTER"}
           >
             {license.buttonText}
