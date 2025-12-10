@@ -131,10 +131,9 @@ const IpImagineInput = ({
                     opacity: 0.7 - index * 0.15,
                     y: index * 4,
                     rotateZ: index * 2,
-                    transition: { delay: index * 0.05 },
                   }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
                   style={{
                     zIndex: -index,
                   }}
@@ -163,22 +162,14 @@ const IpImagineInput = ({
                     zIndex: resultUrls.length,
                   }}
                 >
-                  <motion.div
-                    className="absolute inset-0 flex items-center justify-center bg-[#FF4DA6]/20"
-                    animate={{
-                      backgroundColor: [
-                        "rgba(255, 77, 166, 0.2)",
-                        "rgba(255, 77, 166, 0.3)",
-                        "rgba(255, 77, 166, 0.2)",
-                      ],
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <svg
-                      className="h-6 w-6 text-[#FF4DA6] animate-spin"
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#FF4DA6]/20">
+                    <motion.svg
+                      className="h-6 w-6 text-[#FF4DA6]"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                     >
                       <circle
                         cx="12"
@@ -194,8 +185,8 @@ const IpImagineInput = ({
                         strokeWidth="3"
                         strokeLinecap="round"
                       />
-                    </svg>
-                  </motion.div>
+                    </motion.svg>
+                  </div>
                 </motion.div>
               )}
 
