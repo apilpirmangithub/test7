@@ -306,17 +306,17 @@ export const ExpandedAssetModal = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-3 pt-4">
+          <div className="flex flex-wrap gap-3 pt-2">
             <button
               type="button"
-              className="text-sm px-4 py-2.5 rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/30 font-semibold transition-all hover:shadow-lg hover:shadow-blue-500/25 hover:bg-blue-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+              className="text-sm px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 font-semibold transition-all hover:bg-blue-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
             >
               Buy
             </button>
             <button
               type="button"
               onClick={() => setShowLifecycle(true)}
-              className="text-sm px-4 py-2.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold transition-all hover:shadow-lg hover:shadow-purple-500/25 hover:bg-purple-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+              className="text-sm px-4 py-2 rounded-lg bg-purple-500/20 text-purple-300 font-semibold transition-all hover:bg-purple-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
             >
               🔄 Lifecycle
             </button>
