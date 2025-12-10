@@ -270,25 +270,25 @@ export const ExpandedAssetModal = ({
           )}
 
           {/* Metadata Badges */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2.5">
             <span
-              className={`text-xs px-3 py-2 rounded-full font-semibold whitespace-nowrap backdrop-blur-sm border transition-all ${
+              className={`text-xs px-3 py-1.5 rounded-lg font-semibold whitespace-nowrap backdrop-blur-sm transition-all ${
                 asset.isDerivative
-                  ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
-                  : "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+                  ? "bg-blue-500/15 text-blue-300"
+                  : "bg-emerald-500/15 text-emerald-300"
               }`}
             >
               {asset.isDerivative ? "🔄 Remix" : "✨ Original"}
             </span>
 
             {asset.score !== undefined && (
-              <span className="text-xs px-3 py-2 rounded-full bg-[#FF4DA6]/20 text-[#FF4DA6] border border-[#FF4DA6]/30 font-semibold whitespace-nowrap backdrop-blur-sm">
+              <span className="text-xs px-3 py-1.5 rounded-lg bg-[#FF4DA6]/15 text-[#FF4DA6] font-semibold whitespace-nowrap backdrop-blur-sm">
                 {(asset.score * 100).toFixed(0)}% Match
               </span>
             )}
 
             {asset.mediaType && (
-              <span className="text-xs px-3 py-2 rounded-full bg-slate-800/60 text-slate-300 border border-slate-700/50 font-semibold whitespace-nowrap backdrop-blur-sm">
+              <span className="text-xs px-3 py-1.5 rounded-lg bg-slate-800/30 text-slate-300 font-semibold whitespace-nowrap backdrop-blur-sm">
                 {asset.mediaType
                   ?.replace("video/", "")
                   .replace("audio/", "")
@@ -298,7 +298,7 @@ export const ExpandedAssetModal = ({
             )}
 
             {asset.ownerAddress && (
-              <span className="text-xs px-3 py-2 rounded-full bg-slate-800/60 text-slate-300 border border-slate-700/50 font-mono whitespace-nowrap backdrop-blur-sm">
+              <span className="text-xs px-3 py-1.5 rounded-lg bg-slate-800/30 text-slate-300 font-mono whitespace-nowrap backdrop-blur-sm">
                 {asset.ownerAddress.slice(0, 8)}...
                 {asset.ownerAddress.slice(-6)}
               </span>
