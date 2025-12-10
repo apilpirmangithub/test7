@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useRemixTypes } from "./hooks";
+import { AssetLifecycleInfographic } from "./AssetLifecycleInfographic";
 import type { SearchResult } from "./types";
 
 interface ExpandedAssetModalProps {
