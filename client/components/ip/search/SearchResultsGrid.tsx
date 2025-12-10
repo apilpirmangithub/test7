@@ -115,11 +115,11 @@ export const SearchResultsGrid = ({
                 key={asset.ipId || idx}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="group relative cursor-pointer rounded-xl overflow-hidden bg-slate-900/50 shadow-lg shadow-black/40 transition-all duration-300 hover:shadow-xl hover:shadow-[#FF4DA6]/20 aspect-square hover:scale-[1.02]"
+                className="group relative cursor-pointer rounded-xl overflow-hidden bg-slate-900/50 transition-all duration-300 hover:scale-[1.02]"
               >
                 {/* Image Container */}
                 <div
-                  className="relative w-full h-full bg-slate-950 overflow-hidden flex items-center justify-center"
+                  className="relative w-full h-full bg-slate-950 flex items-center justify-center"
                   onClick={() => onAssetClick?.(asset)}
                 >
                   {asset.mediaUrl ? (
