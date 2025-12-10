@@ -259,7 +259,7 @@ export const SearchResultsGrid = ({
                       <span className="text-xs font-semibold text-[#FF4DA6] whitespace-nowrap">
                         {extractRemixPrice(asset)
                           ? `$${extractRemixPrice(asset)} IP`
-                          : "Remix Available"}
+                          : "FREE"}
                       </span>
                     </div>
                   )}
