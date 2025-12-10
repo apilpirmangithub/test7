@@ -45,7 +45,10 @@ interface SearchResultsGridProps {
   isLoadingOwnerAssets?: boolean;
   onAssetClick?: (asset: SearchResult) => void;
   onOwnerClick?: (ownerAddress: string, ownerDomain?: string | null) => void;
-  onRemixSelected?: (asset: SearchResult, remixType: "paid" | "free") => Promise<void>;
+  onRemixSelected?: (
+    asset: SearchResult,
+    remixType: "paid" | "free",
+  ) => Promise<void>;
 }
 
 function extractMintingFee(license: any): string {
@@ -247,7 +250,11 @@ export const SearchResultsGrid = ({
                   {remixTypes.length > 0 && (
                     <motion.button
                       initial={{ opacity: 0, scale: 0.8, y: -10 }}
-                      animate={hoveredIndex === idx ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: -10 }}
+                      animate={
+                        hoveredIndex === idx
+                          ? { opacity: 1, scale: 1, y: 0 }
+                          : { opacity: 0, scale: 0.8, y: -10 }
+                      }
                       transition={{ duration: 0.2, ease: "easeOut" }}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
