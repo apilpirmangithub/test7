@@ -1,10 +1,27 @@
-import { useState, useImperativeHandle, useRef, forwardRef } from "react";
+import {
+  useState,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  forwardRef,
+} from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { StoryClient, WIP_TOKEN_ADDRESS } from "@story-protocol/core-sdk";
-import { createWalletClient, custom } from "viem";
+import {
+  createWalletClient,
+  custom,
+  createPublicClient,
+  http,
+  formatEther,
+} from "viem";
 import { keccakOfJson } from "@/lib/utils/crypto";
 import { Address } from "viem";
-import { getInsufficientBalanceWarning } from "@/lib/utils/token-validation";
+import {
+  getInsufficientBalanceWarning,
+  validateTokenBalance,
+  calculateTotalCost,
+} from "@/lib/utils/token-validation";
+import { getNetworkConfig } from "@/lib/network-config";
 
 // --- KONSTANTA ---
 const OFFCHAIN_LICENSE_TERMS_URI =
@@ -65,9 +82,53 @@ const LicensingFormComponent = (
   // Get wallet address for token validation
   const walletAddress = wallets?.[0]?.address || undefined;
 
-  // Token validation hook
-  const { balance, validateForRegistration, getWarningMessage, getTotalCost } =
-    useTokenValidation(walletAddress, "mainnet");
+  // Balance state
+  const [balance, setBalance] = useState("0");
+  const [isBalanceLoading, setIsBalanceLoading] = useState(false);
+
+  // Fetch balance on mount and when wallet changes
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!walletAddress || !authenticated) {
+        setBalance("0");
+        return;
+      }
+
+      setIsBalanceLoading(true);
+      try {
+        const networkConfig = getNetworkConfig("mainnet");
+        const publicClient = createPublicClient({
+          transport: http(networkConfig.rpc),
+        });
+
+        const balanceInWei = await publicClient.getBalance({
+          address: walletAddress as `0x${string}`,
+        });
+
+        const formattedBalance = formatEther(balanceInWei);
+        setBalance(formattedBalance);
+      } catch (err) {
+        console.error("Failed to fetch balance:", err);
+        setBalance("0");
+      } finally {
+        setIsBalanceLoading(false);
+      }
+    };
+
+    fetchBalance();
+    // Refresh balance every 30 seconds
+    const interval = setInterval(fetchBalance, 30000);
+    return () => clearInterval(interval);
+  }, [walletAddress, authenticated]);
+
+  // Helper functions
+  const validateForRegistration = (license: any) => {
+    return validateTokenBalance(balance, license, true);
+  };
+
+  const getTotalCost = (license: any) => {
+    return calculateTotalCost(license, true);
+  };
 
   // State
   const [title, setTitle] = useState("AI Generated Image");
