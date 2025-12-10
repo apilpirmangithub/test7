@@ -10,7 +10,6 @@ interface ResultDisplayProps {
   onReset?: () => void;
   onRegister?: (ctxKey: string) => Promise<void>;
   ctxKey?: string;
-  isLoading?: boolean;
 }
 
 const AnalysisSection: React.FC<{
