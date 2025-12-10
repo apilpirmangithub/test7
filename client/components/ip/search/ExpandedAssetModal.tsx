@@ -307,6 +307,13 @@ export const ExpandedAssetModal = ({
           </div>
         </div>
       </motion.div>
+
+      {/* Asset Lifecycle Infographic Modal */}
+      <AssetLifecycleInfographic
+        asset={asset}
+        isOpen={showLifecycle}
+        onClose={() => setShowLifecycle(false)}
+      />
     </motion.div>
   );
 };
