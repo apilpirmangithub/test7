@@ -18,10 +18,10 @@ const AnalysisSection: React.FC<{
 }> = ({ title, icon, children, defaultOpen = false }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-gradient-to-r from-transparent via-gray-700/30 to-transparent last:border-b-0">
+    <div className="border-t border-gray-700/20 first:border-t-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-gradient-to-r hover:from-transparent hover:via-gray-700/10 hover:to-transparent focus:outline-none transition-all duration-200 group"
+        className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-800/30 focus:outline-none transition-all duration-200 group"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-3">
@@ -39,7 +39,7 @@ const AnalysisSection: React.FC<{
         />
       </button>
       {isOpen && (
-        <div className="px-4 pb-4 bg-gradient-to-b from-gray-900/50 to-gray-900/20 animate-in fade-in duration-200">
+        <div className="px-4 pb-4 bg-gray-800/10 animate-in fade-in duration-200">
           {children}
         </div>
       )}
@@ -165,7 +165,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-8 border border-cyan-400/20 backdrop-blur-sm">
+      <div className="flex flex-col items-center justify-center bg-gray-800/40 rounded-lg p-8 backdrop-blur-sm">
         <div className="inline-flex items-center justify-center w-12 h-12 mb-4">
           <div className="w-12 h-12 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
         </div>
@@ -209,10 +209,10 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
   const buttonClasses: Record<string, string> = {
     green:
-      "bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 disabled:opacity-50 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-200 hover:scale-105 active:scale-95",
-    red: "bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 disabled:opacity-50 shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-all duration-200 hover:scale-105 active:scale-95",
+      "bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white transition-colors duration-200",
+    red: "bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white transition-colors duration-200",
     yellow:
-      "bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 disabled:opacity-50 shadow-lg shadow-yellow-500/30 hover:shadow-yellow-500/50 text-gray-900 transition-all duration-200 hover:scale-105 active:scale-95",
+      "bg-yellow-500 hover:bg-yellow-400 disabled:opacity-50 text-gray-900 transition-colors duration-200",
   };
 
   const licenseBgClasses: Record<string, string> = {
@@ -235,14 +235,14 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
         {/* Left side: Image */}
         {imageUrl && (
           <div className="lg:w-1/3 flex-shrink-0">
-            <div className="bg-gradient-to-br from-gray-900/60 to-black/40 rounded-lg p-3 flex flex-col border border-gray-700/30 shadow-inner">
+            <div className="bg-gray-900/40 rounded-lg p-3 flex flex-col">
               <h4 className="text-xs font-bold text-gray-300 mb-2 uppercase tracking-wide">
                 📸 Uploaded Image
               </h4>
               <img
                 src={imageUrl}
                 alt="Uploaded"
-                className="w-full h-auto rounded-md object-cover border border-gray-700/50 shadow-lg shadow-gray-900/50"
+                className="w-full h-auto rounded-md object-cover"
               />
             </div>
           </div>
@@ -265,7 +265,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-700/40 bg-gray-800/40 overflow-hidden text-xs max-h-72 overflow-y-auto backdrop-blur-sm shadow-inner">
+          <div className="rounded-lg bg-gray-800/30 overflow-hidden text-xs max-h-72 overflow-y-auto">
             <AnalysisSection
               title="AI Generation Analysis"
               icon={<span className="text-2xl">🤖</span>}
