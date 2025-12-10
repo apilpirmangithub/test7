@@ -261,16 +261,55 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
       setCreations((prev) => [newCreation, ...prev]);
 
       if (walletAddr) {
-        const params = new URLSearchParams({
-          requesting_wallet: walletAddr,
-        });
-        fetch(`/api/wallet-creations?${params.toString()}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newCreation),
-        }).catch((error) => {
-          console.warn("Failed to sync wallet creation to server:", error);
-        });
+        // Sync to Supabase with retry logic
+        const syncCreationToSupabase = async (retryCount = 0) => {
+          try {
+            const params = new URLSearchParams({
+              requesting_wallet: walletAddr,
+            });
+            const response = await fetch(
+              `/api/wallet-creations?${params.toString()}`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newCreation),
+              },
+            );
+
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(
+                `Failed to sync creation: ${response.status} ${errorText}`,
+              );
+            }
+
+            console.log(
+              `[CreationContext] Creation synced to Supabase: ${newCreation.id}`,
+            );
+          } catch (error: any) {
+            console.warn(
+              `[CreationContext] Attempt ${retryCount + 1} to sync creation failed:`,
+              error?.message,
+            );
+
+            // Retry up to 3 times with exponential backoff
+            if (retryCount < 3) {
+              const delayMs = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+              setTimeout(() => {
+                syncCreationToSupabase(retryCount + 1);
+              }, delayMs);
+            } else {
+              console.error(
+                `[CreationContext] Failed to sync creation after 3 retries:`,
+                newCreation.id,
+              );
+              // Creation will be persisted locally and user can try to sync again on next connect
+            }
+          }
+        };
+
+        // Start sync in background
+        syncCreationToSupabase();
       }
     },
     [],
