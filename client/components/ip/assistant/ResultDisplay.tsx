@@ -231,18 +231,18 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
   return (
     <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl border border-gray-700/50 overflow-hidden w-full backdrop-blur-sm shadow-2xl shadow-gray-900/50">
-      <div className="flex flex-col lg:flex-row gap-4 p-5">
+      <div className="flex flex-col lg:flex-row gap-4 p-5 lg:items-start">
         {/* Left side: Image */}
         {imageUrl && (
           <div className="lg:w-1/3 flex-shrink-0">
-            <div className="bg-gradient-to-br from-gray-900/60 to-black/40 rounded-lg p-3 h-full flex flex-col border border-gray-700/30 shadow-inner">
+            <div className="bg-gradient-to-br from-gray-900/60 to-black/40 rounded-lg p-3 flex flex-col border border-gray-700/30 shadow-inner">
               <h4 className="text-xs font-bold text-gray-300 mb-2 uppercase tracking-wide">
                 📸 Uploaded Image
               </h4>
               <img
                 src={imageUrl}
                 alt="Uploaded"
-                className="w-full h-auto rounded-md object-cover max-h-64 border border-gray-700/50 shadow-lg shadow-gray-900/50"
+                className="w-full h-auto rounded-md object-cover border border-gray-700/50 shadow-lg shadow-gray-900/50"
               />
             </div>
           </div>
