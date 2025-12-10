@@ -22,6 +22,7 @@ export const ExpandedAssetModal = ({
   onRemixSelected,
 }: ExpandedAssetModalProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showLifecycle, setShowLifecycle] = useState(false);
   const mediaContainerRef = useRef<HTMLDivElement>(null);
   const getRemixTypes = useRemixTypes();
 
