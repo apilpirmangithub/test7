@@ -100,7 +100,7 @@ export const ExpandedAssetModal = ({
         className="relative z-10 w-full max-w-4xl bg-slate-950/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
       >
         {/* Header */}
-        <div className="flex items-center justify-between gap-4 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/30 px-6 py-4 flex-shrink-0">
+        <div className="flex items-center justify-between gap-4 bg-slate-950/95 backdrop-blur-xl px-6 py-4 flex-shrink-0">
           <div className="flex-1 min-w-0">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-100 line-clamp-2">
               {asset.title || asset.name || "Untitled Asset"}
