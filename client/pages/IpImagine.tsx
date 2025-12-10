@@ -15,10 +15,10 @@ import SidebarExtras from "@/components/ip/assistant/SidebarExtras";
 import IpImagineInput from "@/components/ip/imagine/Input";
 import { IpImagineTour } from "@/components/ip/imagine/IpImagineTour";
 import {
-  PopularIPGrid,
   AddRemixImageModal,
   type PreviewImagesState,
 } from "@/components/ip/remix";
+import { CatalogBrowser } from "@/components/ip/imagine/dashboard/CatalogBrowser";
 import useGeminiGenerator from "@/hooks/useGeminiGenerator";
 import { useIpImagineTour } from "@/hooks/useIpImagineTour";
 import { truncateAddress } from "@/lib/ip-assistant/utils";
