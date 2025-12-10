@@ -238,14 +238,14 @@ export const SearchResultsGrid = ({
                 </div>
 
                 {/* Content */}
-                <div className="pt-4 space-y-2 flex flex-col flex-grow">
+                <div className="pt-3 px-4 pb-4 space-y-3 flex flex-col flex-grow">
                   {/* Title */}
                   <h3 className="text-sm font-bold text-slate-100 line-clamp-2 group-hover:text-[#FF4DA6] transition-colors duration-200">
                     {asset.title || asset.name || "Untitled Asset"}
                   </h3>
 
                   {/* Badges Row */}
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span
                       className={`text-xs px-2.5 py-1 rounded-full font-semibold whitespace-nowrap backdrop-blur-sm transition-all ${
                         asset.isDerivative
@@ -265,13 +265,23 @@ export const SearchResultsGrid = ({
 
                   {/* Description */}
                   {asset.description && (
-                    <p className="text-xs text-slate-400 line-clamp-1 leading-relaxed">
+                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
                       {asset.description}
                     </p>
                   )}
 
                   {/* Metadata */}
-                  <div className="text-xs text-slate-500 space-y-1">
+                  <div className="text-xs text-slate-500 space-y-2 mt-auto">
+                    {asset.mediaType && (
+                      <p className="capitalize text-xs text-slate-400 font-semibold">
+                        {asset.mediaType
+                          .replace("video/", "")
+                          .replace("audio/", "")
+                          .replace("image/", "")
+                          .toUpperCase()}
+                      </p>
+                    )}
+
                     {asset.ownerAddress && (
                       <div className="space-y-1">
                         <button
@@ -283,22 +293,12 @@ export const SearchResultsGrid = ({
                               displayDomain || null,
                             );
                           }}
-                          className="font-mono text-[0.7rem] px-2 py-1 rounded w-fit border transition-all duration-200 bg-gradient-to-r from-[#FF4DA6]/20 to-[#FF4DA6]/10 text-[#FF4DA6] border-[#FF4DA6]/30 hover:from-[#FF4DA6]/30 hover:to-[#FF4DA6]/20 hover:border-[#FF4DA6]/50 cursor-pointer hover:scale-105 active:scale-95"
+                          className="font-mono text-[0.7rem] px-2 py-1 rounded w-full border transition-all duration-200 bg-gradient-to-r from-[#FF4DA6]/20 to-[#FF4DA6]/10 text-[#FF4DA6] border-[#FF4DA6]/30 hover:from-[#FF4DA6]/30 hover:to-[#FF4DA6]/20 hover:border-[#FF4DA6]/50 cursor-pointer hover:bg-[#FF4DA6]/25 active:scale-95 text-center truncate"
                           title={`View all assets by ${displayText}`}
                         >
                           {displayText}
                         </button>
                       </div>
-                    )}
-
-                    {asset.mediaType && (
-                      <p className="capitalize text-xs text-slate-400">
-                        {asset.mediaType
-                          .replace("video/", "")
-                          .replace("audio/", "")
-                          .replace("image/", "")
-                          .toUpperCase()}
-                      </p>
                     )}
                   </div>
                 </div>
