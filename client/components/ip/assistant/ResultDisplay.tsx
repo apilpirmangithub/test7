@@ -116,10 +116,10 @@ const DetailItem: React.FC<{
   if (typeof value === "boolean") {
     displayValue = (
       <span
-        className={`font-semibold text-xs px-2 py-1 rounded-md transition-all duration-200 ${
+        className={`font-semibold text-xs px-2 py-1 rounded-md ${
           value
-            ? "text-green-300 bg-green-500/10 border border-green-500/30"
-            : "text-red-300 bg-red-500/10 border border-red-500/30"
+            ? "text-green-300 bg-green-600/20"
+            : "text-red-300 bg-red-600/20"
         }`}
       >
         {value ? "✓ Yes" : "✗ No"}
@@ -131,7 +131,7 @@ const DetailItem: React.FC<{
         {value.slice(0, 5).map((item, index) => (
           <span
             key={index}
-            className="px-2.5 py-1 text-xs bg-gradient-to-r from-gray-700 to-gray-600 rounded-full border border-gray-600/50 hover:border-cyan-400/50 hover:shadow-md hover:shadow-cyan-400/20 transition-all duration-200"
+            className="px-2.5 py-1 text-xs bg-gray-700 rounded-full"
           >
             {item}
           </span>
