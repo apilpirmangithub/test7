@@ -1,7 +1,15 @@
+import { formatEther } from "viem";
+
 interface License {
   licenseTermsId?: string;
   terms?: {
     derivativesAllowed?: boolean;
+    defaultMintingFee?: string | number;
+    mintingFee?: string | number;
+    [key: string]: any;
+  };
+  licensingConfig?: {
+    mintingFee?: string | number;
     [key: string]: any;
   };
   derivativesAllowed?: boolean;
