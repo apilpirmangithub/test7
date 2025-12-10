@@ -260,10 +260,8 @@ export const SearchResultsGrid = ({
                       whileTap={{ scale: 0.95 }}
                       onClick={async (e) => {
                         e.stopPropagation();
-                        if (remixTypes.length === 1) {
+                        if (remixTypes.length > 0) {
                           await onRemixSelected?.(asset, remixTypes[0].type);
-                        } else {
-                          onAssetClick?.(asset);
                         }
                       }}
                       type="button"
