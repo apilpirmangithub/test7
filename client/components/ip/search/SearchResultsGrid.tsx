@@ -44,6 +44,7 @@ interface SearchResultsGridProps {
   isLoadingOwnerAssets?: boolean;
   onAssetClick?: (asset: SearchResult) => void;
   onOwnerClick?: (ownerAddress: string, ownerDomain?: string | null) => void;
+  onRemixSelected?: (asset: SearchResult, remixType: "paid" | "free") => Promise<void>;
 }
 
 function extractMintingFee(license: any): string {
