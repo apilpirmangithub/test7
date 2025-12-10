@@ -135,12 +135,20 @@ export const SearchResultsGrid = ({
                             img.replaceWith(
                               Object.assign(document.createElement("div"), {
                                 className:
-                                  "w-full h-full flex flex-col items-center justify-center gap-2 text-slate-400 bg-slate-800",
+                                  "w-full h-full flex flex-col items-center justify-center p-4 text-slate-300 bg-gradient-to-br from-slate-800/80 to-slate-900 relative group/fallback",
                                 innerHTML: `
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <span class="text-xs">Failed to load</span>
+                                <div class="absolute inset-0 opacity-5">
+                                  <div class="absolute inset-0 bg-gradient-to-br from-[#FF4DA6] to-transparent"></div>
+                                </div>
+                                <div class="relative z-10 w-full h-full flex flex-col items-center justify-center gap-3">
+                                  <svg class="w-10 h-10 text-slate-500 group-hover/fallback:text-[#FF4DA6] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                  </svg>
+                                  <div class="text-center space-y-1 flex-1 flex flex-col justify-center">
+                                    <p class="text-xs font-semibold text-slate-200">Image failed to load</p>
+                                    <p class="text-[0.65rem] text-slate-400">Try viewing full details</p>
+                                  </div>
+                                </div>
                               `,
                               }),
                             );
