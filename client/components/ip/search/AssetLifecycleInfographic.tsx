@@ -28,6 +28,33 @@ export const AssetLifecycleInfographic = ({
   } | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Fetch asset details by IP ID
+  const fetchAssetDetails = async (ipId: string): Promise<AssetNode | null> => {
+    try {
+      const response = await fetch("/api/get-asset-details", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ipId }),
+      });
+
+      if (!response.ok) {
+        console.warn(`Failed to fetch details for ${ipId}`);
+        return null;
+      }
+
+      const data = await response.json();
+      return {
+        ipId,
+        title: data.title || data.name || "Asset",
+        mediaUrl: data.mediaUrl || data.media_url,
+        type: "parent",
+      };
+    } catch (error) {
+      console.error(`Error fetching asset details for ${ipId}:`, error);
+      return null;
+    }
+  };
+
   // Extract parent and child information
   useEffect(() => {
     if (!isOpen || !asset.ipId) return;
@@ -36,35 +63,55 @@ export const AssetLifecycleInfographic = ({
       setLoading(true);
 
       try {
-        // Build from current asset data
         const parents: AssetNode[] = [];
         const children: AssetNode[] = [];
 
-        // Add parents from parentIpDetails
+        // Fetch parent asset details
         if (
           asset.parentIpDetails?.parentIpIds &&
           Array.isArray(asset.parentIpDetails.parentIpIds)
         ) {
-          asset.parentIpDetails.parentIpIds.forEach((parentId: string) => {
-            parents.push({
-              ipId: parentId,
-              title: `Parent ${parents.length + 1}`,
-              mediaUrl: undefined,
-              type: "parent",
-            });
+          const parentPromises = asset.parentIpDetails.parentIpIds.map(
+            (parentId: string) => fetchAssetDetails(parentId)
+          );
+          const parentResults = await Promise.all(parentPromises);
+
+          parentResults.forEach((parent) => {
+            if (parent) {
+              parent.type = "parent";
+              parents.push(parent);
+            } else {
+              // Fallback if API fails
+              parents.push({
+                ipId: asset.parentIpDetails.parentIpIds[parents.length],
+                title: `Parent ${parents.length + 1}`,
+                mediaUrl: undefined,
+                type: "parent",
+              });
+            }
           });
         }
 
-        // Add children if available
+        // Fetch child asset details
         if (asset.childIpIds && Array.isArray(asset.childIpIds)) {
-          asset.childIpIds.forEach((childId: string, index: number) => {
-            children.push({
-              ipId: childId,
-              title: asset.childAssetDetails?.[index]?.title || `Child ${index + 1}`,
-              mediaUrl:
-                asset.childAssetDetails?.[index]?.mediaUrl || undefined,
-              type: "child",
-            });
+          const childPromises = asset.childIpIds.map((childId: string) =>
+            fetchAssetDetails(childId)
+          );
+          const childResults = await Promise.all(childPromises);
+
+          childResults.forEach((child, index) => {
+            if (child) {
+              child.type = "child";
+              children.push(child);
+            } else {
+              // Fallback if API fails
+              children.push({
+                ipId: asset.childIpIds[index],
+                title: `Child ${index + 1}`,
+                mediaUrl: undefined,
+                type: "child",
+              });
+            }
           });
         }
 
