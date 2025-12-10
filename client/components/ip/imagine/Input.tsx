@@ -240,7 +240,7 @@ const IpImagineInput = ({
             data-file-input-btn
             data-tour-upload
             disabled={attachmentLoading}
-            className={`flex-shrink-0 p-2 sm:p-1.5 rounded-lg active:scale-95 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30 ${attachmentLoading ? "text-slate-400 bg-slate-800/30 cursor-wait" : "text-[#FF4DA6] hover:bg-[#FF4DA6]/20"}`}
+            className={`flex-shrink-0 p-2 rounded-lg active:scale-95 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/40 ${attachmentLoading ? "text-slate-500 cursor-wait" : "text-slate-400 hover:text-slate-300"}`}
             onClick={() => uploadRef.current?.click()}
             onPointerDown={(event) => event.preventDefault()}
             aria-label="Add attachment"
