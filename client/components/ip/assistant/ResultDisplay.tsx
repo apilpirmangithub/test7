@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { type ClassificationResult } from "@shared/image-analysis";
-import { ChevronDown, Brain, Shield, Palette, Eye, Image as ImageIcon } from "lucide-react";
+import {
+  ChevronDown,
+  Brain,
+  Shield,
+  Palette,
+  Eye,
+  Image as ImageIcon,
+} from "lucide-react";
 
 interface ResultDisplayProps {
   result: ClassificationResult | null;
@@ -342,7 +349,11 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           <div className="mt-4">
             <button
               onClick={() => {
-                if (onRegister && ctxKey && license.status !== "CANNOT_REGISTER") {
+                if (
+                  onRegister &&
+                  ctxKey &&
+                  license.status !== "CANNOT_REGISTER"
+                ) {
                   void onRegister(ctxKey);
                 }
               }}
