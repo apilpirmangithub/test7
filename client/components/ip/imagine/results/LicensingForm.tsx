@@ -739,6 +739,27 @@ const LicensingFormComponent = (
 
       {/* Status Messages */}
       <div className="space-y-2 pt-3 border-t border-slate-800/50">
+        {/* Token Warning */}
+        {showTokenWarning &&
+          parentLicense &&
+          balance &&
+          parseFloat(balance) < parseFloat(getTotalCost(parentLicense)) && (
+            <div className="rounded-lg px-3 py-2.5 bg-red-500/10 border border-red-500/30 text-sm text-red-400">
+              <div className="font-semibold mb-1">❌ Insufficient Balance</div>
+              <div>
+                You need {getTotalCost(parentLicense)} IP tokens but only have{" "}
+                {balance} IP tokens.
+              </div>
+              <div className="text-xs mt-1">
+                Please add{" "}
+                {(
+                  parseFloat(getTotalCost(parentLicense)) - parseFloat(balance)
+                ).toFixed(6)}{" "}
+                more IP tokens to proceed.
+              </div>
+            </div>
+          )}
+
         {/* Registration Status */}
         {currentStep !== "idle" && currentStep !== "success" && (
           <div className="rounded-lg px-3 py-2.5 bg-blue-500/10 border border-blue-500/30 text-sm text-blue-400 flex items-center gap-2">
@@ -752,7 +773,7 @@ const LicensingFormComponent = (
         )}
 
         {/* Error Message */}
-        {registerError && (
+        {registerError && !showTokenWarning && (
           <div className="rounded-lg px-3 py-2.5 bg-red-500/10 border border-red-500/30 text-sm text-red-400 max-h-24 overflow-y-auto">
             {registerError}
           </div>
