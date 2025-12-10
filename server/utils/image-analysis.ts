@@ -124,14 +124,14 @@ export async function analyzeImageWithOpenAI(
   try {
     const prompt = `You are an expert forensic image analyst for Intellectual Property (IP) registration.
 
-Your **first and most critical task** is to determine the image's origin and set the 'primary_category'. Choose only one:
-- 'Photograph'
-- 'AI-Generated Image'
-- 'Animation/CGI'
-- 'Uncertain'
+Your **first and most critical task** is to determine the image's origin and set the 'primary_category' based on AI likelihood:
+- If AI likelihood is 'High' or 'Medium' → primary_category = 'AI-Generated Image'
+- If AI likelihood is 'Low' or 'Unlikely' → primary_category = 'Photograph'
+- If the image appears to be animation, CGI render, cartoon, etc. → primary_category = 'Animation/CGI'
+- If truly uncertain → primary_category = 'Uncertain'
 
 Then perform a deep, full-spectrum analysis:
-1. **AI Forensics** — detect artifacts, hyperrealism, texture inconsistencies.
+1. **AI Forensics** — detect artifacts, hyperrealism, texture inconsistencies. Be precise with likelihood (High/Medium/Low/Unlikely).
 2. **Sensitive Content Detection** — violence, explicit content, self-harm.
 3. **IP Risk Assessment** — recognizable faces, famous people, brands, characters.
 4. Follow the JSON schema EXACTLY with no extra fields.`;
