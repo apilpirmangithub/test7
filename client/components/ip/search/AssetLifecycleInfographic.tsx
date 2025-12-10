@@ -31,7 +31,7 @@ export const AssetLifecycleInfographic = ({
   // Fetch asset details by IP ID
   const fetchAssetDetails = async (ipId: string): Promise<AssetNode | null> => {
     try {
-      const response = await fetch("/api/get-asset-details", {
+      const response = await fetch("/api/get-asset-by-id", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ipId }),
