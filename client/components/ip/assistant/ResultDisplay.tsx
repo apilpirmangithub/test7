@@ -352,7 +352,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
             </AnalysisSection>
           </div>
 
-          <div className="mt-4 flex gap-2">
+          <div className="mt-4 flex gap-3">
             <button
               className={`flex-1 py-2.5 px-4 rounded-lg font-semibold text-white text-xs transition-all duration-200 ${
                 buttonClasses[license.color] || "bg-gray-600"
@@ -361,14 +361,12 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
             >
               {license.buttonText}
             </button>
-            {onReset && (
-              <button
-                onClick={onReset}
-                className="px-4 py-2.5 rounded-lg font-semibold bg-gradient-to-r from-gray-600 to-gray-500 hover:from-gray-500 hover:to-gray-400 text-white text-xs transition-all duration-200 shadow-lg shadow-gray-500/20 hover:scale-105 active:scale-95"
-              >
-                Reset
-              </button>
-            )}
+            <button
+              onClick={onReset}
+              className="px-5 py-2.5 rounded-lg font-semibold bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-white text-xs transition-all duration-200 shadow-lg shadow-gray-600/20 hover:scale-105 active:scale-95 border border-gray-600/50"
+            >
+              Analyze Another
+            </button>
           </div>
         </div>
       </div>
