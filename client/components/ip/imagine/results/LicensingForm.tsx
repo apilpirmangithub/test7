@@ -77,6 +77,8 @@ const LicensingFormComponent = (
   const [currentStep, setCurrentStep] = useState<
     "idle" | "registering-derivative" | "claiming-revenue" | "success"
   >("idle");
+  const [tokenWarning, setTokenWarning] = useState<string | null>(null);
+  const [showTokenWarning, setShowTokenWarning] = useState(false);
 
   // Expose handleRegister to parent component via ref
   useImperativeHandle(ref, () => ({
