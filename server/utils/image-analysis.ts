@@ -34,6 +34,7 @@ const analysisSchema = {
         },
       },
       required: ["likelihood", "evidence", "confidence_score"],
+      additionalProperties: false,
     },
     is_photo: { type: "boolean" },
     is_animation: { type: "boolean" },
@@ -55,6 +56,7 @@ const analysisSchema = {
     "title",
     "description",
   ],
+  additionalProperties: false,
 } as const;
 
 export async function analyzeImageWithOpenAI(
