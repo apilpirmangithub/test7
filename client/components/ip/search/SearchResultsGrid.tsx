@@ -281,8 +281,8 @@ export const SearchResultsGrid = ({
                   )}
 
                   {/* Title - Bottom Left Corner */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent p-2 sm:p-3">
-                    <h3 className="text-xs sm:text-sm font-bold text-slate-100 line-clamp-2 group-hover:text-[#FF4DA6] transition-colors duration-200">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-3 sm:p-4">
+                    <h3 className="text-xs sm:text-sm font-semibold text-slate-100 line-clamp-2 group-hover:text-[#FF4DA6] transition-colors duration-200">
                       {asset.title || asset.name || "Untitled Asset"}
                     </h3>
                   </div>
