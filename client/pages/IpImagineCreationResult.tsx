@@ -464,14 +464,16 @@ const IpImagineCreationResult = () => {
                 );
               })()}
             </motion.div>
-          ) : creations
+          ) : !authenticated ||
+            !primaryWalletAddress ||
+            (creations
               .filter((c) => {
                 return (
                   c.walletAddress?.toLowerCase() ===
                   primaryWalletAddress?.toLowerCase()
                 );
               })
-              .filter((c) => true).length === 0 && !isLoading ? (
+              .filter((c) => true).length === 0 && !isLoading) ? (
             <motion.div
               key="no-data"
               initial={{ opacity: 0 }}
