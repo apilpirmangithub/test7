@@ -1,4 +1,5 @@
 import { formatEther } from "viem";
+import { motion } from "framer-motion";
 
 interface License {
   licenseTermsId?: string;
