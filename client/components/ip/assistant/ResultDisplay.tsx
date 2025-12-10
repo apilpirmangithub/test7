@@ -8,6 +8,9 @@ interface ResultDisplayProps {
   error: string | null;
   imageUrl?: string;
   onReset?: () => void;
+  onRegister?: (ctxKey: string) => Promise<void>;
+  ctxKey?: string;
+  isLoading?: boolean;
 }
 
 const AnalysisSection: React.FC<{
@@ -160,6 +163,8 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
   error,
   imageUrl,
   onReset,
+  onRegister,
+  ctxKey,
 }) => {
   if (isLoading) {
     return (
@@ -337,10 +342,15 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
           <div className="mt-4">
             <button
+              onClick={() => {
+                if (onRegister && ctxKey && license.status !== "CANNOT_REGISTER") {
+                  void onRegister(ctxKey);
+                }
+              }}
               className={`w-full py-2.5 px-4 rounded-lg font-semibold text-white text-xs transition-all duration-200 ${
                 buttonClasses[license.color] || "bg-gray-600"
               }`}
-              disabled={license.status === "CANNOT_REGISTER"}
+              disabled={license.status === "CANNOT_REGISTER" || !onRegister}
             >
               {license.buttonText}
             </button>
