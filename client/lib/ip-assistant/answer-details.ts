@@ -1,4 +1,4 @@
-import { getLicenseSettings, type GroupNumber, RegistrationStatus } from "@shared/image-analysis";
+import { getLicenseSettings, type GroupNumber } from "@shared/image-analysis";
 
 // Export license settings generator for backward compatibility
 export const getLicenseDetailsForGroup = (group: GroupNumber) => {
