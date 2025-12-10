@@ -46,15 +46,35 @@ interface SearchResultsGridProps {
   onOwnerClick?: (ownerAddress: string, ownerDomain?: string | null) => void;
 }
 
+function extractMintingFee(license: any): string {
+  if (!license) return "0";
+
+  let mintingFee = 0;
+
+  // Try multiple field names for minting fee
+  if (license.licensingConfig?.mintingFee) {
+    mintingFee = Number(license.licensingConfig.mintingFee);
+  } else if (license.terms?.defaultMintingFee) {
+    mintingFee = Number(license.terms.defaultMintingFee);
+  } else if (license.terms?.mintingFee) {
+    mintingFee = Number(license.terms.mintingFee);
+  }
+
+  // Convert from wei to ether (assuming fee is in wei with 18 decimals)
+  if (mintingFee > 0) {
+    return formatEther(BigInt(mintingFee));
+  }
+
+  return "0";
+}
+
 function extractRemixPrice(asset: SearchResult): string | null {
   if (!asset.licenses || asset.licenses.length === 0) return null;
 
   for (const license of asset.licenses) {
-    const terms = license.terms || license;
-    const price =
-      terms?.price || terms?.commercialUsePrice || (license as any)?.price;
-    if (price) {
-      return String(price);
+    const mintingFee = extractMintingFee(license);
+    if (mintingFee !== "0") {
+      return mintingFee;
     }
   }
   return null;
