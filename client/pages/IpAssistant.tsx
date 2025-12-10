@@ -1824,39 +1824,30 @@ const IpAssistant = () => {
                   <div className="bg-slate-900/70 px-4 py-2.5 rounded-2xl max-w-[85%] md:max-w-[85%] lg:max-w-3xl break-words text-slate-100 text-[0.95rem]">
                     {msg.analysisResult ? (
                       <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-3">
-                          {msg.isProcessing ? (
-                            <div className="flex-shrink-0 inline-flex items-center justify-center rounded-full bg-[#FF4DA6]/10 p-1">
-                              <svg
-                                className="h-4 w-4 text-[#FF4DA6] animate-spin"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <circle
-                                  cx="12"
-                                  cy="12"
-                                  r="9"
-                                  stroke="currentColor"
-                                  strokeOpacity="0.15"
-                                  strokeWidth="3"
-                                />
-                                <path
-                                  d="M21.5 12a9.5 9.5 0 00-9.5-9.5"
-                                  stroke="currentColor"
-                                  strokeWidth="3"
-                                  strokeLinecap="round"
-                                />
-                              </svg>
-                            </div>
-                          ) : null}
-                          <div>{msg.text}</div>
-                        </div>
-                        <ResultDisplay
-                          result={msg.analysisResult}
-                          isLoading={false}
-                          error={null}
-                        />
+                        {(() => {
+                          const ctxKey = (msg as any).ctxKey;
+                          const ctx = ctxKey
+                            ? analysisContextsRef.current.get(ctxKey)
+                            : null;
+                          const imageUrl = ctx?.blob
+                            ? URL.createObjectURL(ctx.blob)
+                            : undefined;
+                          return (
+                            <ResultDisplay
+                              result={msg.analysisResult}
+                              isLoading={false}
+                              error={null}
+                              imageUrl={imageUrl}
+                              onReset={() => {
+                                setPreviewImages({
+                                  remixImage: null,
+                                  additionalImage: null,
+                                });
+                                inputRef.current?.focus();
+                              }}
+                            />
+                          );
+                        })()}
                       </div>
                     ) : (
                       <div className="flex items-center gap-3">
@@ -1956,23 +1947,6 @@ const IpAssistant = () => {
                     ) : null}
                     {verificationObject ? (
                       <div className="mt-2 text-xs text-[#FF4DA6]">
-                        Final verification:{" "}
-                        <span
-                          role="button"
-                          tabIndex={0}
-                          onClick={() =>
-                            setActiveDetail(verificationObject.code)
-                          }
-                          onKeyDown={(event) => {
-                            if (event.key === "Enter" || event.key === " ") {
-                              event.preventDefault();
-                              setActiveDetail(verificationObject.code);
-                            }
-                          }}
-                          className="cursor-pointer text-[#FF4DA6] font-semibold underline underline-offset-2 decoration-[#FF4DA6]/60 outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30 rounded"
-                        >
-                          {verificationObject.label}
-                        </span>
                         {(() => {
                           const codeStr = String(verificationObject.code);
                           const info =

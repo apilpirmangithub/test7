@@ -231,18 +231,18 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
   return (
     <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl border border-gray-700/50 overflow-hidden w-full backdrop-blur-sm shadow-2xl shadow-gray-900/50">
-      <div className="flex flex-col lg:flex-row gap-4 p-5">
+      <div className="flex flex-col lg:flex-row gap-4 p-5 lg:items-start">
         {/* Left side: Image */}
         {imageUrl && (
           <div className="lg:w-1/3 flex-shrink-0">
-            <div className="bg-gradient-to-br from-gray-900/60 to-black/40 rounded-lg p-3 h-full flex flex-col border border-gray-700/30 shadow-inner">
+            <div className="bg-gradient-to-br from-gray-900/60 to-black/40 rounded-lg p-3 flex flex-col border border-gray-700/30 shadow-inner">
               <h4 className="text-xs font-bold text-gray-300 mb-2 uppercase tracking-wide">
                 📸 Uploaded Image
               </h4>
               <img
                 src={imageUrl}
                 alt="Uploaded"
-                className="w-full h-auto rounded-md object-cover max-h-64 border border-gray-700/50 shadow-lg shadow-gray-900/50"
+                className="w-full h-auto rounded-md object-cover border border-gray-700/50 shadow-lg shadow-gray-900/50"
               />
             </div>
           </div>
@@ -262,22 +262,6 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
                 {classification.group}
               </span>{" "}
               • <span className="text-cyan-300/80">{classification.type}</span>
-            </p>
-          </div>
-
-          <div
-            className={`p-4 rounded-lg mb-4 border text-sm backdrop-blur-sm ${licenseBgClasses[license.color]}`}
-          >
-            <div className="flex items-start gap-3 mb-2">
-              {statusIcons[license.status]}
-              <h4
-                className={`text-sm font-bold ${licenseTitleClasses[license.color]}`}
-              >
-                {license.title}
-              </h4>
-            </div>
-            <p className="text-xs text-gray-300 leading-relaxed ml-10">
-              {license.description}
             </p>
           </div>
 
@@ -352,23 +336,15 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
             </AnalysisSection>
           </div>
 
-          <div className="mt-4 flex gap-2">
+          <div className="mt-4">
             <button
-              className={`flex-1 py-2.5 px-4 rounded-lg font-semibold text-white text-xs transition-all duration-200 ${
+              className={`w-full py-2.5 px-4 rounded-lg font-semibold text-white text-xs transition-all duration-200 ${
                 buttonClasses[license.color] || "bg-gray-600"
               }`}
               disabled={license.status === "CANNOT_REGISTER"}
             >
               {license.buttonText}
             </button>
-            {onReset && (
-              <button
-                onClick={onReset}
-                className="px-4 py-2.5 rounded-lg font-semibold bg-gradient-to-r from-gray-600 to-gray-500 hover:from-gray-500 hover:to-gray-400 text-white text-xs transition-all duration-200 shadow-lg shadow-gray-500/20 hover:scale-105 active:scale-95"
-              >
-                Reset
-              </button>
-            )}
           </div>
         </div>
       </div>
