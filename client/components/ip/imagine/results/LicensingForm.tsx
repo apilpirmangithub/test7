@@ -68,12 +68,8 @@ const LicensingFormComponent = (
   const walletAddress = wallets?.[0]?.address || undefined;
 
   // Token validation hook
-  const {
-    balance,
-    validateForRegistration,
-    getWarningMessage,
-    getTotalCost,
-  } = useTokenValidation(walletAddress, "mainnet");
+  const { balance, validateForRegistration, getWarningMessage, getTotalCost } =
+    useTokenValidation(walletAddress, "mainnet");
 
   // State
   const [title, setTitle] = useState("AI Generated Image");
@@ -562,7 +558,8 @@ const LicensingFormComponent = (
       {isPaidRemix && parentLicense && authenticated && (
         <div
           className={`rounded-lg p-4 border ${
-            balance && parseFloat(balance) >= parseFloat(getTotalCost(parentLicense))
+            balance &&
+            parseFloat(balance) >= parseFloat(getTotalCost(parentLicense))
               ? "bg-emerald-500/10 border-emerald-500/30"
               : "bg-red-500/10 border-red-500/30"
           }`}
@@ -582,7 +579,8 @@ const LicensingFormComponent = (
                     fee = Number(parentLicense.terms.mintingFee);
                   }
                   return (fee / 1e18).toFixed(6);
-                })()} IP
+                })()}{" "}
+                IP
               </span>
             </div>
             <div className="flex justify-between text-xs">
@@ -599,7 +597,8 @@ const LicensingFormComponent = (
               <span className="text-slate-300">Your Balance:</span>
               <span
                 className={`font-mono ${
-                  balance && parseFloat(balance) >= parseFloat(getTotalCost(parentLicense))
+                  balance &&
+                  parseFloat(balance) >= parseFloat(getTotalCost(parentLicense))
                     ? "text-emerald-400"
                     : "text-red-400"
                 }`}
@@ -608,19 +607,21 @@ const LicensingFormComponent = (
               </span>
             </div>
           </div>
-          {balance && parseFloat(balance) < parseFloat(getTotalCost(parentLicense)) && (
-            <div className="mt-3 p-2 rounded bg-red-900/20 border border-red-500/20">
-              <p className="text-xs text-red-300">
-                ⚠️ Insufficient balance to complete registration. Please add{" "}
-                <span className="font-semibold">
-                  {(
-                    parseFloat(getTotalCost(parentLicense)) - parseFloat(balance)
-                  ).toFixed(6)}
-                </span>{" "}
-                more IP tokens.
-              </p>
-            </div>
-          )}
+          {balance &&
+            parseFloat(balance) < parseFloat(getTotalCost(parentLicense)) && (
+              <div className="mt-3 p-2 rounded bg-red-900/20 border border-red-500/20">
+                <p className="text-xs text-red-300">
+                  ⚠️ Insufficient balance to complete registration. Please add{" "}
+                  <span className="font-semibold">
+                    {(
+                      parseFloat(getTotalCost(parentLicense)) -
+                      parseFloat(balance)
+                    ).toFixed(6)}
+                  </span>{" "}
+                  more IP tokens.
+                </p>
+              </div>
+            )}
         </div>
       )}
 
@@ -845,7 +846,8 @@ const LicensingFormComponent = (
                 ? "Select a parent asset to enable licensing"
                 : parentLicense &&
                     balance &&
-                    parseFloat(balance) < parseFloat(getTotalCost(parentLicense))
+                    parseFloat(balance) <
+                      parseFloat(getTotalCost(parentLicense))
                   ? `Insufficient balance. Need ${getTotalCost(parentLicense)} IP tokens, have ${balance} IP tokens`
                   : `Register with ${parentRevSharePercentage.toFixed(2)}% revenue share from parent`
             }

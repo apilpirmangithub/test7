@@ -336,7 +336,6 @@ const IpImagine = () => {
     }
   };
 
-
   // Note: Watermark is now applied in useGeminiGenerator hook during generation
   // This ensures watermark is applied before image is stored in creation history
 

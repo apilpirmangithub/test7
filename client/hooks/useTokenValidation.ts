@@ -86,19 +86,13 @@ export function useTokenValidation(
     [balance],
   );
 
-  const getMintingFee = useCallback(
-    (license: any): string => {
-      return extractMintingFee(license);
-    },
-    [],
-  );
+  const getMintingFee = useCallback((license: any): string => {
+    return extractMintingFee(license);
+  }, []);
 
-  const getTotalCost = useCallback(
-    (license: any): string => {
-      return calculateTotalCost(license, true);
-    },
-    [],
-  );
+  const getTotalCost = useCallback((license: any): string => {
+    return calculateTotalCost(license, true);
+  }, []);
 
   return {
     balance,

@@ -39,7 +39,10 @@ export function extractMintingFee(license: any): string {
  * - Minting fee (from license)
  * - Gas estimation (rough estimate)
  */
-export function calculateTotalCost(license: any, includeGasEstimate = true): string {
+export function calculateTotalCost(
+  license: any,
+  includeGasEstimate = true,
+): string {
   const mintingFee = parseEther(extractMintingFee(license));
 
   // Rough gas estimation: ~0.5 IP tokens for gas (can be adjusted based on empirical data)
