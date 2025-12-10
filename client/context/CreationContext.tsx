@@ -343,22 +343,54 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           return c;
         });
 
-        // Sync updated creation to server
+        // Sync updated creation to server with retry logic
         const updatedCreation = updated.find((c) => c.id === id);
         if (updatedCreation) {
-          const params = new URLSearchParams({
-            requesting_wallet: updatedCreation.walletAddress,
-          });
-          fetch(`/api/wallet-creations/${id}?${params.toString()}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedCreation),
-          }).catch((error) => {
-            console.warn(
-              "Failed to sync updated wallet creation to server:",
-              error,
-            );
-          });
+          const syncUpdate = async (retryCount = 0) => {
+            try {
+              const params = new URLSearchParams({
+                requesting_wallet: updatedCreation.walletAddress,
+              });
+              const response = await fetch(
+                `/api/wallet-creations/${id}?${params.toString()}`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(updatedCreation),
+                },
+              );
+
+              if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(
+                  `Failed to sync update: ${response.status} ${errorText}`,
+                );
+              }
+
+              console.log(
+                `[CreationContext] Creation update synced to Supabase: ${id}`,
+              );
+            } catch (error: any) {
+              console.warn(
+                `[CreationContext] Attempt ${retryCount + 1} to sync update failed:`,
+                error?.message,
+              );
+
+              // Retry up to 3 times with exponential backoff
+              if (retryCount < 3) {
+                const delayMs = Math.pow(2, retryCount) * 1000;
+                setTimeout(() => {
+                  syncUpdate(retryCount + 1);
+                }, delayMs);
+              } else {
+                console.error(
+                  `[CreationContext] Failed to sync update after 3 retries: ${id}`,
+                );
+              }
+            }
+          };
+
+          syncUpdate();
         }
 
         return updated;
