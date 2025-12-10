@@ -6,6 +6,7 @@ interface ResultDisplayProps {
   result: ClassificationResult | null;
   isLoading: boolean;
   error: string | null;
+  imageUrl?: string;
   onReset?: () => void;
 }
 
@@ -138,6 +139,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
   result,
   isLoading,
   error,
+  imageUrl,
   onReset,
 }) => {
   if (isLoading) {
@@ -192,130 +194,151 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden max-w-2xl">
-      <div className="p-4">
-        <h3 className="text-sm font-semibold mb-1 text-gray-200">
-          Analysis Complete
-        </h3>
-        <p className="text-gray-400 mb-3 text-xs">
-          Group {classification.group}: {classification.type} -{" "}
-          {classification.classification}
-        </p>
-
-        <div
-          className={`p-3 rounded-lg mb-4 border text-sm ${
-            license.color === "green"
-              ? "bg-green-900/20 border-green-700/50"
-              : license.color === "red"
-                ? "bg-red-900/20 border-red-700/50"
-                : "bg-yellow-900/20 border-yellow-700/50"
-          }`}
-        >
-          <div className="flex items-center gap-3 mb-2">
-            {statusIcons[license.status]}
-            <h4
-              className={`text-sm font-bold ${
-                license.color === "green"
-                  ? "text-green-300"
-                  : license.color === "red"
-                    ? "text-red-300"
-                    : "text-yellow-300"
-              }`}
-            >
-              {license.title}
-            </h4>
-          </div>
-          <p className="text-xs text-gray-300 leading-relaxed">
-            {license.description}
-          </p>
-        </div>
-
-        <div className="rounded-lg border border-gray-700 bg-gray-800/50 overflow-hidden text-xs">
-          <AnalysisSection
-            title="AI Generation Analysis"
-            icon={<span className="text-yellow-300">🤖</span>}
-            defaultOpen={true}
-          >
-            <AIGenerationAnalysis analysis={flags.ai_generation_analysis} />
-          </AnalysisSection>
-
-          <AnalysisSection
-            title="Content & Safety Analysis"
-            icon={<span className="text-red-400">🛡️</span>}
-          >
-            <DetailItem
-              label="Explicit Content"
-              value={flags.content_analysis.contains_explicit_content}
-            />
-            <DetailItem
-              label="Violence"
-              value={flags.content_analysis.contains_violence}
-            />
-            <DetailItem
-              label="Sensitive Subject"
-              value={flags.content_analysis.contains_sensitive_subject}
-            />
-            {flags.content_analysis.description && (
-              <DetailItem
-                label="Notes"
-                value={flags.content_analysis.description}
+    <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden w-full">
+      <div className="flex flex-col lg:flex-row gap-4 p-4">
+        {/* Left side: Image */}
+        {imageUrl && (
+          <div className="lg:w-1/3 flex-shrink-0">
+            <div className="bg-gray-900 rounded-lg p-3 h-full flex flex-col">
+              <h4 className="text-xs font-semibold text-gray-300 mb-2">
+                Uploaded Image
+              </h4>
+              <img
+                src={imageUrl}
+                alt="Uploaded"
+                className="w-full h-auto rounded object-cover max-h-64"
               />
-            )}
-          </AnalysisSection>
+            </div>
+          </div>
+        )}
 
-          <AnalysisSection
-            title="Composition & Style"
-            icon={<span className="text-blue-400">🎨</span>}
-          >
-            <DetailItem
-              label="Artistic Style"
-              value={flags.composition_analysis.style}
-            />
-            <DetailItem
-              label="Perspective"
-              value={flags.composition_analysis.perspective}
-            />
-            <DetailItem
-              label="Dominant Colors"
-              value={flags.composition_analysis.dominant_colors.map((c) =>
-                c.toUpperCase()
-              )}
-            />
-          </AnalysisSection>
+        {/* Right side: Analysis Results */}
+        <div className={`flex-1 flex flex-col ${imageUrl ? "lg:w-2/3" : "w-full"}`}>
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold mb-1 text-gray-200">
+              Analysis Complete
+            </h3>
+            <p className="text-gray-400 text-xs">
+              Group {classification.group}: {classification.type} -{" "}
+              {classification.classification}
+            </p>
+          </div>
 
-          <AnalysisSection
-            title="Object & Text Detection"
-            icon={<span className="text-green-400">📋</span>}
+          <div
+            className={`p-3 rounded-lg mb-4 border text-sm ${
+              license.color === "green"
+                ? "bg-green-900/20 border-green-700/50"
+                : license.color === "red"
+                  ? "bg-red-900/20 border-red-700/50"
+                  : "bg-yellow-900/20 border-yellow-700/50"
+            }`}
           >
-            <DetailItem
-              label="Main Objects"
-              value={
-                flags.object_detection.main_objects.join(", ") ||
-                "None detected"
-              }
-            />
-            <DetailItem
-              label="Detected Text"
-              value={flags.text_detection.detected_text || "None"}
-            />
-          </AnalysisSection>
-        </div>
+            <div className="flex items-center gap-3 mb-2">
+              {statusIcons[license.status]}
+              <h4
+                className={`text-sm font-bold ${
+                  license.color === "green"
+                    ? "text-green-300"
+                    : license.color === "red"
+                      ? "text-red-300"
+                      : "text-yellow-300"
+                }`}
+              >
+                {license.title}
+              </h4>
+            </div>
+            <p className="text-xs text-gray-300 leading-relaxed">
+              {license.description}
+            </p>
+          </div>
 
-        <div className="mt-4 flex gap-2">
-          <button
-            className={`flex-1 py-2 px-3 rounded font-semibold text-white text-xs transition-colors ${buttonClasses[license.color] || "bg-gray-600"}`}
-            disabled={license.status === "CANNOT_REGISTER"}
-          >
-            {license.buttonText}
-          </button>
-          {onReset && (
-            <button
-              onClick={onReset}
-              className="px-4 py-2 rounded font-semibold bg-gray-600 hover:bg-gray-500 text-white text-xs transition-colors"
+          <div className="rounded-lg border border-gray-700 bg-gray-800/50 overflow-hidden text-xs max-h-64 overflow-y-auto">
+            <AnalysisSection
+              title="AI Generation Analysis"
+              icon={<span className="text-yellow-300">🤖</span>}
+              defaultOpen={true}
             >
-              Reset
+              <AIGenerationAnalysis analysis={flags.ai_generation_analysis} />
+            </AnalysisSection>
+
+            <AnalysisSection
+              title="Content & Safety Analysis"
+              icon={<span className="text-red-400">🛡️</span>}
+            >
+              <DetailItem
+                label="Explicit Content"
+                value={flags.content_analysis.contains_explicit_content}
+              />
+              <DetailItem
+                label="Violence"
+                value={flags.content_analysis.contains_violence}
+              />
+              <DetailItem
+                label="Sensitive Subject"
+                value={flags.content_analysis.contains_sensitive_subject}
+              />
+              {flags.content_analysis.description && (
+                <DetailItem
+                  label="Notes"
+                  value={flags.content_analysis.description}
+                />
+              )}
+            </AnalysisSection>
+
+            <AnalysisSection
+              title="Composition & Style"
+              icon={<span className="text-blue-400">🎨</span>}
+            >
+              <DetailItem
+                label="Artistic Style"
+                value={flags.composition_analysis.style}
+              />
+              <DetailItem
+                label="Perspective"
+                value={flags.composition_analysis.perspective}
+              />
+              <DetailItem
+                label="Dominant Colors"
+                value={flags.composition_analysis.dominant_colors.map((c) =>
+                  c.toUpperCase()
+                )}
+              />
+            </AnalysisSection>
+
+            <AnalysisSection
+              title="Object & Text Detection"
+              icon={<span className="text-green-400">📋</span>}
+            >
+              <DetailItem
+                label="Main Objects"
+                value={
+                  flags.object_detection.main_objects.join(", ") ||
+                  "None detected"
+                }
+              />
+              <DetailItem
+                label="Detected Text"
+                value={flags.text_detection.detected_text || "None"}
+              />
+            </AnalysisSection>
+          </div>
+
+          <div className="mt-4 flex gap-2">
+            <button
+              className={`flex-1 py-2 px-3 rounded font-semibold text-white text-xs transition-colors ${buttonClasses[license.color] || "bg-gray-600"}`}
+              disabled={license.status === "CANNOT_REGISTER"}
+            >
+              {license.buttonText}
             </button>
-          )}
+            {onReset && (
+              <button
+                onClick={onReset}
+                className="px-4 py-2 rounded font-semibold bg-gray-600 hover:bg-gray-500 text-white text-xs transition-colors"
+              >
+                Reset
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
