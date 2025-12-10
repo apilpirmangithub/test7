@@ -253,7 +253,7 @@ export const SearchResultsGrid = ({
                           : { opacity: 0, scale: 0.8, y: -10 }
                       }
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: 1.08 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={async (e) => {
                         e.stopPropagation();
@@ -262,7 +262,7 @@ export const SearchResultsGrid = ({
                         }
                       }}
                       type="button"
-                      className="absolute top-2 left-2 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg backdrop-blur-sm bg-[#FF4DA6] hover:bg-[#FF4DA6]/90 text-white font-semibold text-xs transition-all shadow-lg hover:shadow-xl"
+                      className="absolute top-2 left-2 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg backdrop-blur-sm bg-[#FF4DA6] text-white font-semibold text-xs shadow-lg"
                     >
                       <span>🔄</span>
                       <span>Remix</span>
