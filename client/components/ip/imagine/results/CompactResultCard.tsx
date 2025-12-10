@@ -486,7 +486,7 @@ const CompactResultCard = ({
         >
           <button
             onClick={onDownload}
-            className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-md bg-[#FF4DA6] hover:bg-[#FF4DA6]/80 text-white font-medium transition-colors flex items-center justify-center gap-1 text-xs sm:text-sm whitespace-nowrap"
+            className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-100 font-medium transition-colors flex items-center justify-center gap-1 text-xs sm:text-sm whitespace-nowrap"
             title="Download"
           >
             <svg
@@ -555,7 +555,7 @@ const CompactResultCard = ({
                 onDelete();
                 setIsExpanded(false);
               }}
-              className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-md bg-red-900/30 hover:bg-red-900/50 text-red-400 font-medium transition-colors flex items-center justify-center gap-1 text-xs sm:text-sm whitespace-nowrap border border-red-900/50"
+              className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-100 font-medium transition-colors flex items-center justify-center gap-1 text-xs sm:text-sm whitespace-nowrap"
               title="Delete"
             >
               <svg
@@ -579,7 +579,7 @@ const CompactResultCard = ({
             <button
               onClick={handleLicenseClick}
               disabled={registrationState === "loading"}
-              className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-md bg-[#FF4DA6]/20 hover:bg-[#FF4DA6]/30 disabled:opacity-50 disabled:cursor-not-allowed text-[#FF4DA6] font-medium transition-colors flex items-center justify-center gap-1 text-xs sm:text-sm whitespace-nowrap border border-[#FF4DA6]/30"
+              className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-md bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-slate-100 font-medium transition-colors flex items-center justify-center gap-1 text-xs sm:text-sm whitespace-nowrap"
               title="Get no watermark images"
             >
               {registrationState === "loading" ? (
