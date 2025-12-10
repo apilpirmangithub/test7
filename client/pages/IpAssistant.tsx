@@ -11,6 +11,7 @@ import { IpAssistantSearch } from "@/components/ip/search";
 import { WhitelistDetailsModal } from "@/components/ip/assistant/WhitelistDetailsModal";
 import { WhitelistMonitor } from "@/components/ip/assistant/WhitelistMonitor";
 import { WelcomeScreen } from "@/components/ip/assistant/WelcomeScreen";
+import { ResultDisplay } from "@/components/ip/assistant/ResultDisplay";
 import {
   PopularIPGrid,
   AddRemixImageModal,
