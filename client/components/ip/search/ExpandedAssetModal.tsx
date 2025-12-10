@@ -338,7 +338,9 @@ export const ExpandedAssetModal = ({
                       <span className="text-xs font-semibold">$${price}</span>
                     </div>
                   ) : (
-                    <span className="text-xs font-semibold opacity-90">FREE</span>
+                    <span className="text-xs font-semibold opacity-90">
+                      FREE
+                    </span>
                   )}
                 </button>
               );
