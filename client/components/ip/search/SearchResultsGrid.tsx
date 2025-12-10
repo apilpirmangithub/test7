@@ -271,15 +271,10 @@ export const SearchResultsGrid = ({
 
                   {/* Price Badge - Top Right */}
                   {remixTypes.length > 0 && (
-                    <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm bg-slate-900/90 border border-[#FF4DA6]/30">
-                      <img
-                        src="https://cdn.builder.io/api/v1/image/assets%2F2ccefb7d92b64b29890872bc60894d35%2F87d2bf0310994d4a979324a490ed5a6b?format=webp&width=32"
-                        alt="IP Token"
-                        className="w-3 h-3 flex-shrink-0"
-                      />
-                      <span className="text-[0.65rem] font-semibold text-[#FF4DA6] whitespace-nowrap">
+                    <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full backdrop-blur-md bg-black/60">
+                      <span className="text-[0.7rem] font-semibold text-slate-200 whitespace-nowrap">
                         {extractRemixPrice(asset)
-                          ? `$${extractRemixPrice(asset)} IP`
+                          ? `${extractRemixPrice(asset)} IP`
                           : "FREE"}
                       </span>
                     </div>
