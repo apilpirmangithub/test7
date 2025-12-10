@@ -4,6 +4,19 @@ import { useRemixTypes } from "./hooks";
 import { AssetLifecycleInfographic } from "./AssetLifecycleInfographic";
 import type { SearchResult } from "./types";
 
+function extractRemixPrice(asset: SearchResult): string | null {
+  if (!asset.licenses || asset.licenses.length === 0) return null;
+
+  for (const license of asset.licenses) {
+    const terms = license.terms || license;
+    const price = terms?.price || terms?.commercialUsePrice || (license as any)?.price;
+    if (price) {
+      return String(price);
+    }
+  }
+  return null;
+}
+
 interface ExpandedAssetModalProps {
   asset: SearchResult | null;
   isOpen: boolean;
