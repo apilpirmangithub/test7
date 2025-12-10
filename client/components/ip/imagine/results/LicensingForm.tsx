@@ -70,9 +70,53 @@ const LicensingFormComponent = (
   // Get wallet address for token validation
   const walletAddress = wallets?.[0]?.address || undefined;
 
-  // Token validation hook
-  const { balance, validateForRegistration, getWarningMessage, getTotalCost } =
-    useTokenValidation(walletAddress, "mainnet");
+  // Balance state
+  const [balance, setBalance] = useState("0");
+  const [isBalanceLoading, setIsBalanceLoading] = useState(false);
+
+  // Fetch balance on mount and when wallet changes
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!walletAddress || !authenticated) {
+        setBalance("0");
+        return;
+      }
+
+      setIsBalanceLoading(true);
+      try {
+        const networkConfig = getNetworkConfig("mainnet");
+        const publicClient = createPublicClient({
+          transport: http(networkConfig.rpc),
+        });
+
+        const balanceInWei = await publicClient.getBalance({
+          address: walletAddress as `0x${string}`,
+        });
+
+        const formattedBalance = formatEther(balanceInWei);
+        setBalance(formattedBalance);
+      } catch (err) {
+        console.error("Failed to fetch balance:", err);
+        setBalance("0");
+      } finally {
+        setIsBalanceLoading(false);
+      }
+    };
+
+    fetchBalance();
+    // Refresh balance every 30 seconds
+    const interval = setInterval(fetchBalance, 30000);
+    return () => clearInterval(interval);
+  }, [walletAddress, authenticated]);
+
+  // Helper functions
+  const validateForRegistration = (license: any) => {
+    return validateTokenBalance(balance, license, true);
+  };
+
+  const getTotalCost = (license: any) => {
+    return calculateTotalCost(license, true);
+  };
 
   // State
   const [title, setTitle] = useState("AI Generated Image");
