@@ -1994,7 +1994,6 @@ const IpAssistant = () => {
                       </div>
                     ) : null}
                     {verificationText ? (
-                    ) : verificationText ? (
                       <div className="mt-2 text-xs text-slate-300">
                         {verificationText}
                       </div>
