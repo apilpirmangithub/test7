@@ -1971,23 +1971,6 @@ const IpAssistant = () => {
                     ) : null}
                     {verificationObject ? (
                       <div className="mt-2 text-xs text-[#FF4DA6]">
-                        Final verification:{" "}
-                        <span
-                          role="button"
-                          tabIndex={0}
-                          onClick={() =>
-                            setActiveDetail(verificationObject.code)
-                          }
-                          onKeyDown={(event) => {
-                            if (event.key === "Enter" || event.key === " ") {
-                              event.preventDefault();
-                              setActiveDetail(verificationObject.code);
-                            }
-                          }}
-                          className="cursor-pointer text-[#FF4DA6] font-semibold underline underline-offset-2 decoration-[#FF4DA6]/60 outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30 rounded"
-                        >
-                          {verificationObject.label}
-                        </span>
                         {(() => {
                           const codeStr = String(verificationObject.code);
                           const info =
