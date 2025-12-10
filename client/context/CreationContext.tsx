@@ -142,10 +142,10 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     setPreviousWalletAddress(walletAddress);
   }, [walletAddress, previousWalletAddress]);
 
-  // Fetch wallet creations
+  // Fetch wallet creations when wallet connects
   useEffect(() => {
     if (!walletAddress) {
-      setCreations([]);
+      // Don't clear creations when wallet disconnects - user may reconnect later
       return;
     }
 
