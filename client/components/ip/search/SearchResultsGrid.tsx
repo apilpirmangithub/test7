@@ -92,6 +92,7 @@ export const SearchResultsGrid = ({
   isLoadingOwnerAssets = false,
   onAssetClick,
   onOwnerClick,
+  onRemixSelected,
 }: SearchResultsGridProps) => {
   return (
     <div className="w-full">
