@@ -26,6 +26,17 @@ export const ExpandedAssetModal = ({
   const mediaContainerRef = useRef<HTMLDivElement>(null);
   const getRemixTypes = useRemixTypes();
 
+  // Debug logging
+  React.useEffect(() => {
+    console.log("📋 ExpandedAssetModal rendered with asset:", {
+      ipId: asset?.ipId,
+      title: asset?.title,
+      hasMediaUrl: !!asset?.mediaUrl,
+      hasThumbnailUrl: !!asset?.thumbnailUrl,
+      hasRemixSelected: !!onRemixSelected,
+    });
+  }, [asset, onRemixSelected]);
+
   // Early return when asset is null (but not when isOpen is false - let AnimatePresence handle the exit animation)
   if (!asset) return null;
 
