@@ -637,7 +637,7 @@ const CompactResultCard = ({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
       onClick={() => setIsExpanded(true)}
-      className="relative w-40 h-40 rounded-lg overflow-hidden bg-black border-2 border-[#FF4DA6]/50 shadow-lg group cursor-pointer hover:border-[#FF4DA6] hover:shadow-lg hover:shadow-[#FF4DA6]/20 transition-all flex items-center justify-center"
+      className="relative aspect-square rounded-lg overflow-hidden bg-black border-2 border-[#FF4DA6]/50 shadow-lg group cursor-pointer hover:border-[#FF4DA6] hover:shadow-lg hover:shadow-[#FF4DA6]/20 transition-all flex items-center justify-center"
     >
       {imageLoadError ? (
         <div className="flex flex-col items-center justify-center gap-2 w-full h-full bg-red-900/20">
