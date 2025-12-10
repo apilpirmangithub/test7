@@ -397,6 +397,7 @@ export const CatalogBrowser = ({
                     onAssetExpanded?.(asset);
                   }}
                   onOwnerClick={() => {}}
+                  onRemixSelected={onRemixSelected}
                 />
 
                 {hasMore && (
