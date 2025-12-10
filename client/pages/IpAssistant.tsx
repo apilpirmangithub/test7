@@ -1024,7 +1024,10 @@ const IpAssistant = () => {
     const ts = getCurrentTimestamp();
 
     if (value) {
-      pushMessage({ from: "user", text: value, ts });
+      const imageUrl = lastUploadBlobRef.current
+        ? URL.createObjectURL(lastUploadBlobRef.current)
+        : undefined;
+      pushMessage({ from: "user", text: value, imageUrl, ts });
     }
 
     setInput("");
@@ -1033,11 +1036,6 @@ const IpAssistant = () => {
 
     if (value.toLowerCase() === "register") {
       if (hasPreview && imageToProcess) {
-        pushMessage({
-          from: "user-image",
-          url: imageToProcess.url,
-          ts,
-        });
         await new Promise((resolve) => setTimeout(resolve, 300));
 
         // Hash Detection - Check before OpenAI analysis
