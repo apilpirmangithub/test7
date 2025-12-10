@@ -473,11 +473,8 @@ const IpImagine = () => {
     >
       <div className="chat-box px-3 sm:px-4 md:px-12 pt-4 pb-24 flex-1 overflow-y-auto bg-transparent scroll-smooth">
         <AnimatePresence initial={false} mode="popLayout">
-          <PopularIPGrid
-            key="popular-ip-grid"
-            onBack={() => {
-              /* no-op for standalone imagine */
-            }}
+          <CatalogBrowser
+            key="catalog-browser"
             onRemixSelected={handleRemixSelected}
             onAssetExpanded={setExpandedAsset}
           />
