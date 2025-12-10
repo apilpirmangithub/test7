@@ -1838,6 +1838,72 @@ const IpAssistant = () => {
                               isLoading={false}
                               error={null}
                               imageUrl={imageUrl}
+                              ctxKey={ctxKey}
+                              onRegister={async (ctxKeyForMsg: string) => {
+                                if (!ctxKeyForMsg) return;
+                                if (loadingRegisterFor === ctxKeyForMsg) return;
+                                setLoadingRegisterFor(ctxKeyForMsg);
+                                const groupNum =
+                                  msg.analysisResult?.classification.group || 1;
+                                let title = "";
+                                let desc = "";
+                                try {
+                                  const ctx =
+                                    analysisContextsRef.current.get(
+                                      ctxKeyForMsg,
+                                    );
+                                  const blob = ctx?.blob;
+                                  const name = ctx?.name || "image.jpg";
+                                  const facts = ctx?.facts || null;
+                                  if (blob) {
+                                    const form = new FormData();
+                                    form.append("image", blob, name);
+                                    if (facts) {
+                                      form.append(
+                                        "facts",
+                                        JSON.stringify(facts),
+                                      );
+                                    }
+                                    const res = await fetch("/api/describe", {
+                                      method: "POST",
+                                      body: form,
+                                    });
+                                    if (res.ok) {
+                                      const j = await res.json();
+                                      title =
+                                        typeof j.title === "string"
+                                          ? j.title
+                                          : "";
+                                      desc =
+                                        typeof j.description === "string"
+                                          ? j.description
+                                          : "";
+                                    }
+                                  }
+                                } catch {}
+                                if (!title)
+                                  title =
+                                    ANSWER_DETAILS[
+                                      String(
+                                        groupNum,
+                                      ) as keyof typeof ANSWER_DETAILS
+                                    ]?.type || "IP Asset";
+                                if (!desc)
+                                  desc = summaryFromAnswer(String(groupNum));
+                                if (title.length > 60)
+                                  title = title.slice(0, 59) + "…";
+                                if (desc.length > 120)
+                                  desc = desc.slice(0, 119) + "…";
+                                pushMessage({
+                                  from: "register",
+                                  group: groupNum,
+                                  title,
+                                  description: desc,
+                                  ctxKey: ctxKeyForMsg,
+                                  ts: getCurrentTimestamp(),
+                                });
+                                setLoadingRegisterFor(null);
+                              }}
                               onReset={() => {
                                 setPreviewImages({
                                   remixImage: null,
@@ -1945,134 +2011,7 @@ const IpAssistant = () => {
                         </button>
                       </div>
                     ) : null}
-                    {verificationObject ? (
-                      <div className="mt-2 text-xs text-[#FF4DA6]">
-                        {(() => {
-                          const codeStr = String(verificationObject.code);
-                          const info =
-                            ANSWER_DETAILS[
-                              codeStr as keyof typeof ANSWER_DETAILS
-                            ];
-                          const canRegisterByText =
-                            !!info && info.registrationStatus.includes("✅");
-                          const canRegisterByGroup =
-                            !!getLicenseSettingsByGroup(Number(codeStr));
-                          const canRegister =
-                            canRegisterByText || canRegisterByGroup;
-                          const isAuthEnabled = authenticated;
-                          if (!canRegister) return null;
-                          if (!isAuthEnabled) {
-                            return (
-                              <>
-                                {" "}
-                                <span className="mx-1 text-slate-400">��</span>
-                                <span className="text-[#FF4DA6]/60 text-xs">
-                                  (Connect wallet to register)
-                                </span>
-                              </>
-                            );
-                          }
-                          return (
-                            <>
-                              {" "}
-                              <span className="mx-1 text-slate-400">•</span>
-                              <span
-                                role="button"
-                                tabIndex={0}
-                                onClick={async () => {
-                                  const ctxKeyForMsg = (msg as any).ctxKey as
-                                    | string
-                                    | undefined;
-                                  if (!ctxKeyForMsg) return;
-                                  if (loadingRegisterFor === ctxKeyForMsg)
-                                    return;
-                                  setLoadingRegisterFor(ctxKeyForMsg);
-                                  const groupNum = Number(codeStr);
-                                  let title = "";
-                                  let desc = "";
-                                  try {
-                                    const ctx =
-                                      analysisContextsRef.current.get(
-                                        ctxKeyForMsg,
-                                      );
-                                    const blob = ctx?.blob;
-                                    const name = ctx?.name || "image.jpg";
-                                    const facts = ctx?.facts || null;
-                                    if (blob) {
-                                      const form = new FormData();
-                                      form.append("image", blob, name);
-                                      if (facts) {
-                                        form.append(
-                                          "facts",
-                                          JSON.stringify(facts),
-                                        );
-                                      }
-                                      const res = await fetch("/api/describe", {
-                                        method: "POST",
-                                        body: form,
-                                      });
-                                      if (res.ok) {
-                                        const j = await res.json();
-                                        title =
-                                          typeof j.title === "string"
-                                            ? j.title
-                                            : "";
-                                        desc =
-                                          typeof j.description === "string"
-                                            ? j.description
-                                            : "";
-                                      }
-                                    }
-                                  } catch {}
-                                  if (!title)
-                                    title =
-                                      ANSWER_DETAILS[
-                                        String(
-                                          codeStr,
-                                        ) as keyof typeof ANSWER_DETAILS
-                                      ]?.type || "IP Asset";
-                                  if (!desc)
-                                    desc = summaryFromAnswer(String(codeStr));
-                                  if (title.length > 60)
-                                    title = title.slice(0, 59) + "…";
-                                  if (desc.length > 120)
-                                    desc = desc.slice(0, 119) + "…";
-                                  pushMessage({
-                                    from: "register",
-                                    group: groupNum,
-                                    title,
-                                    description: desc,
-                                    ctxKey: ctxKeyForMsg,
-                                    ts: getCurrentTimestamp(),
-                                  });
-                                  setLoadingRegisterFor(null);
-                                }}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" || e.key === " ") {
-                                    e.preventDefault();
-                                    setActiveDetail(codeStr);
-                                  }
-                                }}
-                                className={`cursor-pointer text-[#FF4DA6] font-semibold underline underline-offset-2 decoration-[#FF4DA6]/60 outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30 rounded ${loadingRegisterFor === (msg as any).ctxKey ? "pointer-events-none opacity-70" : ""}`}
-                              >
-                                {loadingRegisterFor === (msg as any).ctxKey ? (
-                                  <>
-                                    Please wait
-                                    <span className="ml-2 inline-flex align-middle">
-                                      <span className="dot" />
-                                      <span className="dot" />
-                                      <span className="dot" />
-                                    </span>
-                                  </>
-                                ) : (
-                                  "Register"
-                                )}
-                              </span>
-                            </>
-                          );
-                        })()}
-                      </div>
-                    ) : verificationText ? (
+                    {verificationText ? (
                       <div className="mt-2 text-xs text-slate-300">
                         {verificationText}
                       </div>
