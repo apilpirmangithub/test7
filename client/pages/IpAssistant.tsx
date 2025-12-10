@@ -657,6 +657,7 @@ const IpAssistant = () => {
         const data = await response.json();
         let display = (data as any)?.display || "(No analysis result)";
         let verification: { label: string; code: string } | string | undefined;
+        let analysisResult: any = null;
 
         if (
           typeof (data as any)?.group === "number" &&
@@ -666,6 +667,17 @@ const IpAssistant = () => {
           const d = (data as any).details as Record<string, any>;
           lastAnalysisFactsRef.current = d;
           verification = { label: `Detail`, code: String(g) as any };
+
+          // Build ClassificationResult for display
+          analysisResult = {
+            flags: d,
+            classification: {
+              group: g,
+              type: (data as any)?.type || "Analysis",
+              classification: (data as any)?.classification || "",
+            },
+            license: (data as any)?.license || null,
+          };
         } else {
           const rawText = data?.raw ? String(data.raw).trim() : "";
           display = rawText || "(No analysis result)";
@@ -703,6 +715,7 @@ const IpAssistant = () => {
           verification,
           ts: getCurrentTimestamp(),
           ctxKey,
+          analysisResult,
         });
         autoScrollNextRef.current = true;
       } catch (error: any) {
