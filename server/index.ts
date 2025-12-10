@@ -202,6 +202,9 @@ export async function createServer() {
   // Check IP Assets endpoint (POST /api/check-ip-assets)
   app.post("/api/check-ip-assets", handleCheckIpAssets);
 
+  // Get Asset by ID endpoint (POST /api/get-asset-by-id)
+  app.post("/api/get-asset-by-id", handleGetAssetById);
+
   // Search IP Assets endpoint (POST /api/search-ip-assets)
   app.post("/api/search-ip-assets", handleSearchIpAssets);
 
