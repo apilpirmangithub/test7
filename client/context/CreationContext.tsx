@@ -168,13 +168,13 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
           const errorMsg = `Failed to fetch wallet creations: ${response.status}`;
           console.error(errorMsg);
           setFetchError(errorMsg);
-          setCreations([]);
+          // Don't clear local creations on error - keep locally added items
         }
       } catch (error: any) {
         const errorMsg = error?.message || "Failed to fetch creations";
         console.error("Error fetching creations:", errorMsg);
         setFetchError(errorMsg);
-        setCreations([]);
+        // Don't clear local creations on error - keep locally added items
       }
     };
 
