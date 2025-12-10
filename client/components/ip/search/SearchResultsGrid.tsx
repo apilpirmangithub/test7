@@ -100,16 +100,8 @@ export const SearchResultsGrid = ({
           <span className="text-slate-400">Loading owner assets...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 auto-rows-max">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
           {searchResults.map((asset, idx) => {
-            const ownerLower = asset.ownerAddress?.toLowerCase() || "";
-            const domainInfo = ownerDomains[ownerLower];
-            const displayDomain = domainInfo?.domain;
-            const displayText =
-              displayDomain ||
-              (asset.ownerAddress
-                ? truncateAddressDisplay(asset.ownerAddress)
-                : "Unknown");
             const remixTypes = getRemixTypes(asset);
 
             return (
@@ -117,11 +109,11 @@ export const SearchResultsGrid = ({
                 key={asset.ipId || idx}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="group flex flex-col h-full cursor-pointer rounded-xl overflow-hidden bg-slate-950/50 border border-slate-800/50 transition-all duration-200 hover:border-slate-700/80 hover:bg-slate-900/50"
+                className="group relative cursor-pointer rounded-lg overflow-hidden bg-slate-900/30 border border-slate-800/50 transition-all duration-200 hover:border-slate-700/80 aspect-square"
               >
-                {/* Thumbnail Container */}
+                {/* Image Container */}
                 <div
-                  className="relative w-full aspect-video bg-gradient-to-br from-slate-800 to-slate-900 rounded-t-xl overflow-hidden flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 flex-shrink-0 hover:-translate-y-0.5"
+                  className="relative w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden flex items-center justify-center"
                   onClick={() => onAssetClick?.(asset)}
                 >
                   {asset.mediaUrl ? (
