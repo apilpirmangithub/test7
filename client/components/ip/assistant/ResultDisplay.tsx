@@ -265,12 +265,6 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
             </p>
           </div>
 
-          <div
-            className={`p-4 rounded-lg mb-4 border text-sm backdrop-blur-sm ${licenseBgClasses[license.color]} flex items-center`}
-          >
-            {statusIcons[license.status]}
-          </div>
-
           <div className="rounded-lg border border-gray-700/40 bg-gray-800/40 overflow-hidden text-xs max-h-72 overflow-y-auto backdrop-blur-sm shadow-inner">
             <AnalysisSection
               title="AI Generation Analysis"
