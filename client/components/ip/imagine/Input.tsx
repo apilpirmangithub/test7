@@ -169,7 +169,11 @@ const IpImagineInput = ({
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                     >
                       <circle
                         cx="12"
