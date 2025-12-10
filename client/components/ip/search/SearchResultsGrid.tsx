@@ -43,7 +43,8 @@ function extractRemixPrice(asset: SearchResult): string | null {
 
   for (const license of asset.licenses) {
     const terms = license.terms || license;
-    const price = terms?.price || terms?.commercialUsePrice || (license as any)?.price;
+    const price =
+      terms?.price || terms?.commercialUsePrice || (license as any)?.price;
     if (price) {
       return String(price);
     }
@@ -228,7 +229,9 @@ export const SearchResultsGrid = ({
                         className="w-4 h-4 flex-shrink-0"
                       />
                       <span className="text-xs font-semibold text-[#FF4DA6] whitespace-nowrap">
-                        {extractRemixPrice(asset) ? `$${extractRemixPrice(asset)} IP` : "Remix Available"}
+                        {extractRemixPrice(asset)
+                          ? `$${extractRemixPrice(asset)} IP`
+                          : "Remix Available"}
                       </span>
                     </div>
                   )}

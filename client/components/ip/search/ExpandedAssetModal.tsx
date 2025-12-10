@@ -9,7 +9,8 @@ function extractRemixPrice(asset: SearchResult): string | null {
 
   for (const license of asset.licenses) {
     const terms = license.terms || license;
-    const price = terms?.price || terms?.commercialUsePrice || (license as any)?.price;
+    const price =
+      terms?.price || terms?.commercialUsePrice || (license as any)?.price;
     if (price) {
       return String(price);
     }
