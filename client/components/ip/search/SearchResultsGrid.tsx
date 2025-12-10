@@ -106,7 +106,7 @@ export const SearchResultsGrid = ({
           <span className="text-slate-400">Loading owner assets...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {searchResults.map((asset, idx) => {
             const remixTypes = getRemixTypes(asset);
 
@@ -115,11 +115,11 @@ export const SearchResultsGrid = ({
                 key={asset.ipId || idx}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="group relative cursor-pointer rounded-lg overflow-hidden bg-slate-900/30 border border-slate-800/50 transition-all duration-200 hover:border-slate-700/80 aspect-square"
+                className="group relative cursor-pointer rounded-xl overflow-hidden bg-slate-900/50 transition-all duration-300 hover:scale-[1.02]"
               >
                 {/* Image Container */}
                 <div
-                  className="relative w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden flex items-center justify-center"
+                  className="relative w-full h-full bg-slate-950 flex items-center justify-center"
                   onClick={() => onAssetClick?.(asset)}
                 >
                   {asset.mediaUrl ? (
@@ -242,9 +242,6 @@ export const SearchResultsGrid = ({
                       </div>
                     </div>
                   )}
-                  {hoveredIndex === idx && (
-                    <div className="absolute inset-0 ring-2 ring-[#FF4DA6]/60 rounded-lg pointer-events-none" />
-                  )}
 
                   {/* Remix Button - Top Left */}
                   {remixTypes.length > 0 && (
@@ -256,7 +253,7 @@ export const SearchResultsGrid = ({
                           : { opacity: 0, scale: 0.8, y: -10 }
                       }
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: 1.08 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={async (e) => {
                         e.stopPropagation();
@@ -265,7 +262,7 @@ export const SearchResultsGrid = ({
                         }
                       }}
                       type="button"
-                      className="absolute top-2 left-2 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg backdrop-blur-sm bg-[#FF4DA6] hover:bg-[#FF4DA6]/90 text-white font-semibold text-xs transition-all shadow-lg hover:shadow-xl"
+                      className="absolute top-2 left-2 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg backdrop-blur-sm bg-[#FF4DA6] text-white font-semibold text-xs shadow-lg"
                     >
                       <span>🔄</span>
                       <span>Remix</span>
@@ -274,23 +271,18 @@ export const SearchResultsGrid = ({
 
                   {/* Price Badge - Top Right */}
                   {remixTypes.length > 0 && (
-                    <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm bg-slate-900/90 border border-[#FF4DA6]/30">
-                      <img
-                        src="https://cdn.builder.io/api/v1/image/assets%2F2ccefb7d92b64b29890872bc60894d35%2F87d2bf0310994d4a979324a490ed5a6b?format=webp&width=32"
-                        alt="IP Token"
-                        className="w-3 h-3 flex-shrink-0"
-                      />
-                      <span className="text-[0.65rem] font-semibold text-[#FF4DA6] whitespace-nowrap">
+                    <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full backdrop-blur-md bg-black/60">
+                      <span className="text-[0.7rem] font-semibold text-slate-200 whitespace-nowrap">
                         {extractRemixPrice(asset)
-                          ? `$${extractRemixPrice(asset)} IP`
+                          ? `${extractRemixPrice(asset)} IP`
                           : "FREE"}
                       </span>
                     </div>
                   )}
 
                   {/* Title - Bottom Left Corner */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent p-2 sm:p-3">
-                    <h3 className="text-xs sm:text-sm font-bold text-slate-100 line-clamp-2 group-hover:text-[#FF4DA6] transition-colors duration-200">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-3 sm:p-4">
+                    <h3 className="text-xs sm:text-sm font-semibold text-slate-100 line-clamp-2 group-hover:text-[#FF4DA6] transition-colors duration-200">
                       {asset.title || asset.name || "Untitled Asset"}
                     </h3>
                   </div>

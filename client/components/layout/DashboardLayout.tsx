@@ -98,9 +98,9 @@ export const DashboardLayout = ({
   );
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-br from-slate-950 via-slate-900 to-black text-slate-100">
+    <div className="min-h-[100dvh] bg-gradient-to-br from-slate-950 via-black to-slate-950 text-slate-100">
       <div className="flex min-h-[100dvh] w-full md:overflow-hidden">
-        <aside className="hidden md:flex w-64 flex-col bg-slate-950/80 text-slate-100 py-6 px-4 sticky top-0 max-h-screen min-h-screen overflow-y-auto">
+        <aside className="hidden md:flex w-64 flex-col bg-slate-950/60 text-slate-100 py-6 px-4 sticky top-0 max-h-screen min-h-screen overflow-y-auto border-r border-slate-800/30">
           {sidebar}
         </aside>
 
@@ -150,9 +150,9 @@ export const DashboardLayout = ({
         </AnimatePresence>
 
         <main className="flex-1 flex min-h-0">
-          <div className="chat-wrap w-full h-full min-h-0 flex flex-col bg-slate-950/40">
+          <div className="chat-wrap w-full h-full min-h-0 flex flex-col bg-slate-950/50">
             <motion.header
-              className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-3.5 bg-slate-950/70"
+              className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-3.5 bg-slate-950/30"
               variants={fadeUp}
               initial="initial"
               animate="animate"

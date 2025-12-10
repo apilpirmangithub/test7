@@ -72,7 +72,7 @@ const IpImagineInput = ({
 
   return (
     <form
-      className="chat-input flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-[1.45rem] py-2.5 sm:py-3 md:py-3.5 border-t-0 md:border-t md:border-[#FF4DA6]/10 bg-slate-950/60 md:bg-gradient-to-r md:from-slate-950/60 md:via-[#FF4DA6]/5 md:to-slate-950/60 flex-none sticky bottom-0 z-10 backdrop-blur-xl transition-all duration-300"
+      className="chat-input flex items-center gap-2 px-4 md:px-6 py-3.5 md:py-4 bg-slate-950/70 flex-none sticky bottom-0 z-10 backdrop-blur-xl transition-all duration-300"
       onSubmit={(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const isRemixWithRegister =
@@ -89,17 +89,17 @@ const IpImagineInput = ({
       autoComplete="off"
     >
       {/* Gallery Button - Always visible */}
-      <div ref={galleryButtonRef} className="mr-2 flex items-center relative">
+      <div ref={galleryButtonRef} className="flex items-center relative">
         <button
           type="button"
           onClick={() => {
             navigate("/ip-imagine/result");
           }}
           disabled={!resultUrl && !waiting && creations.length === 0}
-          className={`flex-shrink-0 p-2 sm:p-1.5 rounded-lg active:scale-95 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30 ${
+          className={`flex-shrink-0 p-2 rounded-lg active:scale-95 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/40 ${
             waiting || resultUrl || creations.length > 0
-              ? "text-[#FF4DA6] bg-[#FF4DA6]/10"
-              : "text-[#FF4DA6] hover:bg-[#FF4DA6]/10"
+              ? "text-white bg-slate-700"
+              : "text-slate-400 hover:text-slate-300 hover:bg-slate-700/50"
           }`}
           aria-label="View creations and results"
           title="Creation Results"
@@ -131,10 +131,9 @@ const IpImagineInput = ({
                     opacity: 0.7 - index * 0.15,
                     y: index * 4,
                     rotateZ: index * 2,
-                    transition: { delay: index * 0.05 },
                   }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
                   style={{
                     zIndex: -index,
                   }}
@@ -163,22 +162,18 @@ const IpImagineInput = ({
                     zIndex: resultUrls.length,
                   }}
                 >
-                  <motion.div
-                    className="absolute inset-0 flex items-center justify-center bg-[#FF4DA6]/20"
-                    animate={{
-                      backgroundColor: [
-                        "rgba(255, 77, 166, 0.2)",
-                        "rgba(255, 77, 166, 0.3)",
-                        "rgba(255, 77, 166, 0.2)",
-                      ],
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <svg
-                      className="h-6 w-6 text-[#FF4DA6] animate-spin"
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#FF4DA6]/20">
+                    <motion.svg
+                      className="h-6 w-6 text-[#FF4DA6]"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                     >
                       <circle
                         cx="12"
@@ -194,8 +189,8 @@ const IpImagineInput = ({
                         strokeWidth="3"
                         strokeLinecap="round"
                       />
-                    </svg>
-                  </motion.div>
+                    </motion.svg>
+                  </div>
                 </motion.div>
               )}
 
@@ -227,7 +222,7 @@ const IpImagineInput = ({
         </AnimatePresence>
       </div>
 
-      <div className="flex-1 flex flex-col gap-2 bg-slate-900/60 rounded-2xl pl-2 pr-4 py-2 focus-within:ring-2 focus-within:ring-[#FF4DA6]/30 transition-all duration-300">
+      <div className="flex-1 flex flex-col gap-2 bg-slate-900/50 rounded-xl pl-4 pr-4 py-2.5 transition-all duration-300">
         <RemixImage
           previewImages={previewImages}
           setPreviewImages={setPreviewImages}
@@ -240,49 +235,60 @@ const IpImagineInput = ({
             data-file-input-btn
             data-tour-upload
             disabled={attachmentLoading}
-            className={`flex-shrink-0 p-2 sm:p-1.5 rounded-lg active:scale-95 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30 ${attachmentLoading ? "text-slate-400 bg-slate-800/30 cursor-wait" : "text-[#FF4DA6] hover:bg-[#FF4DA6]/20"}`}
+            className={`flex-shrink-0 p-2 rounded-lg active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/40 ${attachmentLoading ? "text-slate-500 cursor-wait" : "text-slate-400 hover:text-slate-300"}`}
             onClick={() => uploadRef.current?.click()}
             onPointerDown={(event) => event.preventDefault()}
             aria-label="Add attachment"
           >
-            {attachmentLoading ? (
-              <svg
-                className="h-5 w-5 animate-spin text-[#FF4DA6]"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
+            <AnimatePresence mode="wait">
+              {attachmentLoading ? (
+                <motion.svg
+                  key="loading"
+                  className="h-5 w-5 text-[#FF4DA6]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  initial={{ opacity: 0 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeOpacity="0.15"
+                    strokeWidth="3"
+                  />
+                  <path
+                    d="M22 12a10 10 0 00-10-10"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                </motion.svg>
+              ) : (
+                <motion.svg
+                  key="plus"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
-                  strokeOpacity="0.15"
-                  strokeWidth="3"
-                />
-                <path
-                  d="M22 12a10 10 0 00-10-10"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            )}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </motion.svg>
+              )}
+            </AnimatePresence>
           </button>
 
           <textarea
@@ -404,7 +410,7 @@ const IpImagineInput = ({
             !previewImages.remixImage &&
             !previewImages.additionalImage)
         }
-        className="flex-shrink-0 p-2.5 sm:p-2 rounded-lg bg-[#FF4DA6]/20 text-[#FF4DA6] hover:bg-[#FF4DA6]/30 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30"
+        className="flex-shrink-0 p-2.5 rounded-lg bg-[#FF4DA6] text-white hover:bg-[#FF4DA6]/90 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/50"
         aria-label="Send message"
         onPointerDown={(event) => event.preventDefault()}
       >

@@ -97,10 +97,10 @@ export const ExpandedAssetModal = ({
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 w-full max-w-4xl bg-slate-950/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-800/50 overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative z-10 w-full max-w-4xl bg-slate-950/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
       >
         {/* Header */}
-        <div className="flex items-center justify-between gap-4 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/30 px-6 py-4 flex-shrink-0">
+        <div className="flex items-center justify-between gap-4 bg-slate-950/95 backdrop-blur-xl px-6 py-4 flex-shrink-0">
           <div className="flex-1 min-w-0">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-100 line-clamp-2">
               {asset.title || asset.name || "Untitled Asset"}
@@ -262,7 +262,7 @@ export const ExpandedAssetModal = ({
         </div>
 
         {/* Footer with Details and Actions */}
-        <div className="border-t border-slate-800/30 bg-slate-950/95 backdrop-blur-xl px-6 py-6 sm:py-8 space-y-6 flex-shrink-0">
+        <div className="bg-slate-950/95 backdrop-blur-xl px-6 py-6 sm:py-8 space-y-6 flex-shrink-0 border-t border-slate-800/10">
           {asset.description && (
             <p className="text-sm text-slate-300 leading-relaxed">
               {asset.description}
@@ -270,25 +270,25 @@ export const ExpandedAssetModal = ({
           )}
 
           {/* Metadata Badges */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2.5">
             <span
-              className={`text-xs px-3 py-2 rounded-full font-semibold whitespace-nowrap backdrop-blur-sm border transition-all ${
+              className={`text-xs px-3 py-1.5 rounded-lg font-semibold whitespace-nowrap backdrop-blur-sm transition-all ${
                 asset.isDerivative
-                  ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
-                  : "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+                  ? "bg-blue-500/15 text-blue-300"
+                  : "bg-emerald-500/15 text-emerald-300"
               }`}
             >
               {asset.isDerivative ? "🔄 Remix" : "✨ Original"}
             </span>
 
             {asset.score !== undefined && (
-              <span className="text-xs px-3 py-2 rounded-full bg-[#FF4DA6]/20 text-[#FF4DA6] border border-[#FF4DA6]/30 font-semibold whitespace-nowrap backdrop-blur-sm">
+              <span className="text-xs px-3 py-1.5 rounded-lg bg-[#FF4DA6]/15 text-[#FF4DA6] font-semibold whitespace-nowrap backdrop-blur-sm">
                 {(asset.score * 100).toFixed(0)}% Match
               </span>
             )}
 
             {asset.mediaType && (
-              <span className="text-xs px-3 py-2 rounded-full bg-slate-800/60 text-slate-300 border border-slate-700/50 font-semibold whitespace-nowrap backdrop-blur-sm">
+              <span className="text-xs px-3 py-1.5 rounded-lg bg-slate-800/30 text-slate-300 font-semibold whitespace-nowrap backdrop-blur-sm">
                 {asset.mediaType
                   ?.replace("video/", "")
                   .replace("audio/", "")
@@ -298,7 +298,7 @@ export const ExpandedAssetModal = ({
             )}
 
             {asset.ownerAddress && (
-              <span className="text-xs px-3 py-2 rounded-full bg-slate-800/60 text-slate-300 border border-slate-700/50 font-mono whitespace-nowrap backdrop-blur-sm">
+              <span className="text-xs px-3 py-1.5 rounded-lg bg-slate-800/30 text-slate-300 font-mono whitespace-nowrap backdrop-blur-sm">
                 {asset.ownerAddress.slice(0, 8)}...
                 {asset.ownerAddress.slice(-6)}
               </span>
@@ -306,17 +306,17 @@ export const ExpandedAssetModal = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-3 pt-4">
+          <div className="flex flex-wrap gap-3 pt-2">
             <button
               type="button"
-              className="text-sm px-4 py-2.5 rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/30 font-semibold transition-all hover:shadow-lg hover:shadow-blue-500/25 hover:bg-blue-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+              className="text-sm px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 font-semibold transition-all hover:bg-blue-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
             >
               Buy
             </button>
             <button
               type="button"
               onClick={() => setShowLifecycle(true)}
-              className="text-sm px-4 py-2.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold transition-all hover:shadow-lg hover:shadow-purple-500/25 hover:bg-purple-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+              className="text-sm px-4 py-2 rounded-lg bg-purple-500/20 text-purple-300 font-semibold transition-all hover:bg-purple-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
             >
               🔄 Lifecycle
             </button>

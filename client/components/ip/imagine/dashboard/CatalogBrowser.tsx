@@ -341,7 +341,7 @@ export const CatalogBrowser = ({
       className="w-full h-full flex flex-col"
     >
       {/* Search Header */}
-      <div className="mb-6">
+      <div className="mb-8">
         <div className="flex gap-2 items-center">
           <div className="relative flex gap-2 flex-1">
             <input
@@ -354,12 +354,12 @@ export const CatalogBrowser = ({
                   handleSearch();
                 }
               }}
-              className="px-4 py-2 pr-10 rounded-lg bg-slate-800 text-white placeholder:text-slate-400 border border-slate-700 focus:border-[#FF4DA6] focus:outline-none transition-colors flex-1"
+              className="px-4 py-2.5 pr-10 rounded-lg bg-slate-900/50 text-white placeholder:text-slate-400 focus:outline-none transition-all focus:bg-slate-900/70 flex-1"
             />
             <button
               onClick={handleSearch}
               disabled={isSearching}
-              className="px-4 py-2 rounded-lg bg-[#FF4DA6] text-white font-semibold hover:bg-[#FF4DA6]/80 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-5 py-2.5 rounded-lg bg-[#FF4DA6] text-white font-semibold hover:bg-[#FF4DA6]/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isSearching ? (
                 <>
