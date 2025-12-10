@@ -558,6 +558,72 @@ const LicensingFormComponent = (
         )}
       </div>
 
+      {/* Token Cost Information */}
+      {isPaidRemix && parentLicense && authenticated && (
+        <div
+          className={`rounded-lg p-4 border ${
+            balance && parseFloat(balance) >= parseFloat(getTotalCost(parentLicense))
+              ? "bg-emerald-500/10 border-emerald-500/30"
+              : "bg-red-500/10 border-red-500/30"
+          }`}
+        >
+          <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-2">
+            💰 Token Requirements
+          </p>
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs">
+              <span className="text-slate-400">Minting Fee:</span>
+              <span className="text-slate-300 font-mono">
+                {(() => {
+                  let fee = 0;
+                  if (parentLicense.terms?.defaultMintingFee) {
+                    fee = Number(parentLicense.terms.defaultMintingFee);
+                  } else if (parentLicense.terms?.mintingFee) {
+                    fee = Number(parentLicense.terms.mintingFee);
+                  }
+                  return (fee / 1e18).toFixed(6);
+                })()} IP
+              </span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-slate-400">Gas Estimate:</span>
+              <span className="text-slate-300 font-mono">~0.5 IP</span>
+            </div>
+            <div className="border-t border-slate-600/30 pt-2 flex justify-between text-sm font-semibold">
+              <span className="text-slate-300">Total Required:</span>
+              <span className="text-slate-100 font-mono">
+                {getTotalCost(parentLicense)} IP
+              </span>
+            </div>
+            <div className="border-t border-slate-600/30 pt-2 flex justify-between text-sm font-semibold">
+              <span className="text-slate-300">Your Balance:</span>
+              <span
+                className={`font-mono ${
+                  balance && parseFloat(balance) >= parseFloat(getTotalCost(parentLicense))
+                    ? "text-emerald-400"
+                    : "text-red-400"
+                }`}
+              >
+                {balance} IP
+              </span>
+            </div>
+          </div>
+          {balance && parseFloat(balance) < parseFloat(getTotalCost(parentLicense)) && (
+            <div className="mt-3 p-2 rounded bg-red-900/20 border border-red-500/20">
+              <p className="text-xs text-red-300">
+                ⚠️ Insufficient balance to complete registration. Please add{" "}
+                <span className="font-semibold">
+                  {(
+                    parseFloat(getTotalCost(parentLicense)) - parseFloat(balance)
+                  ).toFixed(6)}
+                </span>{" "}
+                more IP tokens.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Parent Asset Info */}
       {isPaidRemix && parentAsset && (
         <div className="bg-slate-800/30 rounded-lg p-4 border border-slate-700/30">
