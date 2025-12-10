@@ -266,16 +266,9 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           </div>
 
           <div
-            className={`p-4 rounded-lg mb-4 border text-sm backdrop-blur-sm ${licenseBgClasses[license.color]}`}
+            className={`p-4 rounded-lg mb-4 border text-sm backdrop-blur-sm ${licenseBgClasses[license.color]} flex items-center`}
           >
-            <div className="flex items-start gap-3">
-              {statusIcons[license.status]}
-              <h4
-                className={`text-sm font-bold ${licenseTitleClasses[license.color]}`}
-              >
-                {license.title}
-              </h4>
-            </div>
+            {statusIcons[license.status]}
           </div>
 
           <div className="rounded-lg border border-gray-700/40 bg-gray-800/40 overflow-hidden text-xs max-h-72 overflow-y-auto backdrop-blur-sm shadow-inner">
