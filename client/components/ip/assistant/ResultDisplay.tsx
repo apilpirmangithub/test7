@@ -349,11 +349,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           <div className="mt-4">
             <button
               onClick={() => {
-                if (
-                  onRegister &&
-                  ctxKey &&
-                  license.status === "CAN_REGISTER"
-                ) {
+                if (onRegister && ctxKey && license.status === "CAN_REGISTER") {
                   void onRegister(ctxKey);
                 }
               }}
