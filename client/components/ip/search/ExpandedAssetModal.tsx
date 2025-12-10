@@ -328,7 +328,7 @@ export const ExpandedAssetModal = ({
                   className="text-sm px-4 py-2.5 rounded-lg bg-[#FF4DA6] text-white font-semibold transition-all hover:shadow-lg hover:shadow-[#FF4DA6]/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/50 flex items-center gap-2"
                 >
                   <span>Remix</span>
-                  {price && (
+                  {price ? (
                     <div className="flex items-center gap-1 opacity-90">
                       <img
                         src="https://cdn.builder.io/api/v1/image/assets%2F2ccefb7d92b64b29890872bc60894d35%2F87d2bf0310994d4a979324a490ed5a6b?format=webp&width=20"
@@ -337,6 +337,8 @@ export const ExpandedAssetModal = ({
                       />
                       <span className="text-xs font-semibold">$${price}</span>
                     </div>
+                  ) : (
+                    <span className="text-xs font-semibold opacity-90">FREE</span>
                   )}
                 </button>
               );
