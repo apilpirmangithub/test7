@@ -1862,6 +1862,13 @@ const IpAssistant = () => {
                               isLoading={false}
                               error={null}
                               imageUrl={imageUrl}
+                              onReset={() => {
+                                setPreviewImages({
+                                  remixImage: null,
+                                  additionalImage: null,
+                                });
+                                inputRef.current?.focus();
+                              }}
                             />
                           );
                         })()}
