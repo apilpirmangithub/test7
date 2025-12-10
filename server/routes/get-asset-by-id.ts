@@ -103,28 +103,25 @@ export const handleGetAssetById: RequestHandler<
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     try {
-      const response = await fetch(
-        "https://api.storyapis.com/api/v4/assets",
-        {
-          method: "POST",
-          headers: {
-            "X-Api-Key": apiKey,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            includeLicenses: true,
-            moderated: false,
-            where: {
-              ipIds: [ipId],
-            },
-            pagination: {
-              limit: 1,
-              offset: 0,
-            },
-          }),
-          signal: controller.signal,
+      const response = await fetch("https://api.storyapis.com/api/v4/assets", {
+        method: "POST",
+        headers: {
+          "X-Api-Key": apiKey,
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          includeLicenses: true,
+          moderated: false,
+          where: {
+            ipIds: [ipId],
+          },
+          pagination: {
+            limit: 1,
+            offset: 0,
+          },
+        }),
+        signal: controller.signal,
+      });
 
       clearTimeout(timeoutId);
 

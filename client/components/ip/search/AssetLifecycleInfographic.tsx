@@ -72,7 +72,7 @@ export const AssetLifecycleInfographic = ({
           Array.isArray(asset.parentIpDetails.parentIpIds)
         ) {
           const parentPromises = asset.parentIpDetails.parentIpIds.map(
-            (parentId: string) => fetchAssetDetails(parentId)
+            (parentId: string) => fetchAssetDetails(parentId),
           );
           const parentResults = await Promise.all(parentPromises);
 
@@ -95,7 +95,7 @@ export const AssetLifecycleInfographic = ({
         // Fetch child asset details
         if (asset.childIpIds && Array.isArray(asset.childIpIds)) {
           const childPromises = asset.childIpIds.map((childId: string) =>
-            fetchAssetDetails(childId)
+            fetchAssetDetails(childId),
           );
           const childResults = await Promise.all(childPromises);
 
@@ -299,8 +299,8 @@ export const AssetLifecycleInfographic = ({
                       </div>
 
                       <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4 text-center">
-                        Derivative{children.length > 1 ? "s" : ""} (Child
-                        Asset{children.length > 1 ? "s" : ""})
+                        Derivative{children.length > 1 ? "s" : ""} (Child Asset
+                        {children.length > 1 ? "s" : ""})
                       </h3>
                       <div className="flex flex-wrap justify-center gap-6">
                         {children.map((child, idx) => (
@@ -376,9 +376,7 @@ export const AssetLifecycleInfographic = ({
                     <p className="text-xs text-slate-400 uppercase tracking-wide">
                       Current
                     </p>
-                    <p className="text-lg font-bold text-[#FF4DA6] mt-1">
-                      1
-                    </p>
+                    <p className="text-lg font-bold text-[#FF4DA6] mt-1">1</p>
                   </div>
                   <div>
                     <p className="text-xs text-slate-400 uppercase tracking-wide">
