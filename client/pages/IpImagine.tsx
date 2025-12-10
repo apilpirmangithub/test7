@@ -514,26 +514,26 @@ const IpImagine = () => {
               setWaiting(false);
             }
           }}
-        inputRef={inputRef}
-        handleKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            // trigger submit
-            (
-              document.querySelector("[data-chat-input]") as HTMLTextAreaElement
-            )?.blur();
-          }
-        }}
-        suggestions={[]}
-        setSuggestions={() => {}}
-        attachmentLoading={attachmentLoading}
-        onRemixRegisterWarning={() => {
-          setWaiting(false);
-          setStatusText(
-            "⚠ Remix images cannot be registered. Please remove the image to register.",
-          );
-        }}
-        onAddRemixImage={() => setShowAddRemixImageModal(true)}
+          inputRef={inputRef}
+          handleKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              // trigger submit
+              (
+                document.querySelector("[data-chat-input]") as HTMLTextAreaElement
+              )?.blur();
+            }
+          }}
+          suggestions={[]}
+          setSuggestions={() => {}}
+          attachmentLoading={attachmentLoading}
+          onRemixRegisterWarning={() => {
+            setWaiting(false);
+            setStatusText(
+              "⚠ Remix images cannot be registered. Please remove the image to register.",
+            );
+          }}
+          onAddRemixImage={() => setShowAddRemixImageModal(true)}
           creationMode={creationMode}
           setCreationMode={setCreationMode}
         />
