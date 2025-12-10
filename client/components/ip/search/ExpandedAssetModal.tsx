@@ -358,13 +358,6 @@ export const ExpandedAssetModal = ({
             >
               🔄 Lifecycle
             </button>
-            <button
-              type="button"
-              onClick={() => onShowDetails?.()}
-              className="text-sm px-4 py-2.5 rounded-lg bg-slate-700/40 text-slate-200 border border-slate-600/50 font-semibold transition-all hover:shadow-lg hover:shadow-slate-700/25 hover:bg-slate-700/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/50"
-            >
-              Details
-            </button>
           </div>
         </div>
       </motion.div>
