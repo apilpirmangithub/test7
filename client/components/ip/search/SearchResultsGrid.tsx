@@ -242,9 +242,6 @@ export const SearchResultsGrid = ({
                       </div>
                     </div>
                   )}
-                  {hoveredIndex === idx && (
-                    <div className="absolute inset-0 ring-2 ring-[#FF4DA6]/60 rounded-lg pointer-events-none" />
-                  )}
 
                   {/* Remix Button - Top Left */}
                   {remixTypes.length > 0 && (
