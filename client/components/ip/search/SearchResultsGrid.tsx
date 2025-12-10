@@ -119,7 +119,7 @@ export const SearchResultsGrid = ({
               >
                 {/* Image Container */}
                 <div
-                  className="relative w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden flex items-center justify-center"
+                  className="relative w-full h-full bg-slate-950 overflow-hidden flex items-center justify-center"
                   onClick={() => onAssetClick?.(asset)}
                 >
                   {asset.mediaUrl ? (
