@@ -1,4 +1,4 @@
-import { useState, useImperativeHandle, useRef, forwardRef } from "react";
+import { useState, useEffect, useImperativeHandle, useRef, forwardRef } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { StoryClient, WIP_TOKEN_ADDRESS } from "@story-protocol/core-sdk";
 import { createWalletClient, custom, createPublicClient, http, formatEther } from "viem";
