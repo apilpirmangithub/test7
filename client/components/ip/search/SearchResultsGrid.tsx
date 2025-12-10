@@ -38,6 +38,20 @@ interface SearchResultsGridProps {
   onOwnerClick?: (ownerAddress: string, ownerDomain?: string | null) => void;
 }
 
+function extractRemixPrice(asset: SearchResult): string | null {
+  if (!asset.licenses || asset.licenses.length === 0) return null;
+
+  for (const license of asset.licenses) {
+    const terms = license.terms || license;
+    const price =
+      terms?.price || terms?.commercialUsePrice || (license as any)?.price;
+    if (price) {
+      return String(price);
+    }
+  }
+  return null;
+}
+
 export const SearchResultsGrid = ({
   searchResults,
   ownerDomains,
@@ -206,33 +220,19 @@ export const SearchResultsGrid = ({
                     <div className="absolute inset-0 ring-2 ring-[#FF4DA6]/60 rounded-xl pointer-events-none" />
                   )}
 
-                  {/* Remix Type Badges - Top Right */}
+                  {/* Price Badge - Top Right */}
                   {remixTypes.length > 0 && (
-                    <div className="absolute top-2 right-2 flex flex-col gap-1">
-                      {remixTypes.map((remixTypeInfo) => (
-                        <span
-                          key={remixTypeInfo.type}
-                          className="text-xs px-2 py-1 rounded-full font-semibold whitespace-nowrap backdrop-blur-sm bg-slate-900/80 border"
-                          style={{
-                            backgroundColor:
-                              remixTypeInfo.type === "paid"
-                                ? "rgba(34, 197, 94, 0.2)"
-                                : "rgba(59, 130, 246, 0.2)",
-                            borderColor:
-                              remixTypeInfo.type === "paid"
-                                ? "rgb(134, 239, 172)"
-                                : "rgb(147, 197, 253)",
-                            color:
-                              remixTypeInfo.type === "paid"
-                                ? "rgb(134, 239, 172)"
-                                : "rgb(147, 197, 253)",
-                          }}
-                        >
-                          {remixTypeInfo.type === "paid"
-                            ? "💰 Paid"
-                            : "🆓 Free"}
-                        </span>
-                      ))}
+                    <div className="absolute top-2 right-2 flex items-center gap-1.5 px-3 py-2 rounded-full backdrop-blur-sm bg-slate-900/90 border border-[#FF4DA6]/30">
+                      <img
+                        src="https://cdn.builder.io/api/v1/image/assets%2F2ccefb7d92b64b29890872bc60894d35%2F87d2bf0310994d4a979324a490ed5a6b?format=webp&width=32"
+                        alt="IP Token"
+                        className="w-4 h-4 flex-shrink-0"
+                      />
+                      <span className="text-xs font-semibold text-[#FF4DA6] whitespace-nowrap">
+                        {extractRemixPrice(asset)
+                          ? `$${extractRemixPrice(asset)} IP`
+                          : "Remix Available"}
+                      </span>
                     </div>
                   )}
                 </div>
