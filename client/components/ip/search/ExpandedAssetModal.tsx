@@ -285,29 +285,40 @@ export const ExpandedAssetModal = ({
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-3 pt-4">
-            {getRemixTypes(asset).map((remixConfig, idx) => (
-              <button
-                key={`remix-${remixConfig.type}-${idx}`}
-                type="button"
-                onClick={async () => {
-                  if (onRemixSelected) {
-                    try {
-                      await onRemixSelected(remixConfig.type);
-                      onClose();
-                    } catch (error) {
-                      console.error("Error handling remix selection:", error);
+            {getRemixTypes(asset).map((remixConfig, idx) => {
+              const price = extractRemixPrice(asset);
+              return (
+                <button
+                  key={`remix-${remixConfig.type}-${idx}`}
+                  type="button"
+                  onClick={async () => {
+                    if (onRemixSelected) {
+                      try {
+                        await onRemixSelected(remixConfig.type);
+                        onClose();
+                      } catch (error) {
+                        console.error("Error handling remix selection:", error);
+                      }
+                    } else {
+                      onRemixMenu?.();
                     }
-                  } else {
-                    onRemixMenu?.();
-                  }
-                }}
-                className="text-sm px-4 py-2.5 rounded-lg bg-[#FF4DA6] text-white font-semibold transition-all hover:shadow-lg hover:shadow-[#FF4DA6]/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/50"
-              >
-                {remixConfig.type === "paid"
-                  ? "💰 Paid remix"
-                  : "🆓 Free remix"}
-              </button>
-            ))}
+                  }}
+                  className="text-sm px-4 py-2.5 rounded-lg bg-[#FF4DA6] text-white font-semibold transition-all hover:shadow-lg hover:shadow-[#FF4DA6]/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/50 flex items-center gap-2"
+                >
+                  <span>Remix</span>
+                  {price && (
+                    <div className="flex items-center gap-1 opacity-90">
+                      <img
+                        src="https://cdn.builder.io/api/v1/image/assets%2F2ccefb7d92b64b29890872bc60894d35%2F87d2bf0310994d4a979324a490ed5a6b?format=webp&width=20"
+                        alt="IP Token"
+                        className="w-3.5 h-3.5"
+                      />
+                      <span className="text-xs font-semibold">$${price}</span>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
             <button
               type="button"
               className="text-sm px-4 py-2.5 rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/30 font-semibold transition-all hover:shadow-lg hover:shadow-blue-500/25 hover:bg-blue-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
