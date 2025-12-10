@@ -1,11 +1,14 @@
 import multer from "multer";
-import { analyzeImageWithOpenAI, type ImageAnalysisFlags } from "../utils/image-analysis";
-import { classifyImage, getLicenseSettings } from "../../client/lib/ip-assistant/classification";
+import { analyzeImageWithOpenAI } from "../utils/image-analysis";
+import { classifyImage, getLicenseSettings, type RegistrationStatus } from "@shared/image-analysis";
 
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 8 * 1024 * 1024 },
 });
+
+// Idempotency cache - in production, use Redis or similar
+const IDP_STORE = new Map<string, { status: number; body: any; ts: number }>();
 
 export const handleUpload: any = [
   upload.single("image"),
@@ -14,7 +17,6 @@ export const handleUpload: any = [
       // Idempotency support: if client supplies Idempotency-Key header, return cached response
       const idempotencyKey = (req.get("Idempotency-Key") ||
         req.get("idempotency-key")) as string | undefined;
-      const IDP_STORE = new Map<string, { status: number; body: any; ts: number }>();
       
       if (idempotencyKey && IDP_STORE.has(idempotencyKey)) {
         const cached = IDP_STORE.get(idempotencyKey)!;
@@ -83,8 +85,7 @@ export const handleUpload: any = [
       if ((req.get("Idempotency-Key") || req.get("idempotency-key"))) {
         const key = (req.get("Idempotency-Key") ||
           req.get("idempotency-key")) as string;
-        // Note: IDP_STORE is local to this request, so caching won't work across requests
-        // For production, use a persistent cache like Redis
+        IDP_STORE.set(key, { status: 500, body, ts: Date.now() });
       }
       return res.status(500).json(body);
     }
