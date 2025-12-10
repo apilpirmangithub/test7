@@ -477,58 +477,54 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
     setOriginalPrompt("");
   }, []);
 
-  const refreshWalletCreations = useCallback(
-    async (walletAddr: string) => {
-      try {
-        setFetchError(null);
-        const params = new URLSearchParams({
-          requesting_wallet: walletAddr,
-        });
-        const response = await fetch(
-          `/api/wallet-creations/${walletAddr}?${params.toString()}`,
-        );
-        if (response.ok) {
-          const data = await response.json();
-          if (data.creations && Array.isArray(data.creations)) {
-            const validCreations = data.creations.map((c: any) => ({
-              ...c,
-              walletAddress: walletAddr,
-            }));
-            setCreations(validCreations);
-            setFetchError(null);
-            console.log(
-              `[CreationContext] Refreshed ${validCreations.length} creations from Supabase for ${walletAddr.substring(0, 6)}...`,
-            );
-          }
-        } else if (response.status === 403) {
-          console.warn(
-            "[CreationContext] Unauthorized wallet access - clearing creations",
-          );
-          setFetchError("Unauthorized: wallet address mismatch");
-          setCreations([]);
-        } else {
-          const errorText = await response.text();
-          const errorMsg = `Failed to refresh wallet creations: ${response.status} ${errorText.substring(0, 100)}`;
-          console.error("[CreationContext]", errorMsg);
-          setFetchError(errorMsg);
-          // Don't clear local creations on error - keep locally added items
+  const refreshWalletCreations = useCallback(async (walletAddr: string) => {
+    try {
+      setFetchError(null);
+      const params = new URLSearchParams({
+        requesting_wallet: walletAddr,
+      });
+      const response = await fetch(
+        `/api/wallet-creations/${walletAddr}?${params.toString()}`,
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if (data.creations && Array.isArray(data.creations)) {
+          const validCreations = data.creations.map((c: any) => ({
+            ...c,
+            walletAddress: walletAddr,
+          }));
+          setCreations(validCreations);
+          setFetchError(null);
           console.log(
-            "[CreationContext] Keeping locally cached creations due to refresh error",
+            `[CreationContext] Refreshed ${validCreations.length} creations from Supabase for ${walletAddr.substring(0, 6)}...`,
           );
         }
-      } catch (error: any) {
-        const errorMsg =
-          error?.message || "Failed to refresh wallet creations";
-        console.error("[CreationContext] Error refreshing creations:", errorMsg);
+      } else if (response.status === 403) {
+        console.warn(
+          "[CreationContext] Unauthorized wallet access - clearing creations",
+        );
+        setFetchError("Unauthorized: wallet address mismatch");
+        setCreations([]);
+      } else {
+        const errorText = await response.text();
+        const errorMsg = `Failed to refresh wallet creations: ${response.status} ${errorText.substring(0, 100)}`;
+        console.error("[CreationContext]", errorMsg);
         setFetchError(errorMsg);
         // Don't clear local creations on error - keep locally added items
         console.log(
-          "[CreationContext] Keeping locally cached creations due to network error",
+          "[CreationContext] Keeping locally cached creations due to refresh error",
         );
       }
-    },
-    [],
-  );
+    } catch (error: any) {
+      const errorMsg = error?.message || "Failed to refresh wallet creations";
+      console.error("[CreationContext] Error refreshing creations:", errorMsg);
+      setFetchError(errorMsg);
+      // Don't clear local creations on error - keep locally added items
+      console.log(
+        "[CreationContext] Keeping locally cached creations due to network error",
+      );
+    }
+  }, []);
 
   const setUserIdentifier = useCallback((walletAddr: string | null) => {
     console.log(`[CreationContext] Wallet identifier changed: ${walletAddr}`);

@@ -100,15 +100,18 @@ After running the SQL:
 ## Troubleshooting
 
 ### Table doesn't exist error (500)
+
 - Run the SQL setup again
 - Make sure you're in the correct Supabase project
 - Check that RLS is enabled
 
 ### Images not uploading
+
 - Check that `wallet_creations` storage bucket is **Public**
 - Verify bucket policies are set
 
 ### Creations not showing on reconnect
+
 - Make sure `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are correct
 - Check Supabase project settings > API
 - Verify RLS policies are allowing reads
