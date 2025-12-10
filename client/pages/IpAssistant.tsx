@@ -1787,8 +1787,21 @@ const IpAssistant = () => {
                   {...getBubbleMotionProps(index)}
                   className="flex justify-end mb-3 px-1 md:px-2 last:mb-1"
                 >
-                  <div className="bg-[#ff4da6] text-white px-4 py-2 rounded-2xl max-w-[85%] md:max-w-[65%] break-words text-[0.95rem]">
-                    {msg.text}
+                  <div className="flex flex-col items-end gap-2 max-w-[85%] md:max-w-[65%]">
+                    {(msg as any).imageUrl && (
+                      <div className="rounded-2xl overflow-hidden border-2 border-[#ff4da6]/30 max-w-xs shadow-lg">
+                        <img
+                          src={(msg as any).imageUrl}
+                          alt="Uploaded"
+                          className="w-full h-auto max-h-48 object-cover"
+                        />
+                      </div>
+                    )}
+                    {msg.text && (
+                      <div className="bg-[#ff4da6] text-white px-4 py-2 rounded-2xl break-words text-[0.95rem]">
+                        {msg.text}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               );
