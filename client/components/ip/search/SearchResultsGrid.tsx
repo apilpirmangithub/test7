@@ -75,11 +75,11 @@ export const SearchResultsGrid = ({
                 key={asset.ipId || idx}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="group flex flex-col h-full cursor-pointer"
+                className="group flex flex-col h-full cursor-pointer rounded-xl overflow-hidden bg-slate-950/50 border border-slate-800/50 transition-all duration-200 hover:border-slate-700/80 hover:bg-slate-900/50"
               >
                 {/* Thumbnail Container */}
                 <div
-                  className="relative w-full aspect-video bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl overflow-hidden flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 flex-shrink-0 hover:-translate-y-1"
+                  className="relative w-full aspect-video bg-gradient-to-br from-slate-800 to-slate-900 rounded-t-xl overflow-hidden flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 flex-shrink-0 hover:-translate-y-0.5"
                   onClick={() => onAssetClick?.(asset)}
                 >
                   {asset.mediaUrl ? (
