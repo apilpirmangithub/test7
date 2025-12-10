@@ -262,7 +262,7 @@ export const ExpandedAssetModal = ({
         </div>
 
         {/* Footer with Details and Actions */}
-        <div className="border-t border-slate-800/30 bg-slate-950/95 backdrop-blur-xl px-6 py-6 sm:py-8 space-y-6 flex-shrink-0">
+        <div className="bg-slate-950/95 backdrop-blur-xl px-6 py-6 sm:py-8 space-y-6 flex-shrink-0 border-t border-slate-800/10">
           {asset.description && (
             <p className="text-sm text-slate-300 leading-relaxed">
               {asset.description}
