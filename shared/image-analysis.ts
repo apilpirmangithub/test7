@@ -1,10 +1,37 @@
 // Types
+export interface AIGenerationAnalysis {
+  likelihood: 'High' | 'Medium' | 'Low' | 'Unlikely';
+  evidence: string[];
+  confidence_score: number;
+}
+
+export interface ContentAnalysis {
+  contains_explicit_content: boolean;
+  contains_violence: boolean;
+  contains_sensitive_subject: boolean;
+  description: string;
+}
+
+export interface CompositionAnalysis {
+  style: string;
+  perspective: string;
+  dominant_colors: string[];
+}
+
+export interface ObjectDetection {
+  main_objects: string[];
+}
+
+export interface TextDetection {
+  detected_text: string;
+}
+
 export interface ImageAnalysisFlags {
-  ai_generation_analysis: {
-    likelihood: 'High' | 'Medium' | 'Low' | 'Unlikely';
-    evidence: string[];
-    confidence_score: number;
-  };
+  ai_generation_analysis: AIGenerationAnalysis;
+  content_analysis: ContentAnalysis;
+  composition_analysis: CompositionAnalysis;
+  object_detection: ObjectDetection;
+  text_detection: TextDetection;
   is_photo: boolean;
   is_animation: boolean;
   has_human_face: boolean;
@@ -45,12 +72,26 @@ export interface ClassificationResult {
 
 // Classification Logic
 export function classifyImage(flags: ImageAnalysisFlags): GroupClassification {
-    const { ai_generation_analysis, is_photo, is_animation, has_human_face, is_full_face_visible, is_famous_person, has_known_brand_or_character } = flags;
-    
-    // Derive a simple boolean for logic from the detailed analysis. 'Unlikely' and 'Low' are treated as not AI.
+    const {
+       ai_generation_analysis,
+      content_analysis,
+      is_photo,
+       is_animation,
+       has_human_face,
+       is_full_face_visible,
+       is_famous_person,
+       has_known_brand_or_character
+     } = flags;
+         
+     // High-priority check: If content is sensitive, it's an automatic rejection regardless of other factors.
+    if (content_analysis.contains_explicit_content || content_analysis.contains_violence || content_analysis.contains_sensitive_subject) {
+      return { group: 15, type: "Restricted Content", classification: "Contains sensitive or explicit material" };
+    }
+     
+     // Derive a simple boolean for logic from the detailed analysis. 'Unlikely' and 'Low' are treated as not AI.
     const is_ai_generated = ai_generation_analysis.likelihood === 'High' || ai_generation_analysis.likelihood === 'Medium';
-
-    // --- Animation Branch ---
+     
+     // --- Animation Branch ---
     if (is_animation) {
         if (is_ai_generated) { // AI Animation
             return has_known_brand_or_character
@@ -62,7 +103,7 @@ export function classifyImage(flags: ImageAnalysisFlags): GroupClassification {
                 : { group: 14, type: "Non-AI Animation", classification: "No Brand/Character" };
         }
     }
-
+     
     // --- AI Image Branch ---
     if (is_ai_generated) {
         if (has_known_brand_or_character) {
@@ -82,7 +123,7 @@ export function classifyImage(flags: ImageAnalysisFlags): GroupClassification {
                 : { group: 6, type: "AI Image", classification: "Regular Person (Partial Face)" };
         }
     }
-
+     
     // --- Photograph Branch ---
     if (is_photo) {
         if (has_known_brand_or_character) {
@@ -102,7 +143,7 @@ export function classifyImage(flags: ImageAnalysisFlags): GroupClassification {
                 : { group: 11, type: "Photograph", classification: "Regular Person (Partial Face)" };
         }
     }
-
+     
     // Fallback: If it's none of the above (e.g., abstract art, not explicitly photo or AI),
     // classify as a simple AI-like image to be safe.
     return { group: 1, type: "Unclassified Image", classification: "No Faces or Brands" };
@@ -121,7 +162,7 @@ export function getLicenseSettings(group: GroupNumber): LicenseSettings {
         case 14:
         case 16:
             return { status: RegistrationStatus.CAN_REGISTER, title: "Ready to Register", description: "This image meets the criteria for direct registration. Manual AI training is permitted with this license.", buttonText: "Register Image", color: "green" };
-        
+                 
         // CANNOT REGISTER
         case 2:
         case 3:
@@ -129,13 +170,13 @@ export function getLicenseSettings(group: GroupNumber): LicenseSettings {
         case 8:
         case 13:
         case 15:
-            return { status: RegistrationStatus.CANNOT_REGISTER, title: "Cannot Register", description: "This image contains elements (e.g., brands, characters, or faces of famous people) that prevent registration due to potential IP or right-of-publicity conflicts.", buttonText: "Cannot Register", color: "red" };
-        
+            return { status: RegistrationStatus.CANNOT_REGISTER, title: "Cannot Register", description: "This image contains elements (e.g., brands, characters, faces of famous people, or restricted content) that prevent registration due to potential IP or right-of-publicity conflicts.", buttonText: "Cannot Register", color: "red" };
+                 
         // REQUIRES REVIEW
         case 5:
         case 10:
             return { status: RegistrationStatus.REQUIRES_REVIEW, title: "Requires Review", description: "This image contains a full, identifiable face of a non-famous person. A model release or selfie verification is required to proceed with registration.", buttonText: "Start Review Process", color: "yellow" };
-        
+                 
         default:
             // Fallback for any unhandled group
             return { status: RegistrationStatus.CANNOT_REGISTER, title: "Classification Error", description: "Could not determine registration status for this group.", buttonText: "Error", color: "red" };
