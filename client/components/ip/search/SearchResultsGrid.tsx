@@ -237,89 +237,30 @@ export const SearchResultsGrid = ({
                     </div>
                   )}
                   {hoveredIndex === idx && (
-                    <div className="absolute inset-0 ring-2 ring-[#FF4DA6]/60 rounded-xl pointer-events-none" />
+                    <div className="absolute inset-0 ring-2 ring-[#FF4DA6]/60 rounded-lg pointer-events-none" />
                   )}
 
                   {/* Price Badge - Top Right */}
                   {remixTypes.length > 0 && (
-                    <div className="absolute top-2 right-2 flex items-center gap-1.5 px-3 py-2 rounded-full backdrop-blur-sm bg-slate-900/90 border border-[#FF4DA6]/30">
+                    <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm bg-slate-900/90 border border-[#FF4DA6]/30">
                       <img
                         src="https://cdn.builder.io/api/v1/image/assets%2F2ccefb7d92b64b29890872bc60894d35%2F87d2bf0310994d4a979324a490ed5a6b?format=webp&width=32"
                         alt="IP Token"
-                        className="w-4 h-4 flex-shrink-0"
+                        className="w-3 h-3 flex-shrink-0"
                       />
-                      <span className="text-xs font-semibold text-[#FF4DA6] whitespace-nowrap">
+                      <span className="text-[0.65rem] font-semibold text-[#FF4DA6] whitespace-nowrap">
                         {extractRemixPrice(asset)
                           ? `$${extractRemixPrice(asset)} IP`
                           : "FREE"}
                       </span>
                     </div>
                   )}
-                </div>
 
-                {/* Content */}
-                <div className="pt-3 px-4 pb-4 space-y-3 flex flex-col flex-grow">
-                  {/* Title */}
-                  <h3 className="text-sm font-bold text-slate-100 line-clamp-2 group-hover:text-[#FF4DA6] transition-colors duration-200">
-                    {asset.title || asset.name || "Untitled Asset"}
-                  </h3>
-
-                  {/* Badges Row */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span
-                      className={`text-xs px-2.5 py-1 rounded-full font-semibold whitespace-nowrap backdrop-blur-sm transition-all ${
-                        asset.isDerivative
-                          ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
-                          : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                      }`}
-                    >
-                      {asset.isDerivative ? "🔄 Remix" : "✨ Original"}
-                    </span>
-
-                    {asset.score !== undefined && (
-                      <span className="text-xs px-2.5 py-1 rounded-full bg-[#FF4DA6]/20 text-[#FF4DA6] border border-[#FF4DA6]/30 font-semibold whitespace-nowrap backdrop-blur-sm">
-                        {(asset.score * 100).toFixed(0)}% Match
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Description */}
-                  {asset.description && (
-                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                      {asset.description}
-                    </p>
-                  )}
-
-                  {/* Metadata */}
-                  <div className="text-xs text-slate-500 space-y-2 mt-auto">
-                    {asset.mediaType && (
-                      <p className="capitalize text-xs text-slate-400 font-semibold">
-                        {asset.mediaType
-                          .replace("video/", "")
-                          .replace("audio/", "")
-                          .replace("image/", "")
-                          .toUpperCase()}
-                      </p>
-                    )}
-
-                    {asset.ownerAddress && (
-                      <div className="space-y-1">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onOwnerClick?.(
-                              asset.ownerAddress,
-                              displayDomain || null,
-                            );
-                          }}
-                          className="font-mono text-[0.7rem] px-2 py-1 rounded w-full border transition-all duration-200 bg-gradient-to-r from-[#FF4DA6]/20 to-[#FF4DA6]/10 text-[#FF4DA6] border-[#FF4DA6]/30 hover:from-[#FF4DA6]/30 hover:to-[#FF4DA6]/20 hover:border-[#FF4DA6]/50 cursor-pointer hover:bg-[#FF4DA6]/25 active:scale-95 text-center truncate"
-                          title={`View all assets by ${displayText}`}
-                        >
-                          {displayText}
-                        </button>
-                      </div>
-                    )}
+                  {/* Title - Bottom Left Corner */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent p-2 sm:p-3">
+                    <h3 className="text-xs sm:text-sm font-bold text-slate-100 line-clamp-2 group-hover:text-[#FF4DA6] transition-colors duration-200">
+                      {asset.title || asset.name || "Untitled Asset"}
+                    </h3>
                   </div>
                 </div>
               </div>
