@@ -51,12 +51,10 @@ const AIGenerationAnalysis: React.FC<{
   analysis: ClassificationResult["flags"]["ai_generation_analysis"];
 }> = ({ analysis }) => {
   const likelihoodColors: Record<string, string> = {
-    High: "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30",
-    Medium:
-      "bg-gradient-to-r from-yellow-600 to-yellow-500 text-gray-900 shadow-lg shadow-yellow-500/20",
-    Low: "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/30",
-    Unlikely:
-      "bg-gradient-to-r from-green-600 to-green-500 text-white shadow-lg shadow-green-500/30",
+    High: "bg-red-600 text-white",
+    Medium: "bg-yellow-600 text-gray-900",
+    Low: "bg-blue-600 text-white",
+    Unlikely: "bg-green-600 text-white",
   };
 
   return (
@@ -78,15 +76,15 @@ const AIGenerationAnalysis: React.FC<{
             {(analysis.confidence_score * 100).toFixed(1)}%
           </span>
         </div>
-        <div className="w-full bg-gradient-to-r from-gray-700 to-gray-600 rounded-full h-2.5 overflow-hidden shadow-inner">
+        <div className="w-full bg-gray-700 rounded-full h-2.5 overflow-hidden">
           <div
-            className="h-2.5 rounded-full transition-all duration-500 bg-gradient-to-r from-cyan-400 via-cyan-300 to-cyan-200 shadow-lg shadow-cyan-400/50"
+            className="h-2.5 rounded-full transition-all duration-500 bg-cyan-400"
             style={{ width: `${analysis.confidence_score * 100}%` }}
           />
         </div>
       </div>
       {analysis.evidence.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-gray-700/50">
+        <div className="mt-4 pt-4 border-t border-gray-700/20">
           <h6 className="text-xs font-bold text-gray-300 mb-3 uppercase tracking-wide">
             🔍 Visual Evidence
           </h6>
@@ -94,7 +92,7 @@ const AIGenerationAnalysis: React.FC<{
             {analysis.evidence.slice(0, 4).map((item, index) => (
               <li
                 key={index}
-                className="text-xs text-gray-300 flex items-start gap-2.5 hover:text-cyan-300 transition-colors duration-200 p-2 rounded hover:bg-gray-800/30"
+                className="text-xs text-gray-300 flex items-start gap-2.5 p-2"
               >
                 <span className="text-yellow-400 mt-0.5 text-sm flex-shrink-0">
                   ✨
@@ -149,7 +147,7 @@ const DetailItem: React.FC<{
   }
 
   return (
-    <div className="flex items-start justify-between py-2.5 px-2 rounded hover:bg-gray-800/20 transition-colors duration-200">
+    <div className="flex items-start justify-between py-2.5 px-2">
       <span className="text-gray-400 text-xs font-medium">{label}</span>
       <div className="text-right max-w-[55%]">{displayValue}</div>
     </div>
@@ -191,17 +189,17 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
   const statusIcons: Record<string, React.ReactNode> = {
     CAN_REGISTER: (
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-500/30 to-green-600/20 border-2 border-green-400 flex items-center justify-center text-green-400 text-lg font-bold shadow-lg shadow-green-500/20">
+      <div className="w-7 h-7 rounded-full bg-green-600/20 border border-green-500/50 flex items-center justify-center text-green-400 text-lg font-bold">
         ✓
       </div>
     ),
     CANNOT_REGISTER: (
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-red-500/30 to-red-600/20 border-2 border-red-400 flex items-center justify-center text-red-400 text-lg font-bold shadow-lg shadow-red-500/20">
+      <div className="w-7 h-7 rounded-full bg-red-600/20 border border-red-500/50 flex items-center justify-center text-red-400 text-lg font-bold">
         ✕
       </div>
     ),
     REQUIRES_REVIEW: (
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-yellow-500/30 to-yellow-600/20 border-2 border-yellow-400 flex items-center justify-center text-yellow-400 text-lg font-bold shadow-lg shadow-yellow-500/20">
+      <div className="w-7 h-7 rounded-full bg-yellow-600/20 border border-yellow-500/50 flex items-center justify-center text-yellow-400 text-lg font-bold">
         !
       </div>
     ),
@@ -216,11 +214,9 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
   };
 
   const licenseBgClasses: Record<string, string> = {
-    green:
-      "bg-gradient-to-br from-green-900/40 to-green-800/20 border border-green-700/50 shadow-lg shadow-green-500/10",
-    red: "bg-gradient-to-br from-red-900/40 to-red-800/20 border border-red-700/50 shadow-lg shadow-red-500/10",
-    yellow:
-      "bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 border border-yellow-700/50 shadow-lg shadow-yellow-500/10",
+    green: "bg-green-900/20 border border-green-700/30",
+    red: "bg-red-900/20 border border-red-700/30",
+    yellow: "bg-yellow-900/20 border border-yellow-700/30",
   };
 
   const licenseTitleClasses: Record<string, string> = {
@@ -230,7 +226,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
   };
 
   return (
-    <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl border border-gray-700/50 overflow-hidden w-full backdrop-blur-sm shadow-2xl shadow-gray-900/50">
+    <div className="bg-gray-800/40 rounded-lg overflow-hidden w-full">
       <div className="flex flex-col lg:flex-row gap-4 p-5 lg:items-start">
         {/* Left side: Image */}
         {imageUrl && (
