@@ -1,20 +1,5 @@
 import OpenAI from "openai";
-
-export interface ImageAnalysisFlags {
-  ai_generation_analysis: {
-    likelihood: 'High' | 'Medium' | 'Low' | 'Unlikely';
-    evidence: string[];
-    confidence_score: number;
-  };
-  is_photo: boolean;
-  is_animation: boolean;
-  has_human_face: boolean;
-  is_full_face_visible: boolean;
-  is_famous_person: boolean;
-  has_known_brand_or_character: boolean;
-  title: string;
-  description: string;
-}
+import { type ImageAnalysisFlags } from "@shared/image-analysis";
 
 const API_KEY = process.env.OPENAI_API_KEY;
 
