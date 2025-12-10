@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useRemixTypes } from "./hooks";
 import { AssetLifecycleInfographic } from "./AssetLifecycleInfographic";
@@ -25,6 +25,17 @@ export const ExpandedAssetModal = ({
   const [showLifecycle, setShowLifecycle] = useState(false);
   const mediaContainerRef = useRef<HTMLDivElement>(null);
   const getRemixTypes = useRemixTypes();
+
+  // Debug logging
+  React.useEffect(() => {
+    console.log("📋 ExpandedAssetModal rendered with asset:", {
+      ipId: asset?.ipId,
+      title: asset?.title,
+      hasMediaUrl: !!asset?.mediaUrl,
+      hasThumbnailUrl: !!asset?.thumbnailUrl,
+      hasRemixSelected: !!onRemixSelected,
+    });
+  }, [asset, onRemixSelected]);
 
   // Early return when asset is null (but not when isOpen is false - let AnimatePresence handle the exit animation)
   if (!asset) return null;

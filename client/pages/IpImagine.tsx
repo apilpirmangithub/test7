@@ -263,7 +263,15 @@ const IpImagine = () => {
     asset: any,
     remixType: "paid" | "free",
   ) => {
-    console.log("🎯 handleRemixSelected called with remixType:", remixType);
+    console.log("🎯 handleRemixSelected called with:", {
+      remixType,
+      asset: {
+        ipId: asset?.ipId,
+        title: asset?.title,
+        mediaUrl: asset?.mediaUrl ? "✓" : "✗",
+        thumbnailUrl: asset?.thumbnailUrl ? "✓" : "✗",
+      },
+    });
     setRemixLoading(true);
     try {
       // Validation: Warn if wallet not fully connected for paid remix
@@ -273,9 +281,21 @@ const IpImagine = () => {
         return;
       }
 
+      if (!asset) {
+        throw new Error("Asset data is missing");
+      }
+
       const imageUrl = asset.mediaUrl || asset.thumbnailUrl;
+      console.log("📸 Image URL selected:", {
+        imageUrl: imageUrl ? imageUrl.substring(0, 100) : "undefined",
+        fromMediaUrl: !!asset.mediaUrl,
+        fromThumbnailUrl: !!asset.thumbnailUrl,
+      });
+
       if (!imageUrl) {
-        throw new Error("No image URL available for this asset");
+        throw new Error(
+          `No image URL available for this asset. mediaUrl: ${asset.mediaUrl}, thumbnailUrl: ${asset.thumbnailUrl}`,
+        );
       }
 
       const response = await fetch(imageUrl, {
@@ -284,7 +304,9 @@ const IpImagine = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch image: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch image: ${response.statusText} (${response.status})`,
+        );
       }
 
       let blob = await response.blob();
@@ -296,7 +318,7 @@ const IpImagine = () => {
       }
 
       const url = URL.createObjectURL(blob);
-      const fileName = asset.title || "remix-image";
+      const fileName = asset.title || asset.name || "remix-image";
 
       // Set all state synchronously to avoid race conditions
       setCurrentRemixType(remixType);
@@ -315,6 +337,8 @@ const IpImagine = () => {
         remixType,
         "Blob type:",
         blob.type,
+        "File name:",
+        fileName,
       );
 
       setStatusText(
@@ -328,9 +352,14 @@ const IpImagine = () => {
           block: "nearest",
         });
       }, 300);
-    } catch (error) {
-      console.error("Error loading remix image:", error);
-      setStatusText("❌ Failed to load remix image. Please try again.");
+    } catch (error: any) {
+      console.error("❌ Error loading remix image:", {
+        message: error?.message,
+        stack: error?.stack,
+      });
+      setStatusText(
+        `❌ Failed to load remix: ${error?.message || "Unknown error"}`,
+      );
     } finally {
       setRemixLoading(false);
     }
