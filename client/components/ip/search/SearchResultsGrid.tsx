@@ -243,6 +243,30 @@ export const SearchResultsGrid = ({
                     <div className="absolute inset-0 ring-2 ring-[#FF4DA6]/60 rounded-lg pointer-events-none" />
                   )}
 
+                  {/* Remix Button - Top Left */}
+                  {remixTypes.length > 0 && (
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                      animate={hoveredIndex === idx ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: -10 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (remixTypes.length === 1) {
+                          await onRemixSelected?.(asset, remixTypes[0].type);
+                        } else {
+                          onAssetClick?.(asset);
+                        }
+                      }}
+                      type="button"
+                      className="absolute top-2 left-2 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg backdrop-blur-sm bg-[#FF4DA6] hover:bg-[#FF4DA6]/90 text-white font-semibold text-xs transition-all shadow-lg hover:shadow-xl"
+                    >
+                      <span>🔄</span>
+                      <span>Remix</span>
+                    </motion.button>
+                  )}
+
                   {/* Price Badge - Top Right */}
                   {remixTypes.length > 0 && (
                     <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm bg-slate-900/90 border border-[#FF4DA6]/30">
