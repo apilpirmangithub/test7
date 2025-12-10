@@ -369,7 +369,7 @@ const CompactResultCard = ({
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="absolute top-6 left-6 right-6 max-w-sm"
+                className="absolute top-6 right-6 max-w-sm"
               >
                 {registrationState === "loading" && (
                   <div className="rounded-lg bg-blue-500/10 border border-blue-500/30 p-4 flex items-center gap-3">
