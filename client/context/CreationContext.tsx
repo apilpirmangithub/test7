@@ -167,18 +167,28 @@ export const CreationProvider: React.FC<{ children: ReactNode }> = ({
             }));
             setCreations(validCreations);
             setFetchError(null);
+            console.log(
+              `[CreationContext] Loaded ${validCreations.length} creations from Supabase`,
+            );
           }
         } else {
-          const errorMsg = `Failed to fetch wallet creations: ${response.status}`;
-          console.error(errorMsg);
+          const errorText = await response.text();
+          const errorMsg = `Failed to fetch wallet creations: ${response.status} ${errorText.substring(0, 100)}`;
+          console.error("[CreationContext]", errorMsg);
           setFetchError(errorMsg);
           // Don't clear local creations on error - keep locally added items
+          console.log(
+            "[CreationContext] Keeping locally cached creations due to fetch error",
+          );
         }
       } catch (error: any) {
         const errorMsg = error?.message || "Failed to fetch creations";
-        console.error("Error fetching creations:", errorMsg);
+        console.error("[CreationContext] Error fetching creations:", errorMsg);
         setFetchError(errorMsg);
         // Don't clear local creations on error - keep locally added items
+        console.log(
+          "[CreationContext] Keeping locally cached creations due to network error",
+        );
       }
     };
 
