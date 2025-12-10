@@ -227,7 +227,7 @@ const IpImagineInput = ({
         </AnimatePresence>
       </div>
 
-      <div className="flex-1 flex flex-col gap-2 bg-slate-900/60 rounded-2xl pl-2 pr-4 py-2 focus-within:ring-2 focus-within:ring-[#FF4DA6]/30 transition-all duration-300">
+      <div className="flex-1 flex flex-col gap-2 bg-slate-900/50 rounded-xl pl-4 pr-4 py-2.5 transition-all duration-300">
         <RemixImage
           previewImages={previewImages}
           setPreviewImages={setPreviewImages}
