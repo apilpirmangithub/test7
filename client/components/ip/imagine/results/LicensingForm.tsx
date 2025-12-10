@@ -151,6 +151,15 @@ const LicensingFormComponent = (
     if (!authenticated)
       return setRegisterError("Please connect your wallet to register");
 
+    // --- TOKEN VALIDATION ---
+    const tokenValidation = validateForRegistration(parentLicense);
+    if (!tokenValidation.isValid) {
+      const warningMsg = getInsufficientBalanceWarning(balance, parentLicense);
+      setRegisterError(warningMsg);
+      setShowTokenWarning(true);
+      return;
+    }
+
     setIsRegistering(true);
     setRegisterError(null);
     setRegisterSuccess(false);
