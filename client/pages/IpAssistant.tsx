@@ -1852,11 +1852,19 @@ const IpAssistant = () => {
                           ) : null}
                           <div>{msg.text}</div>
                         </div>
-                        <ResultDisplay
-                          result={msg.analysisResult}
-                          isLoading={false}
-                          error={null}
-                        />
+                        {(() => {
+                          const ctxKey = (msg as any).ctxKey;
+                          const ctx = ctxKey ? analysisContextsRef.current.get(ctxKey) : null;
+                          const imageUrl = ctx?.blob ? URL.createObjectURL(ctx.blob) : undefined;
+                          return (
+                            <ResultDisplay
+                              result={msg.analysisResult}
+                              isLoading={false}
+                              error={null}
+                              imageUrl={imageUrl}
+                            />
+                          );
+                        })()}
                       </div>
                     ) : (
                       <div className="flex items-center gap-3">
