@@ -404,7 +404,7 @@ const IpImagineInput = ({
             !previewImages.remixImage &&
             !previewImages.additionalImage)
         }
-        className="flex-shrink-0 p-2.5 sm:p-2 rounded-lg bg-[#FF4DA6]/20 text-[#FF4DA6] hover:bg-[#FF4DA6]/30 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30"
+        className="flex-shrink-0 p-2.5 rounded-lg bg-[#FF4DA6] text-white hover:bg-[#FF4DA6]/90 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/50"
         aria-label="Send message"
         onPointerDown={(event) => event.preventDefault()}
       >
