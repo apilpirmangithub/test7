@@ -302,6 +302,28 @@ const IpImagineInput = ({
             disabled={waiting}
             className="flex-1 resize-none px-4 py-0 bg-transparent text-white placeholder:text-slate-400 min-h-[40px] max-h-32 overflow-y-auto focus:outline-none font-medium text-[0.97rem] disabled:opacity-50"
           />
+          <button
+            type="submit"
+            data-tour-submit
+            disabled={
+              waiting ||
+              (!input.trim() &&
+                !previewImages.remixImage &&
+                !previewImages.additionalImage)
+            }
+            className="flex-shrink-0 p-2.5 sm:p-2 rounded-lg bg-[#FF4DA6]/20 text-[#FF4DA6] hover:bg-[#FF4DA6]/30 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30"
+            aria-label="Send message"
+            onPointerDown={(event) => event.preventDefault()}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M2.94 2.94a1.5 1.5 0 012.12 0L17 14.88V17a1 1 0 01-1 1h-2.12L2.94 5.06a1.5 1.5 0 010-2.12z" />
+            </svg>
+          </button>
         </div>
 
         {isInputFocused && (
@@ -393,29 +415,6 @@ const IpImagineInput = ({
           </motion.div>
         ) : null}
       </div>
-
-      <button
-        type="submit"
-        data-tour-submit
-        disabled={
-          waiting ||
-          (!input.trim() &&
-            !previewImages.remixImage &&
-            !previewImages.additionalImage)
-        }
-        className="flex-shrink-0 p-2.5 sm:p-2 rounded-lg bg-[#FF4DA6]/20 text-[#FF4DA6] hover:bg-[#FF4DA6]/30 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4DA6]/30"
-        aria-label="Send message"
-        onPointerDown={(event) => event.preventDefault()}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M2.94 2.94a1.5 1.5 0 012.12 0L17 14.88V17a1 1 0 01-1 1h-2.12L2.94 5.06a1.5 1.5 0 010-2.12z" />
-        </svg>
-      </button>
 
       <FlyingImageAnimation
         isActive={showFlyingAnimation}
