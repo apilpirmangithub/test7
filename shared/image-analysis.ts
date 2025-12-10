@@ -91,7 +91,7 @@ export interface ClassificationResult {
 
 // Classification Logic
 export function classifyImage(flags: ImageAnalysisFlags): GroupClassification {
-  const {
+  let {
     primary_category,
     ai_generation_analysis,
     content_analysis,
@@ -100,6 +100,24 @@ export function classifyImage(flags: ImageAnalysisFlags): GroupClassification {
     is_famous_person,
     has_known_brand_or_character,
   } = flags;
+
+  // Validate consistency: primary_category should match AI likelihood
+  // If AI likelihood is "Unlikely" or "Low", it should be a Photograph, not AI-Generated
+  if (
+    (ai_generation_analysis.likelihood === "Unlikely" ||
+      ai_generation_analysis.likelihood === "Low") &&
+    primary_category === "AI-Generated Image"
+  ) {
+    primary_category = "Photograph";
+  }
+  // If AI likelihood is "High" or "Medium", it should be AI-Generated Image, not Photograph
+  else if (
+    (ai_generation_analysis.likelihood === "High" ||
+      ai_generation_analysis.likelihood === "Medium") &&
+    primary_category === "Photograph"
+  ) {
+    primary_category = "AI-Generated Image";
+  }
 
   // High-priority check: If content is sensitive, it's an automatic rejection regardless of other factors.
   if (
