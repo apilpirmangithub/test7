@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { type ClassificationResult } from "@shared/image-analysis";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Brain, Shield, Palette, Eye, Image as ImageIcon } from "lucide-react";
 
 interface ResultDisplayProps {
   result: ClassificationResult | null;
@@ -51,10 +51,10 @@ const AIGenerationAnalysis: React.FC<{
   analysis: ClassificationResult["flags"]["ai_generation_analysis"];
 }> = ({ analysis }) => {
   const likelihoodColors: Record<string, string> = {
-    High: "bg-red-600 text-white",
-    Medium: "bg-yellow-600 text-gray-900",
-    Low: "bg-blue-600 text-white",
-    Unlikely: "bg-green-600 text-white",
+    High: "bg-red-600/80 text-white",
+    Medium: "bg-yellow-600/80 text-gray-900",
+    Low: "bg-cyan-500/80 text-white",
+    Unlikely: "bg-emerald-500/80 text-white",
   };
 
   return (
@@ -189,7 +189,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
   const statusIcons: Record<string, React.ReactNode> = {
     CAN_REGISTER: (
-      <div className="w-7 h-7 rounded-full bg-green-600/20 border border-green-500/50 flex items-center justify-center text-green-400 text-lg font-bold">
+      <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 text-lg font-bold">
         ✓
       </div>
     ),
@@ -199,7 +199,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
       </div>
     ),
     REQUIRES_REVIEW: (
-      <div className="w-7 h-7 rounded-full bg-yellow-600/20 border border-yellow-500/50 flex items-center justify-center text-yellow-400 text-lg font-bold">
+      <div className="w-7 h-7 rounded-full bg-pink-600/20 border border-pink-500/50 flex items-center justify-center text-pink-400 text-lg font-bold">
         !
       </div>
     ),
@@ -207,22 +207,22 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
   const buttonClasses: Record<string, string> = {
     green:
-      "bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white transition-colors duration-200",
-    red: "bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white transition-colors duration-200",
+      "bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white transition-colors duration-200 font-semibold",
+    red: "bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white transition-colors duration-200 font-semibold",
     yellow:
-      "bg-yellow-500 hover:bg-yellow-400 disabled:opacity-50 text-gray-900 transition-colors duration-200",
+      "bg-pink-600 hover:bg-pink-500 disabled:opacity-50 text-white transition-colors duration-200 font-semibold",
   };
 
   const licenseBgClasses: Record<string, string> = {
-    green: "bg-green-900/20 border border-green-700/30",
+    green: "bg-emerald-900/20 border border-emerald-700/30",
     red: "bg-red-900/20 border border-red-700/30",
-    yellow: "bg-yellow-900/20 border border-yellow-700/30",
+    yellow: "bg-pink-900/20 border border-pink-700/30",
   };
 
   const licenseTitleClasses: Record<string, string> = {
-    green: "text-green-300",
+    green: "text-emerald-300",
     red: "text-red-300",
-    yellow: "text-yellow-300",
+    yellow: "text-pink-300",
   };
 
   return (
@@ -232,9 +232,12 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
         {imageUrl && (
           <div className="lg:w-1/3 flex-shrink-0">
             <div className="bg-gray-900/40 rounded-lg p-3 flex flex-col">
-              <h4 className="text-xs font-bold text-gray-300 mb-2 uppercase tracking-wide">
-                📸 Uploaded Image
-              </h4>
+              <div className="flex items-center gap-2 mb-2">
+                <ImageIcon className="w-4 h-4 text-pink-400" />
+                <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wide">
+                  Uploaded Image
+                </h4>
+              </div>
               <img
                 src={imageUrl}
                 alt="Uploaded"
@@ -249,8 +252,8 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           className={`flex-1 flex flex-col ${imageUrl ? "lg:w-2/3" : "w-full"}`}
         >
           <div className="mb-4">
-            <h3 className="text-sm font-bold mb-1 bg-gradient-to-r from-gray-200 to-gray-100 bg-clip-text text-transparent">
-              ✨ Analysis Result
+            <h3 className="text-sm font-bold mb-1 text-white">
+              Analysis Result
             </h3>
             <p className="text-gray-400 text-xs">
               Group{" "}
@@ -264,7 +267,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
           <div className="rounded-lg bg-gray-800/30 overflow-hidden text-xs max-h-72 overflow-y-auto">
             <AnalysisSection
               title="AI Generation Analysis"
-              icon={<span className="text-2xl">🤖</span>}
+              icon={<Brain className="w-5 h-5 text-pink-400" />}
               defaultOpen={true}
             >
               <AIGenerationAnalysis analysis={flags.ai_generation_analysis} />
@@ -272,7 +275,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
             <AnalysisSection
               title="Content & Safety Analysis"
-              icon={<span className="text-2xl">🛡️</span>}
+              icon={<Shield className="w-5 h-5 text-pink-400" />}
             >
               <DetailItem
                 label="Explicit Content"
@@ -296,7 +299,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
             <AnalysisSection
               title="Composition & Style"
-              icon={<span className="text-2xl">🎨</span>}
+              icon={<Palette className="w-5 h-5 text-pink-400" />}
             >
               <DetailItem
                 label="Artistic Style"
@@ -316,7 +319,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 
             <AnalysisSection
               title="Object & Text Detection"
-              icon={<span className="text-2xl">📋</span>}
+              icon={<Eye className="w-5 h-5 text-pink-400" />}
             >
               <DetailItem
                 label="Main Objects"
