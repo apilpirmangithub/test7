@@ -106,7 +106,7 @@ export const SearchResultsGrid = ({
           <span className="text-slate-400">Loading owner assets...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {searchResults.map((asset, idx) => {
             const remixTypes = getRemixTypes(asset);
 
@@ -115,7 +115,7 @@ export const SearchResultsGrid = ({
                 key={asset.ipId || idx}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="group relative cursor-pointer rounded-lg overflow-hidden bg-slate-900/30 border border-slate-800/50 transition-all duration-200 hover:border-slate-700/80 aspect-square"
+                className="group relative cursor-pointer rounded-xl overflow-hidden bg-slate-900/50 shadow-lg shadow-black/40 transition-all duration-300 hover:shadow-xl hover:shadow-[#FF4DA6]/20 aspect-square hover:scale-[1.02]"
               >
                 {/* Image Container */}
                 <div
