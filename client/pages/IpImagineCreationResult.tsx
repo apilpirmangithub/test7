@@ -137,16 +137,16 @@ const IpImagineCreationResult = () => {
     }
   }, [authenticated, primaryWalletAddress, context]);
 
-  // Clear creations when wallet disconnects (privacy protection)
+  // Clear creations AND UI states when wallet disconnects
   useEffect(() => {
     if (!authenticated) {
       console.log(
-        "[IpImagineCreationResult] Wallet disconnected - clearing creations",
+        "[IpImagineCreationResult] Wallet disconnected - clearing all data",
       );
+      // Clear everything for privacy - creations will be re-fetched when wallet reconnects
       if (context?.clearCreations) {
         context.clearCreations();
       }
-      // Clear all local UI states related to results
       setUpscaledUrl(null);
       setUpscalingCreationId(null);
       setExpandedCreationId(null);
